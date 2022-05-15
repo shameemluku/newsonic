@@ -1,0 +1,21 @@
+.admin-header{
+    padding-top: 20px;
+}
+
+.admin-dp{
+    border-radius: 50%;
+    height: 40px;
+    margin-left: 15px;
+}
+
+.admin-name{
+    font-size: 18px;
+    font-weight: 500;
+    margin-top: 8px;
+}
+
+.page-title{
+    font-size: 30px;
+}
+
+/* Add news */

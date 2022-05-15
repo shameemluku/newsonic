@@ -1,0 +1,26 @@
+.edu-card{
+    padding-left: 20px;
+    padding-top: 15px;
+    padding-bottom: 1px;
+    background-color: white;
+    border-radius: 10px;
+    cursor: pointer;
+}
+
+.edu-image{
+    border-radius: 8px;
+    height: 50px;
+}
+
+.edu-title h4{
+    width: 90%;
+    font-size: 15px !important;
+    font-weight: 500;
+    margin-left: 15px;
+    font-weight: 600;
+}
+
+.edu-card:hover{
+    color: #A7CC1B;
+    transition: color 0.3s ease-in-out;
+}

@@ -1,0 +1,129 @@
+.login-image img{
+    border-radius: 30px 120px 120px 30px;
+    height:550px; 
+}
+
+.modal-content{
+    border: none;
+    border-radius: 30px;
+}
+/* 
+.modal-backdrop{
+    -webkit-filter: blur(15px);
+          filter: blur(15px);
+} */
+
+.modal-body {
+    height:550px; 
+}
+
+.right-content{
+    margin-top: 60px;
+}
+
+.login-input{
+    background-color: #DDDDDD;
+    border: none;
+    height: 50px;
+    border-radius: 15px;
+    background-size:25px;
+    background-position: 8px;
+    background-repeat: no-repeat;
+    text-indent: 35px;
+    /* Extra Styling */
+    transition:0.3s;
+}
+
+.input-mail{
+    background-image: url('../../Images/email.svg');
+}
+
+.input-pass{
+    background-image: url('../../Images/password.svg');
+}
+
+.login-input:focus {
+    background-image:none;
+    text-indent:10px
+}
+
+.login-message{
+    width: 70%;
+    font-size: 20px;
+    margin-bottom: 30px;
+}
+
+.login-button{
+    height: 50px;
+    border:none;
+    background-color: #A7CC1B;
+    border-radius: 15px;
+    color: white;
+    font-size: 18px;
+    margin-top: 25px !important;
+}
+
+.login-line{
+    width: 100%;
+    height: 1px;
+    background-color: #D3D3D3;
+    margin-top: 40px;
+}
+
+.login-google span{
+    color: #ADADAD;
+    font-size: 18px;
+    margin-left: 5px;
+}
+
+.login-google{
+    margin-top: 15px;
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+
+.register-button{
+    bottom:0;
+    margin-bottom:20px;
+}
+
+.signup{
+    animation: 0.5s ease-out 0s 1 FadeIn;
+}
+.login{
+    animation: 0.5s ease-out 0s 1 FadeIn;
+}
+
+.errortext{
+    color: red;
+    font-size: 13px;
+}
+
+@keyframes FadeIn {
+    0% {
+      opacity:0;
+    }
+    100% {
+      opacity:1;
+    }
+}
+
+@media only screen and (max-width: 992px) {
+    .login-image{
+        display: none;
+    }
+    .modal-body {
+        height:550px;
+    }
+    .signup-fields{
+        width: 100% !important;
+    }
+    .signup-holder{
+        padding-right: 10px !important;
+        padding-left: 10px !important;
+    }
+    .right-content{
+        padding-right: 30px !important;
+        padding-left: 30px !important;
+    }
+}

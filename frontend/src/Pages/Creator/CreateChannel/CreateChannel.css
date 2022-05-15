@@ -1,0 +1,128 @@
+.bannerImg{
+    height: 200px
+}
+
+.mainContent{
+    width: 60%;
+    background-color: white;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+    align-self: center;
+    margin-top: -70px;
+    height: auto;
+    padding: 40px;
+}
+
+.creator-logo{
+    height: 20px;
+}
+
+.profile-holder{
+    margin-top: -100px;
+}
+
+.creator-profile{
+    display: flex;
+    width: 150px;
+    height: 150px;
+    background-color: brown;
+    border-radius: 50%;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.hide {
+    display: none;
+}
+
+.channel-name-txt{
+    width: 70% !important;
+}
+      
+.creator-profile:hover > .hide {
+    display: block !important;
+}
+
+#channel-files:focus{
+    box-shadow: none;
+}
+
+#channel-files{
+    font-size: 17px;
+}
+
+.creator-submit-btn{
+    box-shadow: none !important;
+    background-color: rgb(35, 113, 35) !important;
+    padding-left: 30px !important;
+    padding-right: 30px !important;
+    padding-top: 12px !important;
+    padding-bottom: 12px !important;
+}
+
+.creator-goback-btn{
+    color: rgb(35, 113, 35) !important;
+    font-weight: 500;
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.noline{
+    text-decoration: none;
+}
+
+.avail-loader{
+    height: 25px !important;
+    width: 25px !important;
+    margin-right: 10px;
+    margin-bottom: -5px;
+}
+
+.not-avail{
+    font-weight: 500;
+    color: rgb(139, 0, 0);
+}
+
+.avail{
+    color: rgb(35, 113, 35);
+    font-weight: 500;
+}
+
+.check-avail{
+    font-weight: 500;
+    color: rgb(35, 113, 35);
+    margin-left: 20px;
+}
+
+
+/* ///////////////////////////// */
+
+
+/* .loading-section{
+    display: flex;
+    justify-content: center;
+} */
+
+.content-center{
+    display: flex;
+    justify-content: center;
+}
+
+@media only screen and (max-width: 992px) {
+    .channel-name-txt{
+        width: 100% !important;
+    }
+    .mainContent{
+        width: 90%;   
+        padding: 20px;
+    }
+
+    .creator-submit-btn{
+        width: 100%;
+        margin-top: 20px !important;
+    }
+}
+

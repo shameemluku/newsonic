@@ -1,0 +1,37 @@
+.main-content{
+    padding-left: 250px;
+}
+
+.admin-link{
+    color: black;
+}
+
+.add-btn{
+    width: 80%;
+    background-color: #005931;
+    justify-content: center;
+    padding: 10px;
+    border-radius: 15px;
+    margin-top: 35px;
+    margin-bottom: 20px;
+    cursor: pointer;
+}
+
+.active-link{
+    border-left: 6px solid #A7CC1B;
+}
+
+.side-nav{
+    box-shadow: rgba(0, 0, 0, 0.16) 0px 1px 4px;
+}
+
+
+@media only screen and (max-width: 992px) {
+    .side-nav{
+        display: none !important;
+    }
+    .main-content{
+        padding-left: 0;
+    }
+
+}

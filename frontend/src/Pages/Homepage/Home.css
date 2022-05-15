@@ -1,0 +1,29 @@
+.three-section-wrapper{
+    background-color: #EAEAEA;
+}
+
+.cat-head{
+    background-color: #2B2B2B;
+    padding-left: 12px;
+    padding-right: 25px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    font-size: 13px;
+    color: white;
+    z-index: 1;
+    position: relative;
+}
+
+.styles-module_wrapper__1I_qj{
+    z-index: 2000 !important;
+}
+
+.infiite-loading-anime{
+    width: 100%;
+    display: flex;
+    justify-content: center;
+}
+
+.infiite-loading-anime img{
+    height: 250px;
+}

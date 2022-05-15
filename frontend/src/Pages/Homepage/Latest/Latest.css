@@ -1,0 +1,40 @@
+.latest-card{
+    border-bottom: 2px solid black;
+    margin-bottom: 40px;
+}
+
+.w-46{
+    width:46%
+}
+
+.latest-title{
+    color: rgb(0, 0, 0);
+    width: 90%;
+    font-size: 21px;
+    line-height: 21px;
+    opacity: 1 !important;
+    font-weight: 600;
+    margin-top: 20px;
+}
+
+.latest-cat{
+    font-size: 15px;
+    color: rgb(51, 205, 12);
+    font-weight: 500;
+}
+
+.latest-Img{
+    object-fit: cover;
+}
+
+.latest-card:hover{
+    transform:translateY(-1%);
+    transition: all 0.2s ease-in-out;
+}
+
+@media only screen and (max-width: 768px) {
+    .latest-card{
+        width: 100% !important;
+        margin-bottom: 10px;
+    }
+}

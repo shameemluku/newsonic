@@ -1,0 +1,40 @@
+.body-div{
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+}
+
+
+.wait-desc-text{
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.channel-name-box{
+    border: 1px solid rgb(226, 226, 226);
+    padding: 20px 50px 25px 50px;
+    border-radius: 10px;
+}
+
+.channel-name-box img{
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+}
+
+.channel-name-box .name{
+    font-size: 18px;
+    margin-left: 15px;
+    font-weight: 500;
+    margin-top: 5px;
+}
+
+.channel-name-box .approve-status{
+    font-size: 12px;
+    margin-left: 15px;
+    background-color: rgb(240, 191, 28);
+    color: white;
+    border-radius: 10px;
+    padding: 5px 30px 5px 30px;
+}
