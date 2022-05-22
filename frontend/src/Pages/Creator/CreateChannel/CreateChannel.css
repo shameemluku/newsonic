@@ -106,10 +106,6 @@
     justify-content: center;
 } */
 
-.content-center{
-    display: flex;
-    justify-content: center;
-}
 
 @media only screen and (max-width: 992px) {
     .channel-name-txt{

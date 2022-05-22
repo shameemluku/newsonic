@@ -53,7 +53,7 @@ export default function CreateChannel() {
 
   useEffect(()=>{
     if(authData.user?.isCreator){
-      navigate("/creator/add")
+      navigate("/creator/")
     }
   },[authData])
 

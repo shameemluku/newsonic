@@ -1,8 +1,16 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { BACKEND_URL } from "../../../constants/url";
 import Skeleton from "@mui/material/Skeleton";
+import CardHeader from "@mui/material/CardHeader";
+import Avatar from "@mui/material/Avatar";
 import { Col, Row } from "react-bootstrap";
 import ImageViewer from "react-simple-image-viewer";
+import ThumbUpOutlinedIcon from '@mui/icons-material/ThumbUpOutlined';
+import ThumbUpIcon from '@mui/icons-material/ThumbUp';
+import {BsBookmark, BsBookmarkFill} from'react-icons/bs'
+import moment from "moment"
+import { useDispatch, useSelector } from "react-redux";
+import { likePost, savePost } from "../../../actions/postActions";
 
 export default function NewsSection({ data }) {
   const [isLoaded, setLoaded] = useState(false);
@@ -13,6 +21,8 @@ export default function NewsSection({ data }) {
 
   const [currentImage, setCurrentImage] = useState(0);
   const [isViewerOpen, setIsViewerOpen] = useState(false);
+  const dispatch = useDispatch()
+  const {authUser: authData} = useSelector((state)=>state)
 
   useEffect(() => {
     data?.newsBody && findPara();
@@ -79,6 +89,20 @@ export default function NewsSection({ data }) {
     );
   };
 
+  const handleLike = () => {
+    dispatch(likePost({
+      userId:authData?.user?._id,
+      postId:data?._id
+    },data))
+  }
+
+  const handleSave = () => {
+    dispatch(savePost({
+      userId:authData?.user?._id,
+      postId:data?._id
+    },data))
+  }
+
   return (
     <>
       <div className="line" />
@@ -89,11 +113,46 @@ export default function NewsSection({ data }) {
           ) : (
             <>
               <Skeleton height={"40px"} />
-              <Skeleton height={"40px"} />
-              <Skeleton height={"40px"} width={"75%"} />
+              <Skeleton height={"40px"} width={"75%"}/>
             </>
           )}
-        </h1>
+        </h1> 
+
+
+
+      <CardHeader
+        className="p-0 mb-3"
+        avatar={
+          !data?.channelDetails ? (
+            <Skeleton animation="wave" variant="circular" width={40} height={40} />
+          ) : (
+            <Avatar
+              alt={data?.channelDetails[0].name}
+              src={`${BACKEND_URL}/uploads/propic-${data?.channelDetails[0]._id}`}
+            />
+          )
+        }
+
+        title={
+          !data?.channelDetails ? (
+            <Skeleton
+              animation="wave"
+              height={20}
+              width="30%"
+              style={{ marginBottom: 6 }}
+            />
+          ) : (
+            data?.channelDetails[0].name
+          )
+        }
+        subheader={
+          !data?.channelDetails ? (
+            <Skeleton animation="wave" height={20} width="60%" />
+          ) : (
+            `Updated: ${moment(data?.postDate).format('ddd MMM DD YYYY hh:mm:ss')}`
+          )
+        }
+      />
 
         {data?.images && (
           <img
@@ -112,6 +171,48 @@ export default function NewsSection({ data }) {
         {!isLoaded && (
           <Skeleton variant="rectangular" width={"100%"} height={"500px"} />
         )}
+
+      </div>
+
+      {/* ////////////////////////////////////////// */}
+
+      
+
+      <div className="w-100 d-flex justify-content-between mt-3">
+      
+      <div className="left-section d-flex">
+        
+        { authData?.user !== null &&
+          <>
+          <div className="likeBtn" onClick={()=>{
+            handleLike()
+          }}>
+            {
+                data?.isLiked ? <ThumbUpIcon className="pointer me-2" sx={{fontSize:"27px"}}/> :
+                <ThumbUpOutlinedIcon className="pointer me-2" sx={{fontSize:"27px"}}/>
+            }
+          </div>
+          </>
+           
+        }
+
+        <div className="mt-1"><b>{data?.likes}</b>&nbsp;likes</div>
+      </div>
+
+      <div className="left-section">
+        <div onClick={()=>{
+          handleSave()
+        }}>
+
+          {
+            data?.isSaved ? <BsBookmarkFill size={"22px"}/> :
+            <BsBookmark className="pointer" size={"22px"}/>
+          }
+
+        </div>
+
+      </div>
+
       </div>
 
       <div className="view-details">

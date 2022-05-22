@@ -17,10 +17,12 @@ import { useDispatch,useSelector } from "react-redux";
 import { createPost } from "../../../actions/postActions";
 import { useNavigate } from "react-router-dom";
 import { verifyUser } from "../../../actions/userActions";
+import { getCategory } from "../../../api";
 
 export default function Addnews() {
   const maxLength = 5000;
   const [category, setCat] = useState([]);
+  const [categories, setCategories] = useState([]);
   const [newsText, setNewsText] = useState({ newsHead: "", newsBody: "" });
   const [monetize, setMonetize] = useState(false);
   const [comment, setComment] = useState(false);
@@ -40,9 +42,20 @@ export default function Addnews() {
 
 
   useEffect( () => {
-    
+    fetchCategory()
   },[]);
-  
+
+  const fetchCategory = async () => {
+    let {data} = await getCategory()
+    setCategories([
+      ...data.categories.map((val)=>{
+        return val.name;
+      })
+    ])
+    
+  }
+
+
 
   function changeCat(cat) {
     let f = 0;
@@ -66,6 +79,7 @@ export default function Addnews() {
 
     setCat(newCat);
   }
+
 
   function addImage(img) {
     let reader = new FileReader();
@@ -110,6 +124,13 @@ export default function Addnews() {
 
     dispatch(createPost(data, setProgress, progress));
   }
+
+  useEffect(()=>{
+    console.log(progress);
+    if(progress===100){
+      navigate('/creator/posts')
+    }
+  },[progress])
 
   function isErrorHead() {
     if (newsText.newsHead === "" || newsText.newsHead[0] === " ") {
@@ -235,15 +256,7 @@ export default function Addnews() {
             <Card className={"mb-3 " + (catError ? "error" : "")}>
               <Card.Body className="ms-0">
                 <Autocomplete
-                  options={[
-                    "Sports",
-                    "Technology",
-                    "Politics",
-                    "International",
-                    "Educational",
-                    "Business",
-                    "Entertainment",
-                  ]}
+                  options={categories}
                   changeCat={changeCat}
                   clearError={() => {
                     setCatError(false);

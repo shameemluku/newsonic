@@ -60,7 +60,7 @@ export default function Tile() {
 
   return (
     <>
-      <Container style={{ marginTop: "100px" }}>
+      <Container style={{ marginTop: "110px" }}>
         <div className="navline mb-3 d-flex align-items-center ">
           <div style={{ overflow: "hidden" }}>
             {navNews.length > 0 ? (

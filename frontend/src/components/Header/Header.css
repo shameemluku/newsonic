@@ -2,6 +2,12 @@
     color: black !important;
     font-weight: 500;
     letter-spacing: -0.5px;
+    margin-bottom: 0 !important;
+    text-transform: uppercase;
+}
+
+.navbar-nav{
+    margin-left: 20px;
 }
 
 .profileLetter{
@@ -16,9 +22,10 @@
 }
 
 .profileText{
-    font-size: 18px;
+    font-size: 16px;
     font-weight: 500;
     margin-left: 10px;
+    margin-top: 2px;
 }
 
 
@@ -26,6 +33,7 @@
     background-color: rgb(255, 255, 255) !important;
     border: none !important;
     color: black !important;
+    margin-top: 8px;
 }
 
 .dropBtn:focus{
@@ -38,10 +46,45 @@
 }
 
 .console-btn{
-    background-color: blue;
+    background-color: rgb(10, 116, 40);
     display: flex;
     padding: 5px 0 5px 0;
     border-radius: 5px;
     justify-content: center;
     color: white;
 }
+
+.console-link{
+    text-decoration: none !important;
+}
+
+.header-next{
+    display: flex;
+    justify-content:center ;
+    cursor: pointer;
+}
+
+.header-next img{
+    border-radius: 5px;
+}
+
+.next-txt{
+    font-weight: 500;
+    font-size: 18px;
+    color: #0ba82d;
+}
+
+.nav-news-title{
+    font-size: 18px;
+    font-weight: 500;
+    font-style: italic;
+}
+
+@media only screen and (max-width: 1200px) {
+    .header-next img{
+        display: none;
+    }
+}
+
+
+

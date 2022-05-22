@@ -5,7 +5,10 @@ import {
     CREATE_CHANNEL_FAILED,
     GET_CHANNEL_DETAILS,
     REQUEST_CHANNEL_DETAILS,
-    CHANNEL_DETAILS_FAILURE
+    CHANNEL_DETAILS_FAILURE,
+    REQUEST_ADDED_POSTS,
+    ADDED_POSTS_SUCCESS,
+    ADDED_POSTS_FAILED
 } from '../constants/actionTypes'
 
 export const createChannel = (channelData,setProgress,navigate)=> async (dispatch) =>{
@@ -63,5 +66,30 @@ export const getChannelDetails = ()=> async (dispatch) =>{
         dispatch({
             type: CHANNEL_DETAILS_FAILURE,
         })
+    }
+}
+
+
+export const getCreatorPosts = (channelId,filter)=> async (dispatch) =>{
+    try {
+
+     
+        dispatch({
+            type:REQUEST_ADDED_POSTS,
+        })
+
+        let added_posts = await api.getAddedPosts(channelId,filter)
+        console.log(added_posts.data);
+
+        if(added_posts){
+            dispatch({
+                type:ADDED_POSTS_SUCCESS,
+                payload:added_posts.data
+            })
+        }
+
+
+    }catch(error){
+        
     }
 }

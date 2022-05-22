@@ -1,16 +1,37 @@
 import * as api from '../api';
-import { REQUEST_POST_DETAILS, FULL_POST_DETAILS, REQUEST_COMMENT } from '../constants/actionTypes';
+import { 
+    REQUEST_POST_DETAILS, 
+    FULL_POST_DETAILS, 
+    REQUEST_COMMENT, 
+    UPDATE_LIKE, 
+    UPDATE_SAVE,
+    REQUEST_DELETE_POSTS, 
+    DELETE_POSTS_SUCCESS, 
+    DELETE_POSTS_FAILED, 
+    COMMENT_SUCCESS,
+    REQUEST_DELETE_COMMENT,
+    DELETE_COMMENT_SUCCESS
+} from '../constants/actionTypes';
+import { generateSignature } from '../utility/fingerprint';
 
 export const getPosts = ()=> async (dispatch) =>{
 
     try {
 
-        let params = {limit:10,category:"all"}
-        const { data } = await api.fetchPosts(params);
+        const { data } = await api.fetchHomeData();
+        console.log(data);
         dispatch({
             type: 'FETCH_ALL',
-            payload: data
+            payload: data.posts
         });
+
+        delete data.posts
+        delete data.status
+
+        dispatch({
+            type:'SET_CATEGORY_POSTS',
+            payload:data
+        })
     
     } catch (error) {
         console.log(error.message)
@@ -33,12 +54,14 @@ export const createPost = (post,setProgress,progress)=> async (dispatch) =>{
 }
 
 
-export const getPostDetails = (postId)=> async (dispatch) =>{
+export const getPostDetails = (postId)=> async (dispatch,getState) =>{
     try {
+        const {authUser} = getState()
+
         dispatch({
             type:REQUEST_POST_DETAILS
         })
-        const {data} = await api.fetchPostDetails(postId)
+        const {data} = await api.fetchPostDetails(postId,await generateSignature())
         console.log(data.post_details);
 
         dispatch({
@@ -51,21 +74,141 @@ export const getPostDetails = (postId)=> async (dispatch) =>{
     }
 }
 
-export const postComment = (commentData)=> async (dispatch) =>{
+export const postComment = (commentData,setEmpty)=> async (dispatch,useState) =>{
     try {
-        // dispatch({
-        //     type:REQUEST_COMMENT
-        // })
+
+        const {selectedPost,authUser} = useState()
+
+
+        dispatch({
+            type:REQUEST_COMMENT
+        })
+
         console.log(commentData);
         const {data} = await api.postComment(commentData)
-        console.log(data.post_details);
+        console.log(data);
 
-        // dispatch({
-        //     type:FULL_POST_DETAILS,
-        //     payload:data.post_details
-        // })
+        if(data.status){
+
+            data.comment.username=authUser.user.name
+            selectedPost.details.comments.push(data.comment)
+            setEmpty("")
+            dispatch({
+                type:COMMENT_SUCCESS,
+                payload:selectedPost.details
+            })
+        }
 
     } catch (error) {
         console.log(error.message);
+    }
+}
+
+
+export const deleteComment = (comment)=> async (dispatch,useState) =>{
+    try {
+
+        const {selectedPost} = useState()
+        console.log(comment);
+
+        dispatch({
+            type:REQUEST_DELETE_COMMENT
+        })
+
+        const {data} = await api.deleteComment({
+            commentId:comment.commentId,
+            postId:selectedPost.details._id
+        })
+        console.log(data);
+
+        if(data.status){
+
+            selectedPost.details.comments.pop(comment)
+
+            dispatch({
+                type:DELETE_COMMENT_SUCCESS,
+                payload:selectedPost.details
+            })
+        }
+
+    } catch (error) {
+        console.log(error.message);
+    }
+}
+
+export const likePost = (likeData,current) => async (dispatch) =>{
+    try {
+        
+        current.likes = (current.isLiked) ? --current.likes : ++current.likes
+        current.isLiked = !current.isLiked;
+
+        dispatch({
+            type:UPDATE_LIKE,
+            payload:current
+        })
+        let {data} = await api.likePost(likeData);
+
+    } catch (error) {
+        
+        current.likes = (current.isLiked) ? --current.likes : ++current.likes
+        current.isLiked = !current.isLiked;
+        dispatch({
+            type:UPDATE_LIKE,
+            payload:current
+        })
+    }
+}
+
+export const savePost = (saveData,current) => async (dispatch) =>{
+    try {
+
+        console.log(current);
+        current.isSaved = !current.isSaved;
+        dispatch({
+            type:UPDATE_SAVE,
+            payload:current
+        })
+        let {data} = await api.savePost(saveData);
+
+    } catch (error) {
+        
+        current.isSaved = !current.isSaved;
+        dispatch({
+            type:UPDATE_SAVE,
+            payload:current
+        })
+    }
+}
+
+
+export const deletePost = (deleteIDs,channelId) => async (dispatch,getState) =>{
+    try {
+        const {addedPosts} = getState()
+        dispatch({
+            type:REQUEST_DELETE_POSTS
+        })
+
+        let {data} = await api.deletePost(deleteIDs,channelId) 
+        if(data.status){
+
+            let afterDelete = addedPosts.posts.filter((post)=>{
+                if(!deleteIDs.includes(post._id)) return post
+            })
+
+            dispatch({
+                type:DELETE_POSTS_SUCCESS,
+                payload:afterDelete
+            })
+        }else{
+            dispatch({
+                type:DELETE_POSTS_FAILED
+            })
+        }
+    
+    } catch (error) {
+        
+        dispatch({
+            type:DELETE_POSTS_FAILED
+        })
     }
 }

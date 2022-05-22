@@ -8,7 +8,9 @@ const {
     loginUser, 
     verifyUser,
     checkAvail ,
-    logoutUser
+    logoutUser,
+    getIp,
+    getFinger
 } = require('../controllers/usersController');
 
 
@@ -17,6 +19,8 @@ router.post('/signin', loginUser);
 router.get('/signout', logoutUser);
 router.get('/verify', isUserValid , verifyUser)
 router.post('/check-avail' , checkAvail)
+router.get('/get-ip' , getIp)
+router.get('/finger' , getFinger)
 
 
 

@@ -5,7 +5,6 @@ import ViewNews from "./Pages/ViewNews/ViewNews";
 import Addnews from "./Pages/Creator/Addnews/Addnews";
 import CreateChannel from "./Pages/Creator/CreateChannel/CreateChannel";
 import Cookies from "js-cookie";
-import "./App.css";
 
 import {
   BrowserRouter as Router,
@@ -18,54 +17,39 @@ import {
 import Creator from "./Pages/Creator/Creator";
 import { useSelector, useDispatch } from "react-redux";
 import { signOut, verifyUser } from "./actions/userActions";
-import axios from "axios";
+import Dashboard from "./Pages/Creator/Dashboard/Dashboard";
+import Posts from "./Pages/Creator/Posts/Posts";
+import { getUserIp } from "./api";
+import {generateSignature} from "./utility/fingerprint"
+import CategoryPage from "./Pages/Category/CategoryPage";
 
 function App() {
-  const dispatch = useDispatch();
-  const authData = useSelector((state) => state.authUser);
 
-  // useEffect(()=>{
-  //   // console.log("from app");
-  //   // let user = localStorage.getItem("userInfo")
-  //   if(authData){
-  //     // dispatch(verifyUser());
-  //   }
-  // },[dispatch])
+  const user = useSelector((state) => state.authUser.user);
+  const {showSnackbar} = useSelector((state) => state);
+  const { enqueueSnackbar } = useSnackbar()
+
+  useEffect(()=>{
+    // enqueueSnackbar("Welcome", { variant: "error" })
+    // generateSignature()
+  },[])
 
   return (
-    <SnackbarProvider maxSnack={3}>
+    
       <Router>
         <Routes>
           <Route exact path="/" element={<Homepage />} />
           <Route exact path="/post/:id" element={<ViewNews />} />
+          <Route exact path="category/:category" element={<CategoryPage/>} />
 
           <Route exact path="/creator">
-            <Route
-              exact
-              path="register"
-              element={
-                authData.user !== null ? (
-                  <CreateChannel />
-                ) : (
-                  <Homepage response={"Login first"} />
-                )
-              }
-            />
-            <Route
-              exact
-              path="add"
-              element={
-                authData.user !== null ? (
-                  <Creator children={<Addnews />} />
-                ) : (
-                  <Homepage response={"Login first"} />
-                )
-              }
-            />
+            <Route path="register" element={ user ? <CreateChannel /> : <Homepage response={true} />}/>
+            <Route path="" element={ user ? <Creator children={<Dashboard/>} active='analytics'/> : <Homepage response={true} />}/>
+            <Route path="posts" element={ user ? <Creator children={<Posts/>} active='posts'/> : <Homepage response={true} />}/>
+            <Route path="add" element={ user ? <Creator children={<Addnews />} /> : <Homepage response={true} />}/>
           </Route>
         </Routes>
       </Router>
-    </SnackbarProvider>
   );
 }
 

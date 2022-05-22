@@ -34,9 +34,9 @@ app.use('/api/uploads/:key', (req,res)=>{
 
     getFileStream(req.params.key)
     .on('error', (err) => {
-        // res.status(404)
-        // .json({message:"Resourse not found"})     
-        console.log("Resource not find");
+        console.log("Resource not find "+req.params.key);
+        return res.status(404)
+        .json({message:"Resourse not found"})     
     })
     .pipe(res)
 });

@@ -1,14 +1,18 @@
 import { Skeleton } from '@mui/material';
 import React, { useEffect, useState } from 'react'
+import { useDispatch } from 'react-redux';
+import { useNavigate } from 'react-router-dom';
+import { getPostDetails } from '../../../../actions/postActions';
+import { SET_POST_DETAILS } from '../../../../constants/actionTypes';
 import { BACKEND_URL } from '../../../../constants/url';
 import thumb from "../../../../Images/gray-thumb.jpg"
 
-export default function LatestCard({post,width}) {
+export default function LatestCard({post,width,height,loadFull,category}) {
 
   const [isLoaded, setLoaded] = useState(false)
+  const dispatch = useDispatch()
+  const navigate = useNavigate()
 
-  useEffect(()=>{
-  },[])
 
   return (
     
@@ -16,13 +20,25 @@ export default function LatestCard({post,width}) {
     {
       post ? (
         <>
-        <div className='pointer'>
+        <div className='pointer'
+        onClick={()=>{
+          navigate(`/post/${post._id}`)
+          if(loadFull){
+            window.scrollTo(0, 0)
+            dispatch(getPostDetails(post._id))
+          }
+          dispatch({
+            type:SET_POST_DETAILS,
+            payload:post
+          })
+        }}
+        >
           
 
             {!isLoaded && <img
               className='latest-Img'
               src={thumb}
-              height="160px"
+              height={height}
               alt=""
               width={width}
             ></img>}
@@ -38,7 +54,21 @@ export default function LatestCard({post,width}) {
 
 
           <div className='latest-title' style={{width}}>{(post?.newsHead.length > 100) ? post?.newsHead.substring(0,100) : post?.newsHead}</div>
-          <div className='latest-cat mt-2 mb-4'>Politics | Sports</div>
+          <div className='latest-cat mt-2 mb-4'>
+              {post?.category.map((val, i) => {
+                if (i !== post?.category.length - 1){
+
+                  if(category===val) return (<><span className='bolded-cat'>{val}</span> | </>)
+                  else return val + " | ";
+
+                }else{
+                  
+                  if(category===val) return (<span className='bolded-cat'>{val}</span> )
+                  else return val;
+                }
+              })}
+          </div>
+          
           <div className='latest-line'></div>
         </div>
 

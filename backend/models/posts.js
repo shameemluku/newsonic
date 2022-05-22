@@ -6,20 +6,28 @@ const postSchema = mongoose.Schema({
     category: [String],
     isComment:{type:Boolean, default:false},
     isMonetize:{type:Boolean, default:false},
-    channelId:{type: mongoose.Schema.ObjectId, ref: 'channelId'},
+    channelId:{type: mongoose.Schema.ObjectId, ref: 'channels'},
     images: [String],
     postDate:{ type: String, required: true },
     comments:[
         {
-          userId: String,
-          userId: String,
-          body: Boolean,
+          userId: {type: mongoose.Schema.ObjectId, ref: 'users'},
+          commentId: {type: mongoose.Schema.ObjectId},
+          text: String,
+          date:Date,
           likes: [Number]
         }
-      ]
+      ],
+    likes:[{type: mongoose.Schema.ObjectId, ref: 'users'}],
+    status:{type: String, default:"PUBLIC"},
+    seenBy:[
+      {
+        idType:String,
+        userId:String
+      }
+    ]
+    
 })
 
 const Posts = mongoose.model("posts", postSchema);
-
-
 module.exports = Posts;

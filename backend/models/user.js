@@ -8,7 +8,8 @@ const userSchema = mongoose.Schema({
     phone: {type:Number,default:null},
     isBlocked:{type:Boolean, default:false},
     isCreator:{type:Boolean, default:false},
-    channelName:{type:String,default:null}
+    channelName:{type:String,default:null},
+    saved:[{type: mongoose.Schema.ObjectId, ref: 'posts'}]
 })
 
 const User = mongoose.model("users", userSchema);

@@ -1,17 +1,24 @@
 .tech-card{
     height: 250px;
     border-radius: 10px;
+    background-repeat:no-repeat;
+    background-position:center !important;
+    background-size: 130% 250px !important;
+    position: relative;
+    overflow:hidden;
 }
+
 
 .tech-title-bg{
     width:100%;
-    height:100px;
+    height:150px;
     background-image: linear-gradient(to bottom, rgba(255,0,0,0), rgb(0, 0, 0));
     position: absolute;
     bottom: 0;
     right: 0;
-    padding-top: 20px;
+    padding-top: 50px;
     padding-left: 20px;
+    padding-right: 20px;
 }
 
 .tech-title{
@@ -19,4 +26,5 @@
     color: white;
     font-weight: 500;
     line-height: 15px;
+    margin-bottom: 20px;
 }

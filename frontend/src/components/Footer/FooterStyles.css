@@ -1,0 +1,13 @@
+#footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    padding:10px;
+    background-color:#17a2b8;
+    text-align:center;
+    color:white;
+}
+
+#footer ul {
+    margin-bottom: 0
+}

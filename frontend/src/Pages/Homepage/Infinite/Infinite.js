@@ -3,10 +3,13 @@ import { Col, Container, Row } from "react-bootstrap";
 import InfiniteScroll from "react-infinite-scroll-component";
 import LatestCard from "../Latest/LatestCard/LatestCard";
 import loadingAnim from "../../../Images/loading.gif"
+import { useSelector } from "react-redux";
+import { fetchPosts } from "../../../api";
 
 export default function Infinite() {
-  const [items, setItem] = useState([1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1]);
+  const [items, setItem] = useState([]);
   const [hasMore, setHasmore] = useState(true);
+  const {posts} = useSelector((state)=>state)
   // const style = {
   //   height: 300,
   //   border: "1px solid green",
@@ -19,18 +22,30 @@ export default function Infinite() {
     padding: 8,
   };
 
+  useEffect(()=>{
+    if(posts!==null){
+      setItem(posts.filter((val,i)=>{
+        if(i>10) return val
+      }))
+    }
+  },[posts])
+
   
 
-  const fetchMoreData = () => {
-    // a fake async api call like which sends
-    // 20 more records in 1.5 secs
-    setTimeout(() => {
-      setItem([...items, 1, 1, 1, 1, 1]);
-    }, 1500);
+  const fetchMoreData = async () => {
+
+    let {data} = await fetchPosts(items.length+3,items.length,"all")
+
+
+    if(data.status){
+      setItem([...items,...data.posts])
+    }else{
+      setHasmore(false)
+    }
   };
 
   useEffect(() => {
-    if (items.length > 30) {
+    if (items.length > 50) {
       setHasmore(false);
     } else {
       
@@ -53,9 +68,8 @@ export default function Infinite() {
       endMessage={<p className="bg-dark">This is the end</p>}
     >
       <Row className="p-0 m-0">
-        {items.map((i, index) =>{
+        {items.map((post, index) =>{
 
-          console.log(index);
           if(index===13){
             
             return <>
@@ -71,7 +85,7 @@ export default function Infinite() {
           return <>
           <Col sm={12} md={4} className="p-0">
             <div style={style} key={index}>
-              <LatestCard post={null} width="100%"/>
+              <LatestCard post={post} width="100%" height="230px"/>
             </div>
          
           </Col>

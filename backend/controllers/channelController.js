@@ -1,5 +1,6 @@
 const Channel = require('../models/channels')
 const User = require('../models/user')
+const Posts = require('../models/posts')
 const ObjectId = require('mongodb').ObjectID;
 const { uploadFile, uploadBaseFile } = require('../config/s3')
 const mime = require('mime-types')
@@ -92,8 +93,34 @@ const createChannel = async (req,res) => {
 const getChannelDetails = async (req,res) => {
     let userId = req.body.decodeId;
     let details = await Channel.findOne({userId:ObjectId(userId)})
-    console.log(details);
     res.status(200).json({channelDetails:details})
+}
+
+const getAddedPosts = async (req,res) => {
+
+    const {channel:channelId, filter} = req.query
+    let added_posts;
+
+    if(filter==="ALL"){
+        added_posts = await Posts.find({channelId:ObjectId(channelId)}).sort({_id:-1})
+    }else{
+
+        added_posts = await Posts.aggregate([
+            {
+                $match:{
+                    channelId:ObjectId(channelId),
+                    status:filter
+                }
+            },
+            {
+                $sort:{_id:-1}
+            }
+        ])
+    }
+
+
+    res.status(200).json({posts:added_posts})
+
 }
 
 
@@ -101,5 +128,6 @@ const getChannelDetails = async (req,res) => {
 
 module.exports = {
     createChannel,
-    getChannelDetails
+    getChannelDetails,
+    getAddedPosts
 }

@@ -1,5 +1,5 @@
 .main-section{
-    margin-top: 100px;
+    margin-top: 90px;
 }
 
 /* News Section */
@@ -75,8 +75,8 @@
 }
 
 .comment-item{
-    margin-top: 30px;
-    margin-bottom: 30px;
+    margin-top: 10px;
+    margin-bottom: 10px;
 }
 
 .comment-dp {
@@ -102,13 +102,19 @@
 }
 
 .comment-type{
+    height: 55px;
     padding: 5px;
-    border: 1px solid rgb(91, 91, 91);
+    border: 1px solid rgb(209, 209, 209);
     border-radius: 40px;
 }
 .comment-type input{
     border: none;
     margin-left: 10px;
+}
+
+.loading-cat-submit{
+    margin-right: 10px !important;
+    margin-top: 5px !important;
 }
 
 
@@ -162,10 +168,74 @@
     color: #11633e;
 }
 
-.send-btn{
-    color: #11633e;
+
+
+.comment-btn{
+    padding-top: 10px !important;
+    padding-bottom: 10px !important;
+    padding-right: 22px !important;
+    border-radius: 30px !important;
+    box-shadow: none !important;
+    font-size: 13px !important;
+    font-weight: 400 !important;
+}
+
+
+#progressBarContainer {
+    position: fixed;
+    margin-top: 94px;
+    z-index: 10;
+    background: rgba(255,255,255,0.05);
+    width: 100%;
+    top: 0;
+    left: 0;
+}
+  
+  
+#progressBar {
+    background: linear-gradient(to left, rgb(45, 146, 77), rgb(184, 218, 63));
+    transform-origin: top left;
+    transform: scale(0,0);
+    opacity: 1;
+}
+
+#progressBarContainer,
+#progressBar {
+    height: 7px;
+}
+
+.channel-detail .channel-name{
+    font-weight: 500;
+    margin-left: 10px;
+    margin-right: 10px;
+    margin-top: 5px;
+}
+
+.channel-detail .post-date{
+    margin-top: 5px;
+}
+
+.single-comment{
+    border: 2px solid #e0f4cb;
+    padding: 20px;
+    border-radius: 20px
+}
+
+.self-comment{
+    background-color: #f3f3f3;
+    border: none;
     cursor: pointer;
 }
+
+.self-comment:hover .delete-comment-btn{
+    color: #bb3131;
+    border: none;
+}
+
+.delete-comment-btn{
+    color: #b3b8b6;
+}
+
 
 @media only screen and (max-width: 768px) {
     .view-details{
@@ -177,6 +247,9 @@
     .card-body{
         margin-left: 10px;
     }
+    .comment-card-body{
+        padding: 0;
+    }
     .desk-view{
         display: none !important;
     }
@@ -186,5 +259,19 @@
     .comment-login{
         padding-top: 15px;
         padding-bottom: 15px;
+    }
+
+    .comment-container{
+        padding: 0 !important;
+    }
+    .comment-footer{
+        padding: 13px !important;
+    }
+}
+
+
+@media only screen and (max-width: 992px) {
+    #progressBarContainer {
+        margin-top: 88px;
     }
 }

@@ -1,6 +1,10 @@
 .latest-card{
-    border-bottom: 2px solid black;
+    border-bottom: 2px solid rgb(60, 60, 60);
     margin-bottom: 40px;
+}
+
+.line-6 , .line-7{
+    border-bottom: none;
 }
 
 .w-46{
@@ -32,9 +36,18 @@
     transition: all 0.2s ease-in-out;
 }
 
+.bolded-cat{
+    background-color: rgb(91, 91, 91);
+    color: azure;
+    padding-left: 10px;
+    padding-right: 10px;
+}
+
 @media only screen and (max-width: 768px) {
     .latest-card{
         width: 100% !important;
         margin-bottom: 10px;
+        border-bottom: none !important;
     }
+
 }

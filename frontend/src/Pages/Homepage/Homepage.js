@@ -22,14 +22,14 @@ export default function Homepage({response}) {
 
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
-  const {loginModal} = useSelector((state) => state);
+  const {loginModal,catPosts} = useSelector((state) => state);
 
   useEffect(() => {
     dispatch(getPosts());
     dispatch(verifyUser())
     if(response){
       dispatch({type:"SHOW_MODAL", payload:true})
-      enqueueSnackbar(response, { variant: "error" })
+      enqueueSnackbar("Please Login first", { variant: "error" })
     }
   }, []);
 
@@ -55,15 +55,15 @@ export default function Homepage({response}) {
         <Container>
           <Row>
             <Col xs={12} md={3}>
-              <Educational />
+              <Educational data={catPosts?.education}/>
             </Col>
 
             <Col xs={12} md={6}>
-              <Technology />
+              <Technology data={catPosts?.technology} />
             </Col>
 
             <Col xs={12} md={3}>
-              <Business />
+              <Business data={catPosts?.business} head={"BUSINESS NEWS"} limit={5}/>
             </Col>
           </Row>
         </Container>

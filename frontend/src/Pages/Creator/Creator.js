@@ -10,7 +10,7 @@ import "../../components/Admin/Admin.css";
 import { verifyUser } from "../../actions/userActions";
 
 
-export default function Creator({ children }) {
+export default function Creator({ children, active }) {
 
   const { authUser: authData, channelDetails } = useSelector((state) => state);
   const dispatch = useDispatch();
@@ -37,10 +37,10 @@ export default function Creator({ children }) {
   return (
     <>
 
-    <style>{"body {background-color:#F5F7FB;}"}</style>
+    <style>{"body {background-color:#edf0f5;}"}</style>
       {channelDetails.channel?.isApproved ? (
         <>
-          <Sidenav />
+          <Sidenav active={active} />
           <div className="main-content">
             <Container>
               <Header />

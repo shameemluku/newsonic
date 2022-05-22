@@ -18,14 +18,14 @@ export default function Latest() {
 
         {posts.length!==0 ?
         (
-          posts.slice(0,-2).map((val,i)=>{
-            return <Col key={i} className='p-0 latest-card w-46' xs={12}><LatestCard post={val} width="100%"/></Col>
+          posts.slice(0,8).map((val,i)=>{
+            return <Col key={i} className={`p-0 latest-card w-46 line-${i}`} xs={12}><LatestCard post={val} width="100%" height="160px"/></Col>
           })
         )
         :
         (
           [1,1,1,1,1,1].map((val,i)=>{
-            return <Col key={i} className='p-0 latest-card w-46' xs={12}><LatestCard post={null} width="100%"/></Col>
+            return <Col key={i} className='p-0 latest-card w-46' xs={12}><LatestCard post={null} width="100%" height="160px"/></Col>
           })
         )
         }

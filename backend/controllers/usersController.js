@@ -2,6 +2,8 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken')
 const User = require('../models/user')
 const ObjectId = require('mongodb').ObjectID;
+const axios = require('axios')
+
 
 // @desc  Creating a User
 // @rout  POST /api/register
@@ -55,6 +57,7 @@ const registerUser = async (req,res) => {
     } catch (error) {
         console.log(error);
     }
+    
 }
 
 
@@ -120,6 +123,41 @@ const checkAvail =async (req,res) => {
 
 }
 
+const getFinger =async (req,res) => {
+
+
+    console.log("HERE");
+
+    const fpPromise = import('https://openfpcdn.io/fingerprintjs/v3')
+    .then(FingerprintJS => FingerprintJS.load())
+
+    // fpPromise
+    // .then(fp => fp.get())
+    // .then(result => {
+        
+    //   const visitorId = result.visitorId
+    //   console.log(visitorId)
+      
+    // })
+
+    FingerprintJS.load()
+        .then((fp) => fp.get())
+        .then((result) => {
+            const visitorId = result.visitorId
+            console.log(visitorId)
+        });
+
+
+}
+
+const getIp =async (req,res) => {
+
+    res.json({
+        ip:(await axios.get('https://geolocation-db.com/json/')).data?.IPv4
+    })
+
+}
+
 
 
 module.exports = {
@@ -127,5 +165,7 @@ module.exports = {
     loginUser,
     verifyUser,
     checkAvail,
-    logoutUser
+    logoutUser,
+    getIp,
+    getFinger
 }
