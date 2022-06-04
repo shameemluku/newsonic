@@ -24,6 +24,7 @@ import RefreshIcon from '@mui/icons-material/Refresh';
 import { visuallyHidden } from '@mui/utils';
 import { ToggleButtonGroup, ToggleButton, Button, Skeleton, TextField, OutlinedInput, CircularProgress } from '@mui/material';
 import { AiOutlineArrowRight } from "react-icons/ai"
+import { BiLike } from "react-icons/bi";
 import { BACKEND_URL } from '../../../constants/url';
 import {GrView} from 'react-icons/gr'
 import moment from 'moment';
@@ -35,7 +36,8 @@ import DialogContent from '@mui/material/DialogContent';
 import DialogContentText from '@mui/material/DialogContentText';
 import DialogTitle from '@mui/material/DialogTitle';
 import { deletePost } from '../../../actions/postActions';
-
+import { Link } from 'react-router-dom'
+import { SET_SELECTED_POST } from '../../../constants/actionTypes';
 
 
 function descendingComparator(a, b, orderBy) {
@@ -100,10 +102,10 @@ const headCells = [
     label: 'Status',
   },
   {
-    id: 'actions',
+    id: 'likes',
     numeric: true,
     disablePadding: false,
-    label: 'Actions',
+    label: 'Likes',
   },
 ];
 
@@ -246,8 +248,7 @@ const EnhancedTableToolbar = (props) => {
         <Tooltip title="Refresh">
           <IconButton>
             <RefreshIcon onClick={()=>{
-              console.log(channelDetails?.channel?._id);
-              dispatch(getCreatorPosts(channelDetails?.channel?._id,"ALL"))
+              dispatch(getCreatorPosts(channelDetails?.channel?._id,"ALL",10))
             }}/>
           </IconButton>
         </Tooltip>
@@ -307,6 +308,8 @@ export default function TableComp({data,loading,isDeleting}) {
   const [rowsPerPage, setRowsPerPage] = React.useState(5);
   const [showLoadMore, setLoadMore] = React.useState(false)
   const [rows,setRows] = React.useState([])
+  const {channelDetails} = useSelector((state)=>state)
+  const dispatch = useDispatch();
 
   const handleRequestSort = (event, property) => {
     const isAsc = orderBy === property && order === 'asc';
@@ -357,17 +360,36 @@ export default function TableComp({data,loading,isDeleting}) {
     setDense(event.target.checked);
   };
 
+  // React.useEffect(()=>{
+    
+  //   let countRow = Math.max(0, (1 + page) * rowsPerPage - rows.length);
+  //   console.log(countRow);
+  //   if(page === countRow && countRow!==0 || rowsPerPage>=rows.length ){
+  //     alert("Hi")
+  //   } else setLoadMore(false)
+  // },[page,rowsPerPage])
+
   React.useEffect(()=>{
-    let countRow = Math.max(0, (1 + page) * rowsPerPage - rows.length);
-    if(page === countRow && countRow!==0 || rowsPerPage>=rows.length ){
+    let totalPages = Math.ceil(rows.length/rowsPerPage);
+    if(page+1 === totalPages){
       setLoadMore(true)
-    } else setLoadMore(false)
+    }else{
+      setLoadMore(false)
+    }
   },[page,rowsPerPage])
 
 
   React.useEffect(()=>{
+    // if(rows.length === data.length){
+    //   alert("Nothing to load more")
+    // }
     setRows(data)
   },[data])
+
+
+  const handleLoadMore = () => {
+    dispatch(getCreatorPosts(channelDetails?.channel?._id,"ALL",rows.length+10))
+  }
 
 
   const isSelected = (name) => selected.indexOf(name) !== -1;
@@ -475,13 +497,19 @@ export default function TableComp({data,loading,isDeleting}) {
                         scope="row"
                         padding="none"
                         width={400}
+                        onClick={()=>{
+                          dispatch({
+                            type:SET_SELECTED_POST,
+                            payload:row
+                           })
+                        }}
                       >
-                        {row?.newsHead}
+                       <Link to={`/creator/post/${row?._id}`}> {row?.newsHead} </Link>
                       </TableCell>
                       <TableCell align="right">{moment(row?.postDate).format('ddd MMM DD YYYY hh:mm:ss')}</TableCell>
                       <TableCell align="right"><GrView className='me-2'/>{row?.seenBy.length}</TableCell>
                       <TableCell align="right"><span className={`status-label ${row?.status}`}>{row.status}</span></TableCell>
-                      <TableCell align="right">{row.protein}</TableCell>
+                      <TableCell align="right"><BiLike className="me-2"/> {row?.likes.length}</TableCell>
                     </TableRow>
                   );
                 })}
@@ -511,7 +539,7 @@ export default function TableComp({data,loading,isDeleting}) {
           onRowsPerPageChange={handleChangeRowsPerPage}
         />
         {showLoadMore && <div className='content-center'>
-          <Button variant="text w-100 py-3">Load more <AiOutlineArrowRight className='ms-2'/></Button>
+          <Button variant="text w-100 py-3" onClick={handleLoadMore}>Load more <AiOutlineArrowRight className='ms-2'/></Button>
         </div>}
       </Paper>
       {/* <FormControlLabel

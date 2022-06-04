@@ -1,10 +1,11 @@
 const mongoose = require('mongoose');
 
 const postSchema = mongoose.Schema({
+  
     newsHead: { type: String, required: true },
     newsBody: { type: String , required:true },
     category: [String],
-    isComment:{type:Boolean, default:false},
+    isComment:{type:Boolean, default:true},
     isMonetize:{type:Boolean, default:false},
     channelId:{type: mongoose.Schema.ObjectId, ref: 'channels'},
     images: [String],
@@ -25,7 +26,8 @@ const postSchema = mongoose.Schema({
         idType:String,
         userId:String
       }
-    ]
+    ],
+    amount:{type:Number}
     
 })
 

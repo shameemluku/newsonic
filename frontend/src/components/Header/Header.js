@@ -13,10 +13,11 @@ import { FaFacebook } from "react-icons/fa";
 import { useSelector, useDispatch } from "react-redux";
 import { signOut } from "../../actions/userActions";
 import { BACKEND_URL } from "../../constants/url";
-import { getCategory } from "../../api";
+import { getNavlinks } from "../../api";
 import { Avatar } from "@mui/material";
+import MonetizationOnIcon from '@mui/icons-material/MonetizationOn';
 
-export default function Header({next}) {
+export default function Header({next,hide}) {
   const [modalShow, setModalShow] = React.useState(false);
   const {authUser:authData, loginModal, posts} = useSelector((state) => state);
   const [user, setUser] = useState(null);
@@ -35,7 +36,7 @@ export default function Header({next}) {
       setUser(null)
     }
 
-    (async () => setCategory([...(await getCategory()).data.categories]))()
+    (async () => setCategory([...(await getNavlinks()).data.categories]))()
 
 
   }, [authData]);
@@ -79,18 +80,24 @@ export default function Header({next}) {
         style={{ backgroundColor: "white" }}
       >
         <Container className="mt-3 mb-3">
-          <Navbar.Brand href="/">
+          <Navbar.Brand>
+            <Link to="/">
             <img src={logo} height="26px" alt="logo"></img>
+            </Link>
           </Navbar.Brand>
           <Navbar.Toggle aria-controls="responsive-navbar-nav" />
           <Navbar.Collapse id="responsive-navbar-nav">
             { !showNext ?
-            <Nav className="me-auto mt-1">
+            <>
+            {
+              !hide?
+              <Nav className="me-auto mt-1">
            
               {
                 category !==null &&
                 category.map((val,i)=>{
-                  if(i<8)return (<Nav.Link href={`/category/${val.name}`} className="navlinks">
+                  if(i<8)return (
+                  <Nav.Link href={`/category/${val.name}`} className="navlinks">
                     {val.name}
                   </Nav.Link>)
                 })
@@ -98,6 +105,9 @@ export default function Header({next}) {
               
 
             </Nav>
+            : <Nav className="me-auto mt-1"></Nav>}
+            
+            </>
             :
             <div className="w-100 header-next" onClick={
               ()=>{
@@ -172,7 +182,10 @@ export default function Header({next}) {
                     <Dropdown.Toggle id="dropdown-autoclose-true" className="dropBtn"></Dropdown.Toggle>
 
                     <Dropdown.Menu>
-                      <Dropdown.Item href="#"><IoSettingsOutline className="me-2"/>Settings</Dropdown.Item>
+                      {/* <Dropdown.Item href="#"><IoSettingsOutline className="me-2"/>Settings</Dropdown.Item> */}
+                      <Dropdown.Item href="#">
+                        <Link to="/sponsor/" className="console-link"><div className="sponsor" >Be a Sponsor</div></Link>
+                      </Dropdown.Item>
                       <Dropdown.Item href="#">
                         <Link to="/creator/" className="console-link"><div className="console-btn">Go to Console</div></Link>
                       </Dropdown.Item>

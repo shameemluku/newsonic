@@ -1,0 +1,57 @@
+.sponsor-main-content{
+    margin-top: 80px;
+}
+
+.spon-col-left{
+    display: flex;
+    justify-content: center !important;
+    align-items: center;
+}
+
+.spon-heading{
+    font-size: 70px;
+    width: 90% !important;
+    font-weight: 500;
+    line-height:70px;
+}
+
+.spon-home-btn{
+    width: 200px;
+    margin-top: 30px !important;
+    outline: none;
+    box-shadow: none !important;
+    height: 60px !important;
+    background-color: rgb(45, 202, 17) !important;
+    border-radius: 30px !important;
+}
+
+.spon-home-desc{
+    width: 80%;
+    margin-top: 26px;
+    color: gray;
+}
+
+@media only screen and (max-width: 992px) {
+    .spon-heading{
+        font-size: 50px;
+        width: 100% !important;
+        line-height:50px;
+        margin-top: 80px !important;
+    }
+
+    .left-holder{
+        margin-left: 20px !important;
+    }
+
+    .spon-col-left{
+        background-size:150px !important;
+        background-repeat: no-repeat;
+        background-position-x: 190px !important;
+        background-position-y: 20px !important;
+    }
+    .handshake-img{
+        display: none;
+    }
+}
+
+

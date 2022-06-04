@@ -25,6 +25,7 @@ export default function Homepage({response}) {
   const {loginModal,catPosts} = useSelector((state) => state);
 
   useEffect(() => {
+    
     dispatch(getPosts());
     dispatch(verifyUser())
     if(response){

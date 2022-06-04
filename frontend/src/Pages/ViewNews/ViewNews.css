@@ -31,6 +31,18 @@
     margin-bottom: 0px;
 }
 
+.post-action-sec{
+    background-color: #e8e8e8;
+    height: 70px;
+    padding-left: 20px;
+    padding-right: 20px;
+    align-items: center;
+}
+
+.left-section{
+    align-items: center;
+}
+
 .firstPre:first-letter {
     font-size: 40px;
 }
@@ -273,5 +285,12 @@
 @media only screen and (max-width: 992px) {
     #progressBarContainer {
         margin-top: 88px;
+    }
+}
+
+
+@media only screen and (max-width: 600px) {
+    .news-views {
+        display: none!important;
     }
 }

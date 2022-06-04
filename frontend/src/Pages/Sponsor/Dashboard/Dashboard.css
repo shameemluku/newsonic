@@ -1,0 +1,234 @@
+
+.ad-toggle-status .MuiButtonBase-root{
+    padding: 5px!important;
+}
+
+.ad-cards{
+    box-shadow: none !important;
+    box-shadow: rgba(9, 30, 66, 0.25) 0px 1px 1px, rgba(9, 30, 66, 0.13) 0px 0px 1px 1px !important;
+    border-radius: 20px !important;
+}
+
+.ad-cards .titles{
+    font-weight: 500;
+    color: rgb(142, 142, 142);
+    margin-bottom: 0px !important;
+}
+
+.ad-cards-content{
+    padding: 25px 25px 0 25px !important;
+}
+
+.create-ad-btn{
+    padding: 12px !important;
+    border-radius: 30px !important;
+    box-shadow: none !important;
+    background-color: rgb(132, 185, 52) !important;
+    margin-top: 15px !important;
+}
+
+.home-ad-thumbail{
+    object-fit: contain;
+    background-color: rgb(56, 56, 56);
+    border-radius: 10px;
+}
+
+.sponsor-dash-left{
+    box-shadow: rgba(0, 0, 0, 0.02) 0px 1px 3px 0px, rgba(27, 31, 35, 0.15) 0px 0px 0px 1px !important;
+}
+
+.sponsor-status-span{
+    padding: 5px 12px 5px 12px;
+    border-radius: 20px;
+    color: white;
+    font-size: 12px;
+}
+
+
+.ad-status-active{
+    background-color: rgb(104, 155, 27);
+}
+
+.ad-status-ended{
+    background-color: rgb(194, 36, 36);
+}
+
+.ad-status-pending{
+    background-color: rgb(206, 173, 54);
+}
+
+.ad-details-btn{
+    box-shadow: none !important;
+    padding: 0px 15px 0px 15px !important;
+    background-color: rgb(255, 255, 255) !important;
+    border: 2px solid green !important;
+    border-radius: 20px !important;
+    color: green !important;
+    margin-top: -20px !important;
+    text-transform: none !important;
+    margin-bottom: 20px !important;
+}
+
+.ad-analytics-col{
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px;
+    font-size: 30px;
+    margin-bottom: 10px;
+}
+
+.ad-analytics-total{
+    background-color: rgb(43, 153, 43) !important;
+    box-shadow: none !important;
+    color: white !important;
+}
+
+.ad-details-main{
+    box-shadow: rgba(9, 30, 66, 0.25) 0px 1px 1px, rgba(9, 30, 66, 0.13) 0px 0px 1px 1px !important;
+    border-radius: 20px !important;
+}
+
+.ad-details-main .details-left-content{
+    border-right: 1px solid rgb(211, 211, 211);
+    padding-top: 20px;
+    font-weight: 500;
+}
+
+.details-right-content{
+    padding-top: 20px;
+    padding-left: 40px;
+    padding-bottom: 20px !important;
+    font-weight: 500;
+}
+
+.ad-details-main .head{
+    border-bottom: 1px solid rgb(211, 211, 211);
+    padding-top: 20px;
+}
+
+.ad-details-main .titles{
+    color: rgb(142, 142, 142);
+    margin-bottom: 0px !important;
+    font-weight: 300 !important;
+}
+
+.banner-row{
+    border-top: 1px solid rgb(211, 211, 211);
+    padding-bottom:20px ;
+}
+
+.ad-details-main .banner-thumbnail{
+    width: 100%;
+    height: 250px;
+    object-fit: contain;
+    background-color: rgb(54, 54, 54);
+    border-radius: 10px;
+}
+
+.fab {
+    margin: 0px !important;
+    top: auto !important;
+    right: auto !important;
+    bottom: 20px !important;
+    left: 20px !important;
+    position: fixed !important;
+    background-color: rgb(51, 154, 30) !important;
+    color: white !important;
+    text-transform: none!important; 
+    padding-right: 20px !important;
+    border-radius: 20px !important;
+    opacity: 0.7 !important;
+}
+
+
+.dropBtn-ads{
+    margin-top: -8px !important;
+}
+
+.dropmenu-ad{
+    margin-left: 55px!important;
+}
+
+.end-btn{
+    color: red;
+}
+
+.next-icon{
+    display: none;
+    position: absolute;
+    left: auto;
+    right: 10px;
+}
+.amount-pay-btn:hover{
+    background-color: rgb(241, 241, 241);
+    border-radius: 8px;
+    transition: all 0.2s ease-in-out;
+}
+.amount-pay-btn:hover > .next-icon{
+    display: block;
+}
+
+/*-------- BILLING PAGE ---------*/
+
+.billing-left-card{
+    box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
+    padding: 25px !important;
+    border-radius: 10px;
+}
+
+.billing-left-card .heading{
+    font-size: 25px;
+    color: rgb(180, 180, 180);
+}
+
+.billing-right-card{
+    box-shadow: rgba(9, 30, 66, 0.25) 0px 4px 8px -2px, rgba(9, 30, 66, 0.08) 0px 0px 0px 1px;
+    padding: 20px !important;
+    border-radius: 10px;
+}
+.total-list{
+    margin-top: 20px;
+    padding-top: 20px !important;
+    border-top: 1.5px solid rgb(192, 192, 192);
+}
+.billing-left-card .totalAmount{
+    font-size: 25px;
+    font-weight: 500;
+    color: green;
+}
+
+.billing-right-card .pay-btn{
+    width: 100%;
+    background-color: green !important;
+    color: white;
+    border-radius: 10px;
+    height: 50px;
+}
+
+.billing-right-card .css-1e6y48t-MuiButtonBase-root-MuiButton-root.Mui-disabled{
+    background-color: rgb(144, 192, 144) !important;
+    color: rgb(241, 255, 238);
+}
+
+.payment-options .razor{
+    margin-top: 10px;
+    margin-bottom: 20px;
+    width: 100%;
+}
+
+.payment-options .css-ueukts-MuiButtonBase-root-MuiToggleButton-root.Mui-selected {
+    background-color: white !important;
+    color: green !important;
+    border: 1px solid green !important;
+}
+
+
+
+@media only screen and (max-width: 768px) {
+    .bill-ad-image{
+        display: none !important;
+    }
+    .billing-left-card{
+        padding: 10px !important;
+    }
+}

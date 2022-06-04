@@ -54,13 +54,17 @@ export default function Sidenav({ active }) {
             </Link>
           </li>
           <li>
-            <Link to="#" className={`nav-link text-white`}>
+            <Link to="/creator/transactions" className={`nav-link text-white ${
+                active === "transactions" && "side-active"
+              }`}>
               <RiMoneyDollarCircleLine style={{ color: "black" }} />
               <span className="ms-2 admin-link">Transactions</span>
             </Link>
           </li>
           <li>
-            <Link to="#" className={`nav-link text-white`}>
+            <Link to="/creator/settings" className={`nav-link text-white ${
+                active === "settings" && "side-active"
+              }`}>
               <IoSettingsOutline style={{ color: "black" }} />
               <span className="ms-2 admin-link">Settings</span>
             </Link>

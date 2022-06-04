@@ -9,7 +9,8 @@ const channelSchema = mongoose.Schema({
     image:{type:String},
     isApproved:{type:Boolean, default:false},
     isBlocked:{type:Boolean, default:false},
-    supportFiles:{type:Array}
+    supportFiles:{type:Array},
+    paymentAccount:{type:String,default:null}
 })
 
 const Channel = mongoose.model("channels", channelSchema);

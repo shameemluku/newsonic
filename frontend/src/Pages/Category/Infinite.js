@@ -26,16 +26,24 @@ export default function Infinite({posts, category}) {
     if(posts!==null){
       setHasmore(true)
       setItem([...posts.filter((val,i)=>{
-        if(i>4) return val
+        if(i>3){ 
+          console.log(val);
+          return val}
       })])
     }
   },[posts])
 
 
   useEffect(()=>{
-    if(items.length<3){
+
+    if(items.length<5){
       setHasmore(false)
     }
+
+    if (items.length > 50) {
+      setHasmore(false);
+    } 
+
   },[items])
 
 
@@ -53,13 +61,6 @@ export default function Infinite({posts, category}) {
     }
   };
 
-  useEffect(() => {
-    if (items.length > 50) {
-      setHasmore(false);
-    } else {
-      
-    }
-  }, [items]);
 
   const loading = <>
     <div className="infiite-loading-anime">

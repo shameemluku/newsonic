@@ -3,16 +3,19 @@ import { Col, Row, Container } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { SET_POST_DETAILS } from "../../../constants/actionTypes";
-import { BACKEND_URL as URL } from "../../../constants/url";
+import { BACKEND_URL, BACKEND_URL as URL } from "../../../constants/url";
 import Slider from "../Slider/Slider";
 import "./Tile.css";
 import thumb from "../../../Images/gray-thumb.jpg"
 import { Skeleton } from "@mui/material";
+import { clickAd, displayAd } from "../../../actions/adActions";
+import PaidIcon from '@mui/icons-material/Paid';
 
 export default function Tile() {
   const [navNews, setNavNews] = useState([]);
-  const { loginModal, posts } = useSelector((state) => state);
+  const { loginModal, posts, authUser } = useSelector((state) => state);
   const [newsPosts, setNewsPosts] = useState([]);
+  const [ad, setAd] = useState(null);
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
@@ -56,6 +59,32 @@ export default function Tile() {
       setNavNews([...navNews, newsArray[index], newsArray[index2]]);
       changeText();
     }, 3000);
+  }
+
+  useEffect(()=>{
+  
+    (async()=>{
+      let adParams={
+        format:"FRM1"
+      }
+      setAd(await displayAd(adParams))
+    })()
+
+  },[authUser])
+
+
+  const handleAdClick = async (url) => {
+
+    let adParams={
+        format:"FRM2",
+        adId:ad._id,
+        sponsorId:ad.sponsorId
+    }
+
+    console.log("Here");
+    clickAd(adParams)
+    window.open(`https://${url}`, '_blank');
+
   }
 
   return (
@@ -240,12 +269,18 @@ export default function Tile() {
             <Col
               xs={12}
               lg={2}
-              className="bg-danger tile mt-md-0 mt-2"
-              style={{
-                backgroundImage:
-                  "url(https://www.skaggerz.nl/wp-content/uploads/2020/05/ads.jpg)",
-              }}
-            ></Col>
+              className="tile ad-tile mt-md-0 mt-2 p-0">
+                <span className="sponsor-txt">$ Sponsored</span>
+                <img className="ad-slot-1 pointer" src={`${BACKEND_URL}/uploads/${ad?.imageFrm}`} width="100%" alt=''
+                onClick={()=>{
+                  handleAdClick(ad?.url)
+                }}/>
+                <img className="ad-slot-1-mob pointer d-none" src={`${BACKEND_URL}/uploads/${ad?.imageSqr}`} width="100%" alt=''
+                onClick={()=>{
+                  handleAdClick(ad?.url)
+                }}/>
+              
+            </Col>
           </Row>
         </Container>
       </Container>

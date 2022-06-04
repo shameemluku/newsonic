@@ -1,12 +1,11 @@
 import FingerprintJS from "@fingerprintjs/fingerprintjs";
 
 
-export const generateSignature =async () => {
+export const generateSignature = () => {
 
-    let fp = await FingerprintJS.load()
-    let {visitorId} =await fp.get()
-
-    return new Promise ((res,rej)=>{
+    return new Promise (async(res,rej)=>{
+        let fp = await FingerprintJS.load()
+        let {visitorId} =await fp.get()
         res(visitorId)
     })
 

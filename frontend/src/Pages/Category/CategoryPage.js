@@ -42,6 +42,11 @@ function CategoryPage() {
     return (category[0].toUpperCase() + category.toLowerCase().slice(1))
   }
 
+  // useEffect(()=>{
+  //   console.log(catPosts);
+  //   console.log(catPosts.length);
+  // },[catPosts])
+
 
 
   return (

@@ -1,0 +1,22 @@
+.saved-main-div{
+    margin-top: 110px;
+}
+
+.cardHeading{
+    height: 90px;
+   font-family: 'Red Hat Display', sans-serif !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
+  font-weight: 500 !important;
+  font-size:20px !important;
+  line-height: 27px !important;
+}
+
+.saved-heading{
+    font-size: 30px;
+    color: rgb(114, 114, 114);
+}
+
+.saved-heading p{
+    font-weight: 500;
+}

@@ -7,6 +7,7 @@ import noComment from "../../../Images/nocomments.jpg";
 import DeleteIcon from "@mui/icons-material/Delete";
 import { Button, CircularProgress } from "@mui/material";
 import SendIcon from '@mui/icons-material/Send';
+import CommentsDisabledIcon from '@mui/icons-material/CommentsDisabled';
 
 export default function Comments({ comments, id }) {
   const [typedComment, setTypedComment] = useState("");
@@ -25,7 +26,7 @@ export default function Comments({ comments, id }) {
   };
 
   return (
-    <div className="comment-card">
+    <div id="comments" className="comment-card">
       <div className="card-head">
         Comments <span>({comments && comments.length})</span>
       </div>
@@ -84,8 +85,13 @@ export default function Comments({ comments, id }) {
         )}
       </div>
       {authData.user !== null ? (
+
         <>
-          <div className="comment-footer">
+         {
+            selectedPost?.details?.isComment 
+            ?
+            <>
+              <div className="comment-footer">
             <div className="d-flex comment-type">
               <input
                 type="text"
@@ -119,6 +125,21 @@ export default function Comments({ comments, id }) {
               
             </div>
           </div>
+            </>
+            :
+            <>
+            <div className="comment-footer">
+            <div className="d-flex comment-login">
+              <span className="desk-view d-flex">
+                <p>
+                  <CommentsDisabledIcon /> Commenting on this news post is turned off by admin.
+                </p>
+                </span>
+            </div>
+          </div>
+            </>
+          }
+          
         </>
       ) : (
         <>

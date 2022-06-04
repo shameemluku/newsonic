@@ -4,6 +4,7 @@ import logo from "../../../Images/default.svg"
 import { IoNotificationsOutline } from 'react-icons/io5'
 import { MdDashboard } from 'react-icons/md'
 import { useSelector } from 'react-redux'
+import { BACKEND_URL } from '../../../constants/url'
 
 export default function () {
 
@@ -15,9 +16,15 @@ export default function () {
           <Row>
             <Col><MdDashboard  style={{fontSize:"30px",marginTop:"-12px"}}/><span className='page-title ms-2'>Dashboard</span></Col>
             <Col className='d-flex justify-content-end'>
-                <IoNotificationsOutline style={{fontSize:"25px",marginTop:"8px",marginRight:"10px"}}/>
-                <p className='admin-name'>Hi, {channelDetails.channel?.name}</p>
-                <img className='admin-dp' src={logo} alt=''></img>
+                {/* <IoNotificationsOutline style={{fontSize:"25px",marginTop:"8px",marginRight:"10px"}}/> */}
+                <p className='admin-name'>{channelDetails.channel?.name}</p>
+                <img className='admin-dp' 
+                  src={channelDetails.channel===null 
+                    ? logo
+                    : `${BACKEND_URL}/uploads/${channelDetails.channel?.image}`
+                  } 
+                  alt=''
+                ></img>
             </Col>
           </Row>
         </Container>

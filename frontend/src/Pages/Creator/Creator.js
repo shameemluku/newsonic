@@ -8,16 +8,18 @@ import { useNavigate } from "react-router-dom";
 import LandingPage from "./LandingPage/LandingPage";
 import "../../components/Admin/Admin.css";
 import { verifyUser } from "../../actions/userActions";
+import { LinearProgress } from "@mui/material";
 
 
 export default function Creator({ children, active }) {
 
-  const { authUser: authData, channelDetails } = useSelector((state) => state);
+  const { 
+    authUser: authData,
+    channelDetails ,
+    creatorSelectedPost
+  } = useSelector((state) => state);
   const dispatch = useDispatch();
   const navigate = useNavigate()
-
-
-
 
 
   useEffect(()=>{
@@ -40,6 +42,7 @@ export default function Creator({ children, active }) {
     <style>{"body {background-color:#edf0f5;}"}</style>
       {channelDetails.channel?.isApproved ? (
         <>
+          {creatorSelectedPost.loading && <div className="creator-progress"><LinearProgress color="success" sx={{height:"10px"}}/></div>}
           <Sidenav active={active} />
           <div className="main-content">
             <Container>

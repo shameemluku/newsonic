@@ -17,7 +17,7 @@ export class Autocomplete extends Component {
     const { options } = this.props;
     const userInput = e.currentTarget.value;
     
-    this.props.clearError()
+    {this.props.clearError && this.props.clearError()}
 
     const filteredOptions = options.filter(
       (optionName) =>

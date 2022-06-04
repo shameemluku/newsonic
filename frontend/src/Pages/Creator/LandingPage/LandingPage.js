@@ -6,6 +6,7 @@ import defaultPic from "../../../Images/default.jpg";
 import { Link } from "react-router-dom";
 import { BiArrowBack } from "react-icons/bi";
 import { useSelector } from "react-redux";
+import { BACKEND_URL } from "../../../constants/url";
 
 function LandingPage() {
   const { channelDetails } = useSelector((state) => state);
@@ -37,7 +38,7 @@ function LandingPage() {
             <div className="content-center mt-5">
               <div className="channel-name-box d-flex">
                 <div>
-                  <img src={`http://localhost:5000/api/uploads/${channelDetails?.channel?.image}`} alt="dp"></img>
+                  <img src={`${BACKEND_URL}/uploads/${channelDetails?.channel?.image}`} alt="dp"></img>
                 </div>
                 <div>
                   <div className="name mb-1">{channelDetails?.channel?.name}</div>

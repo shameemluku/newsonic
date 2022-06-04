@@ -10,7 +10,11 @@ import {
   ADDED_POSTS_FAILED,
   REQUEST_DELETE_POSTS,
   DELETE_POSTS_SUCCESS,
-  DELETE_POSTS_FAILED
+  DELETE_POSTS_FAILED,
+  FAILED_SELECTED_POST,
+  SUCCESS_SELECTED_POST,
+  FETCH_SELECTED_POST,
+  SET_SELECTED_POST
 } from "../constants/actionTypes";
 
 let initalState = {
@@ -117,3 +121,46 @@ export const addedPosts = (
       return state;
   }
 };
+
+
+export const creatorSelectedPost = (
+  state = {
+    post: null,
+    loading: false,
+  },
+  action
+) => {
+    
+  switch (action.type) {
+    case FETCH_SELECTED_POST:
+      return {
+        ...state,
+        loading: true,
+      };
+
+    case SET_SELECTED_POST:
+      return {
+        ...state,
+        post: action.payload,
+      };
+
+
+    case SUCCESS_SELECTED_POST:
+      return {
+        ...state,
+        post: action.payload,
+        loading:false
+      };
+
+    case FAILED_SELECTED_POST:
+      return {
+        ...state,
+        loading:false
+      };
+
+    default:
+      return state;
+
+  }
+};
+

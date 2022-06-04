@@ -1,0 +1,263 @@
+.spons-main-content{
+    margin-top: 100px;
+}
+
+.css-1u4zpwo-MuiSvgIcon-root-MuiStepIcon-root.Mui-active{
+    color:  rgb(9, 169, 73) !important;
+}
+
+.css-1u4zpwo-MuiSvgIcon-root-MuiStepIcon-root.Mui-completed {
+    color:  rgb(9, 169, 73) !important;
+}
+
+/* .css-z7uhs0-MuiStepConnector-line {
+    display: block;
+    border-color: #bdbdbd;
+    border-top-style: solid;
+    border-top-width: 1px;
+} */
+
+.MuiBreadcrumbs-li a{
+    text-decoration: none !important;
+    color: rgb(147, 147, 147);
+}
+
+.info-div{
+    width: 85%;
+}
+
+.step1-info{
+    width: 60%;
+    font-size: 18px;
+    margin-top: 40px;
+    color: rgb(120, 120, 120);
+}
+
+.radio-toolbar input[type="radio"] {
+    opacity: 0;
+    position: fixed;
+    width: 0;
+}
+
+.radio-toolbar label {
+    display: inline-block;
+    height: auto;
+    background-color: rgb(255, 255, 255);
+    padding: 20px;
+    font-family: sans-serif, Arial;
+    font-size: 16px;
+    border: 4px solid rgb(221, 221, 221);
+    border-radius: 15px;
+}
+
+/* .radio-toolbar label:hover {
+    background-color: #dfd;
+} */
+
+
+
+.radio-toolbar input[type="radio"]:focus+label {
+    border: 4px solid #4c4;
+}
+
+.radio-toolbar input[type="radio"]:focus .format-info p{
+    color:  #4c4 !important;
+}
+
+.radio-toolbar input[type="radio"]:checked+label {
+    background-color: rgb(255, 255, 255);
+    border-color: #4c4;
+}
+
+.radio-toolbar input[type="radio"]:checked+label .format-info{
+    color:  #4c4 !important;
+}
+
+.formats-row{
+    width: 85%;
+}
+
+.format-info{
+    font-size: 15px;
+    margin-left: 10px;
+    color: #606060;
+}
+
+.ad-nav-btn{
+    border: 2px solid #4c4 !important;
+    color: #4c4 !important; 
+    padding-left: 50px !important;
+    padding-right: 50px !important;
+    border-radius: 30px !important;
+}
+
+
+
+
+/* STEP 2 */
+
+.step2-card-left{
+    padding: 20px!important;
+    overflow: visible !important;
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px !important;
+}
+
+.step2-card-right{
+    box-shadow: rgba(60, 64, 67, 0.3) 0px 1px 2px 0px, rgba(60, 64, 67, 0.15) 0px 1px 3px 1px !important;
+}
+
+
+.date-picker{
+    padding: 0!important;
+    margin-top: 10px;
+}
+
+.react-google-flight-datepicker .day.selected::after {
+    background-color: #4c4 !important;
+}
+
+.react-google-flight-datepicker .day.hovered {
+    background-color: #dfffe0 !important;
+}
+.react-google-flight-datepicker .day:hover::after {
+    background-color: #fff;
+    border: 2px solid #4c4 !important;
+}
+
+.react-google-flight-datepicker .day.selected.hovered.end {
+    background: linear-gradient(90deg, #dfffe0 50%, #fff 50%) !important;
+}
+
+.react-google-flight-datepicker .day.selected.hovered {
+    background: linear-gradient(90deg, #fff 50%, #dfffe0 50%) !important;
+}
+
+.react-google-flight-datepicker .dialog-footer .submit-button {
+    background: #4c4 !important;
+}
+.react-google-flight-datepicker .date:focus::after, .react-google-flight-datepicker .date.is-focus::after {
+    border: 1px solid rgb(178, 200, 178) !important;
+}
+
+.react-google-flight-datepicker .icon-calendar {
+    fill: #187633 !important;
+}
+.react-google-flight-datepicker .date:focus, .react-google-flight-datepicker .date.is-focus {
+    background-color: #fff !important;
+}
+
+
+.react-google-flight-datepicker .day .background-day.last-day {
+    background: linear-gradient(to left, #fff, #dfffe0) !important;
+}
+
+.react-google-flight-datepicker .day .background-day.first-day {
+    background: linear-gradient(to right, #fff, #dfffe0) !important;
+}
+
+.react-google-flight-datepicker .day.hovered.end {
+    background: linear-gradient(90deg, #dfffe0 50%, #fff 50%) !important;
+}
+
+.MuiFormLabel-root.Mui-focused {
+    color: rgb(57, 165, 57) !important;
+}
+.MuiOutlinedInput-root.Mui-focused .MuiOutlinedInput-notchedOutline {
+    border-color: rgb(57, 165, 57) !important;
+}
+
+.css-1aznpnh-MuiSlider-root {
+    color: #0ba726 !important;
+}
+
+
+.ad-format1{
+    display: flex;
+    width: 100%;
+    height: 250px;  
+    background-color: rgb(103, 103, 103);
+    background-position: center;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.ad-format1:hover > .hide {
+    display: block !important;
+}
+
+.cat-amount{
+    font-size: 30px;
+    font-weight: 500;
+}
+
+.cat-days{
+    font-size: 20px;
+    margin-bottom: 10px;
+}
+
+.errorText{
+    color: rgb(193, 28, 28);
+}
+
+input[type=number]::-webkit-inner-spin-button, 
+input[type=number]::-webkit-outer-spin-button { 
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    margin: 0; 
+}
+
+.error-image-box{
+    border: 2px solid rgb(217, 37, 37);
+}
+
+.create-ad-titles{
+    font-weight: 400;
+    color: rgb(142, 142, 142);
+    margin-bottom: 0px !important;
+}
+
+.card-left-head{
+    border-bottom: 1.5px solid rgb(214, 214, 214);
+}
+
+.final-step-main{
+    margin-top: 25px;
+}
+
+.ad-success-text{
+    font-size: 30px;
+}
+
+
+
+@media only screen and (max-width: 992px) {
+    .stepper-steps{
+        width: 100% !important;
+    }
+    .step1-info{
+        width: 100%;
+    }
+
+    .formats-row{
+        width: 100%;
+    }
+    .step-container{
+        padding: 0 !important;
+    }
+    .step2-card-left{
+        padding: 0!important;
+    }
+    .col-left{
+        padding: 0!important;
+    }
+    .step2-right-col{
+        padding: 0 !important;
+    }
+}
+
+

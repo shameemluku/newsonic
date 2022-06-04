@@ -17,7 +17,7 @@ export default function Posts() {
   };
 
   useEffect(()=>{
-    dispatch(getCreatorPosts(channelDetails.channel._id,"ALL"))
+    dispatch(getCreatorPosts(channelDetails.channel._id,"ALL",10))
   },[])
 
   useEffect(()=>{
@@ -25,7 +25,7 @@ export default function Posts() {
       alert("Draft")
     }else{
       console.log(filterStatus);
-      dispatch(getCreatorPosts(channelDetails.channel._id,filterStatus))
+      dispatch(getCreatorPosts(channelDetails.channel._id,filterStatus,10))
     }
   },[filterStatus])
 

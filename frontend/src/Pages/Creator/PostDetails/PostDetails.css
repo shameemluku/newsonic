@@ -1,0 +1,92 @@
+.post-details-titles {
+  font-weight: 500;
+  color: rgb(144, 225, 164);
+  margin-bottom: 10px !important;
+}
+
+.news-text-card {
+  padding: 20px;
+}
+
+.news-body {
+  white-space: pre-wrap;
+  font-family: "Red Hat Display", sans-serif;
+  margin-bottom: 0px;
+  font-size: 15px;
+}
+.post-edit-btn {
+  position: absolute;
+  left: auto;
+  right: 20px;
+  top: 20px;
+  bottom: auto;
+  cursor: pointer;
+}
+
+.edit-head-input {
+  width: 100%;
+  height: 50px;
+  padding: 10px;
+  border: 1px solid rgb(216, 216, 216);
+  border-radius: 10px;
+}
+
+.edit-head-body {
+  width: 100%;
+  height: 50px;
+  padding: 10px;
+  border: 1px solid rgb(216, 216, 216);
+  border-radius: 10px;
+  height: 500px;
+}
+
+.edit-head-body::-webkit-scrollbar {
+  width: 5px;
+  cursor: pointer;
+}
+
+/* Track */
+.edit-head-body::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+/* Handle */
+.edit-head-body::-webkit-scrollbar-thumb {
+  background: rgb(175, 175, 175);
+}
+
+/* Handle on hover */
+.edit-head-body::-webkit-scrollbar-thumb:hover {
+  background: #555;
+}
+
+.comment-stats{
+    width: 100%;    
+    background-color: rgb(237, 253, 220);
+    border-radius: 20px;
+}
+
+.comment-view-btn{
+    text-transform: none !important;
+    color: green !important;
+}
+
+.css-5ryogn-MuiButtonBase-root-MuiSwitch-switchBase.Mui-checked+.MuiSwitch-track {
+    background-color: #0f9a2b !important;
+}
+
+.css-5ryogn-MuiButtonBase-root-MuiSwitch-switchBase.Mui-checked {
+    color: #1fb13c !important;
+}
+
+.post-total{
+    border-top: 1px solid rgb(177, 177, 177);
+    padding-top: 10px;
+}
+
+.post-total-span{
+    color: green !important;
+    font-weight: 500;
+    font-size: 25px;
+    margin-left: 20px;
+}

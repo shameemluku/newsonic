@@ -14,7 +14,14 @@ const {
     getCategory,
     homePosts,
     fetchHomeData,
-    relatedPost
+    relatedPost,
+    getNavLinks,
+    savedPosts,
+    updatePostText,
+    updatePostCategory,
+    updatePostIsComment,
+    updatePostIsMonetize,
+    translatePost
 } = require('../controllers/postControllers');
 const { 
     isLiked,
@@ -35,11 +42,18 @@ router.get('/fetch-news/:category', fetchNews)
 router.get('/fetch-details/:id', isRead, isLiked, isSaved, fetchDetails)
 router.post('/post-comment', isUserValid,  postComment)
 router.post('/delete-comment', isUserValid,  deleteComment)
-router.post('/like-post', likePost)
-router.post('/save-post', savePost)
+router.post('/like-post', isUserValid, likePost)
+router.post('/save-post', isUserValid, savePost)
+router.get('/fetch-saved', isUserValid, savedPosts)
 router.post('/delete-post', isUserValid, isCreator, deletePost)
 router.get('/category', getCategory)
+router.get('/nav-links', getNavLinks)
 router.get('/home-posts', homePosts)
 router.post('/fetch-related', relatedPost)
+router.patch('/update-post-data', isUserValid, isCreator, updatePostText)
+router.patch('/update-post-category', isUserValid, isCreator, updatePostCategory)
+router.patch('/update-post-iscomment', isUserValid, isCreator, updatePostIsComment)
+router.patch('/update-post-ismonetize', isUserValid, isCreator, updatePostIsMonetize)
+router.get('/translate', translatePost)
 
 module.exports = router;

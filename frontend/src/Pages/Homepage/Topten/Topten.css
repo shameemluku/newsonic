@@ -57,4 +57,20 @@
         font-size: 18px;
     }
 
+    .top-ten-index{
+        padding-left: 0 !important;
+        padding-right: 0 !important;
+    }
+
+    .top-ten-img{
+        padding: 0 !important;
+    }
+
+    .top-index{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 50px !important;
+    }
+
 }

@@ -4,18 +4,19 @@ import InfiniteScroll from "react-infinite-scroll-component";
 import LatestCard from "../Latest/LatestCard/LatestCard";
 import loadingAnim from "../../../Images/loading.gif"
 import { useSelector } from "react-redux";
-import { fetchPosts } from "../../../api";
+import { clickAd, fetchPosts } from "../../../api";
+import { useInView } from 'react-intersection-observer';
+import { displayAd } from "../../../actions/adActions";
+import { BACKEND_URL } from "../../../constants/url";
 
 export default function Infinite() {
   const [items, setItem] = useState([]);
   const [hasMore, setHasmore] = useState(true);
   const {posts} = useSelector((state)=>state)
-  // const style = {
-  //   height: 300,
-  //   border: "1px solid green",
-  //   margin: 6,
-  //   padding: 8,
-  // };
+  const { ref:adBanner, inView, entry } = useInView()
+  const [ad,setAd] = useState(null)
+
+
 
   const style = {
     marginBottom: 30,
@@ -29,6 +30,22 @@ export default function Infinite() {
       }))
     }
   },[posts])
+
+  useEffect(()=>{
+    if(inView && ad===null){
+        loadAd()
+    }
+  },[inView])
+
+  const loadAd = ()=>{
+    (async()=>{
+        let adParams={
+            format:"FRM3"
+        }
+        setAd(await displayAd(adParams))
+        console.log(await displayAd(adParams));
+    })()
+  }
 
   
 
@@ -52,6 +69,22 @@ export default function Infinite() {
     }
   }, [items]);
 
+
+  const handleAdClick = async (url) => {
+
+    let adParams={
+        format:"FRM2",
+        adId:ad._id,
+        sponsorId:ad.sponsorId
+    }
+
+    clickAd(adParams)
+    window.open(`https://${url}`, "_blank");
+
+  }
+
+
+
   const loading = <>
     <div className="infiite-loading-anime">
     <img src={loadingAnim} alt=""></img>
@@ -65,17 +98,24 @@ export default function Infinite() {
       next={fetchMoreData}
       hasMore={hasMore}
       loader={loading}
-      endMessage={<p className="bg-dark">This is the end</p>}
+      endMessage={<p className="">Footer</p>}
     >
       <Row className="p-0 m-0">
         {items.map((post, index) =>{
 
           if(index===13){
-            
             return <>
             <Col sm={12} md={8} className="p-0">
-            <div style={{height:"300px"}} className="p-2" key={index}>
-                <div className="bg-dark h-100">dgdg</div>
+            <div ref={adBanner} style={{height:"300px"}} className="p-0 content-center ad-slot-3-div" key={index}>
+                {/* <div className="bg-dark h-100">dgdg</div> */}
+                { ad !== null ?
+                <span onClick={()=>{
+                  handleAdClick(ad?.url)
+                }}>
+                 <img className="ad-slot-3 pointer"  src={`${BACKEND_URL}/uploads/${ad?.imageFrm}`} alt=''/> 
+                 <img className="ad-slot-3-mob d-none" src={`${BACKEND_URL}/uploads/${ad?.imageSqr}`} alt=''/> 
+                </span>
+                : <p>Loading..</p>}
             </div>
           </Col>
             </>

@@ -14,6 +14,7 @@ exports.isUserValid = (req, res, next) => {
 
         const token = req.signedCookies.security;
         let decodedData;
+
     
         if(token){
             
@@ -55,7 +56,6 @@ exports.isRead = async (req, res, next)=>{
     const token = req.signedCookies.security;
     const {signature} = req.query;
 
-    console.log(signature);
     
     if(token){
         
@@ -108,7 +108,6 @@ exports.isCreator = async (req, res, next)=>{
     const {channel} = req.query;
     if(channel){
         
-
         let details = await Channel.findOne({
             userId:ObjectId(req.body.decodeId),
             _id:ObjectId(channel)

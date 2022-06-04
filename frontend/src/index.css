@@ -29,3 +29,63 @@ code {
   justify-content: end;
 }
 
+.f-10{
+  font-size: 10px !important;
+}
+
+.f-12{
+  font-size: 12px !important;
+}
+
+.f-15{
+  font-size: 15px !important;
+}
+
+.f-17{
+  font-size: 17px !important;
+}
+
+.f-20{
+  font-size: 20px !important;
+}
+
+.fw-500{
+  font-weight: 500 !important;
+}
+
+.f-gray{
+  color: gray !important;
+}
+
+.w-20{
+  width: 20% !important;
+}
+
+.w-60{
+  width: 60% !important;
+}
+
+.sponsor-txt{
+  background: #191919;
+  color: white;
+  padding-right: 10px;
+  padding-left: 10px;
+  padding-top: 3px;
+  padding-bottom: 3px;
+  font-weight: 100;
+  font-size: 12px;
+  text-transform: uppercase;
+}
+
+.creator-progress{
+  position: fixed;
+  z-index: 10;
+  width: 100%;
+}
+
+.top-progress{
+  position: fixed;
+  top:0;
+  z-index: 2000;
+  width: 100%;
+}

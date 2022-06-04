@@ -10,7 +10,7 @@ import {
     DELETE_POSTS_FAILED, 
     COMMENT_SUCCESS,
     REQUEST_DELETE_COMMENT,
-    DELETE_COMMENT_SUCCESS
+    DELETE_COMMENT_SUCCESS,
 } from '../constants/actionTypes';
 import { generateSignature } from '../utility/fingerprint';
 
@@ -162,8 +162,7 @@ export const likePost = (likeData,current) => async (dispatch) =>{
 export const savePost = (saveData,current) => async (dispatch) =>{
     try {
 
-        console.log(current);
-        current.isSaved = !current.isSaved;
+        if(current) current.isSaved = !current.isSaved;
         dispatch({
             type:UPDATE_SAVE,
             payload:current
@@ -172,7 +171,7 @@ export const savePost = (saveData,current) => async (dispatch) =>{
 
     } catch (error) {
         
-        current.isSaved = !current.isSaved;
+        if(current) current.isSaved = !current.isSaved;
         dispatch({
             type:UPDATE_SAVE,
             payload:current
@@ -212,3 +211,4 @@ export const deletePost = (deleteIDs,channelId) => async (dispatch,getState) =>{
         })
     }
 }
+

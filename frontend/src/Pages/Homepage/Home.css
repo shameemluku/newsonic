@@ -27,3 +27,17 @@
 .infiite-loading-anime img{
     height: 250px;
 }
+
+@media only screen and (max-width: 992px) {
+    .ad-slot-3{
+        display: none !important;
+    }
+    .ad-slot-3-mob{
+        display: block !important;
+    }
+
+    .ad-slot-3-div{
+        height: 330px !important;
+        margin-bottom: 30px !important;
+    }
+}

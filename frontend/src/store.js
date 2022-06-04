@@ -2,10 +2,10 @@ import { createStore, applyMiddleware, compose, combineReducers } from "redux";
 import thunk from "redux-thunk";
 
 import { posts, categoryPosts, selectedPost } from "./reducers/postReducers";
-
 import { authReducer, showLoginModal } from "./reducers/userAuthReducers";
-
-import { createChannel, channelDetails, addedPosts } from "./reducers/channelReducer";
+import { createChannel, channelDetails, addedPosts, creatorSelectedPost } from "./reducers/channelReducer";
+import { sponsorDetails } from "./reducers/adReducer";
+import { showTopProgress } from "./reducers/progressReducer";
 
 const reducers = combineReducers({
   posts,
@@ -15,7 +15,10 @@ const reducers = combineReducers({
   channelCreate: createChannel,
   channelDetails,
   selectedPost,
-  addedPosts
+  addedPosts,
+  sponsorDetails,
+  creatorSelectedPost,
+  showTopProgress
 });
 
 const store = createStore(

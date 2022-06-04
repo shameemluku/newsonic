@@ -57,6 +57,10 @@
 .console-link{
     text-decoration: none !important;
 }
+.console-link .sponsor{
+    text-decoration: none !important;
+    color: black !important;
+}
 
 .header-next{
     display: flex;
