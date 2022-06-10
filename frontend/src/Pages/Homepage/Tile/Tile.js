@@ -10,6 +10,7 @@ import thumb from "../../../Images/gray-thumb.jpg"
 import { Skeleton } from "@mui/material";
 import { clickAd, displayAd } from "../../../actions/adActions";
 import PaidIcon from '@mui/icons-material/Paid';
+import adpic from '../../../Images/ad1.jpg';
 
 export default function Tile() {
   const [navNews, setNavNews] = useState([]);
@@ -19,47 +20,24 @@ export default function Tile() {
   const navigate = useNavigate()
   const dispatch = useDispatch()
 
-  const newsArray = [
-    {
-      category: "Sports",
-      news: "This is a Sports news. The First Lady' reframes U.S. leadership through the eyes of the women behind the scenes",
-    },
-    {
-      category: "Technology",
-      news: "The First Tehnology of mobile was a revolution. It made our life happy",
-    },
-    {
-      category: "Entertainment",
-      news: "The First Lady' reframes U.S. leadership through the eyes of the women behind the scenes",
-    },
-  ];
 
-  let index = 0;
-  let index2 = newsArray.length - 1;
-  useEffect(() => {
-    setNavNews([...navNews, newsArray[index], newsArray[index2]]);
-    changeText();
-  }, []);
 
   useEffect(() => {
-    console.log(newsPosts);
     setNewsPosts([...posts.sort((a, b) => 0.5 - Math.random())])
+    if(posts.length>0){
+      setNavNews([...posts.sort((a, b) => 0.5 - Math.random())])
+      changeText();
+    }
   }, [posts]);
 
   function changeText() {
-    index++;
-    index2++;
-    if (index === newsArray.length || index < 0) {
-      index = 0;
-    }
-    if (index2 === newsArray.length || index < 0) {
-      index2 = 0;
-    }
     setTimeout(() => {
-      setNavNews([...navNews, newsArray[index], newsArray[index2]]);
+      setNavNews([...posts.sort((a, b) => 0.5 - Math.random())])
       changeText();
-    }, 3000);
+    }, 7000);
   }
+
+
 
   useEffect(()=>{
   
@@ -81,50 +59,67 @@ export default function Tile() {
         sponsorId:ad.sponsorId
     }
 
-    console.log("Here");
     clickAd(adParams)
     window.open(`https://${url}`, '_blank');
 
   }
 
+
   return (
     <>
       <Container style={{ marginTop: "110px" }}>
-        <div className="navline mb-3 d-flex align-items-center ">
-          <div style={{ overflow: "hidden" }}>
-            {navNews.length > 0 ? (
-              <span className="navline-cat fadeIn">{navNews[0].category}</span>
-            ) : (
-              <span className="navline-cat">Loading..</span>
-            )}
-            {navNews.length > 0 ? (
-              <span className="ms-2 navline-text" style={{ color: "white" }}>
-                {navNews[0].news.length > 70
-                  ? navNews[0].news.substring(0, 70)
-                  : navNews[0].news}
-              </span>
-            ) : (
-              "Loading"
-            )}
-          </div>
 
-          <div style={{ overflow: "hidden" }}>
+        <div className="navline mb-3 d-flex align-items-center ">
+        <Row className="w-100">
+          <Col lg={6} className="parent-row">
+          <div 
+            style={{ overflow: "hidden" }} 
+            className="pointer"
+            onClick={()=>{
+              navigate(`/post/${navNews[0]?._id}`)
+            }}
+          >
             {navNews.length > 0 ? (
-              <span className="navline-cat fadeIn">{navNews[1].category}</span>
+              <span className="navline-cat fadeIn">{navNews[0]?.category[0].toUpperCase()}</span>
             ) : (
               <span className="navline-cat">Loading..</span>
             )}
             {navNews.length > 0 ? (
               <span className="ms-2 navline-text" style={{ color: "white" }}>
-                {navNews[1].news.length > 70
-                  ? navNews[0].news.substring(0, 70)
-                  : navNews[1].news}
+                {navNews[0]?.newsHead}
               </span>
             ) : (
               "Loading"
             )}
           </div>
+          <div className="gradient-black"></div>
+          </Col>
+          <Col lg={6} className="pe-0">
+          <div 
+            style={{ overflow: "hidden" }} 
+            className="pointer w-100 parent-row"
+            onClick={()=>{
+              navigate(`/post/${navNews[1]?._id}`)
+            }}
+          >
+            {navNews.length > 0 ? (
+              <span className="navline-cat fadeIn ms-0">{navNews[1]?.category[0].toUpperCase()}</span>
+            ) : (
+              <span className="navline-cat">Loading..</span>
+            )}
+            {navNews.length > 0 ? (
+              <span className="ms-2 navline-text" style={{ color: "white" }}>
+                  {navNews[1]?.newsHead}
+              </span>
+            ) : (
+              "Loading"
+            )}
+          <div className="gradient-black"></div>
+          </div>
+          </Col>
+        </Row>
         </div>
+
         <Container>
           <Row className="tiles">
             <Col
@@ -172,7 +167,13 @@ export default function Tile() {
 
               <img className="w-100 tile-image" 
                 src={`${URL}/uploads/${newsPosts.length !== 0 ? newsPosts[0].images[0] : thumb }`} 
-                height="100%" alt={""} 
+                height="100%" alt={""}
+                onError={(e)=>{
+                  e.target.style.display = 'none'
+                }} 
+                onLoad={(e)=>{
+                  e.target.style.display = 'inline-block'
+                }}
               ></img>
 
 
@@ -216,6 +217,12 @@ export default function Tile() {
 
                 <img className="w-100 tile-image" 
                 src={`${URL}/uploads/${newsPosts.length !== 0 ? newsPosts[1].images[0] : thumb }`} 
+                onError={(e)=>{
+                  e.target.style.display = 'none'
+                }}
+                onLoad={(e)=>{
+                  e.target.style.display = 'inline-block'
+                }}
                 height="100%" alt={""} 
               ></img>
               </div>
@@ -261,6 +268,12 @@ export default function Tile() {
 
                 <img className="w-100 tile-image" 
                 src={`${URL}/uploads/${newsPosts.length !== 0 ? newsPosts[2].images[0] : thumb }`} 
+                onError={(e)=>{
+                  e.target.style.display = 'none'
+                }}
+                onLoad={(e)=>{
+                  e.target.style.display = 'inline-block'
+                }}
                 height="100%" alt={""} 
               ></img>
 
@@ -271,6 +284,8 @@ export default function Tile() {
               lg={2}
               className="tile ad-tile mt-md-0 mt-2 p-0">
                 <span className="sponsor-txt">$ Sponsored</span>
+                { ad
+                ? <>
                 <img className="ad-slot-1 pointer" src={`${BACKEND_URL}/uploads/${ad?.imageFrm}`} width="100%" alt=''
                 onClick={()=>{
                   handleAdClick(ad?.url)
@@ -278,7 +293,15 @@ export default function Tile() {
                 <img className="ad-slot-1-mob pointer d-none" src={`${BACKEND_URL}/uploads/${ad?.imageSqr}`} width="100%" alt=''
                 onClick={()=>{
                   handleAdClick(ad?.url)
+                }}/> </>
+                :
+                <>
+                <img className="ad-slot-1 pointer" src={adpic} width="100%" alt=''
+                onClick={()=>{
+                  handleAdClick(ad?.url)
                 }}/>
+                </>
+                }
               
             </Col>
           </Row>

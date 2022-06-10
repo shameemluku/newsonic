@@ -84,11 +84,68 @@
     font-style: italic;
 }
 
+.navbar-light .navbar-toggler {
+    color: rgba(0,0,0,.55);
+    border: 0 !important
+}
+
+.navbar-toggler:focus {
+    text-decoration: none !important;
+    outline: 0 !important;
+    box-shadow: none !important;
+}
+
+.navbar-toggler:active {
+    text-decoration: none !important;
+    outline: 0 !important;
+    box-shadow: 0 !important;
+}
+
+.nav-profile-links{
+    color: rgb(38, 38, 38);
+    text-decoration: none;
+    text-transform: uppercase;
+    font-weight: 500;
+}
+
+.login-lock{
+    margin-right: 5px;
+    margin-top: 5px;
+}
+
+
 @media only screen and (max-width: 1200px) {
     .header-next img{
         display: none;
     }
+
 }
+
+@media only screen and (max-width: 992px) {
+    .navlink-holder{
+        margin-top: 20px !important;
+    }
+    .nav-profile-drop{
+        display: none !important;
+    }
+    .navbar-drop-seperator{
+        display: block !important;
+        width: 90%;
+        height: 1px;
+        background-color: #101010;
+    }
+    .nav-profile-holder{
+        display: block !important;
+    }
+    .nav-social{
+        margin-right: 10px !important;
+    }
+    .login-lock{
+        display: block !important;
+    }
+}
+
+
 
 
 

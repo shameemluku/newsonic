@@ -12,8 +12,7 @@ import VisibilityIcon from '@mui/icons-material/Visibility';
 import { BsBookmark, BsBookmarkFill } from "react-icons/bs";
 import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
-import { likePost, savePost } from "../../../actions/postActions";
-import { translateText } from "../../../api";
+import { likePost, savePost, translateText } from "../../../actions/postActions";
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
 
 export default function NewsSection({ data }) {
@@ -145,9 +144,9 @@ export default function NewsSection({ data }) {
   };
 
   useEffect(()=>{
+    
     if(data?.newsBody && data?.newsHead){
-      alert("Hi")
-      if(language!=='en' || language!==null){
+      if(language!=='en' && language!==null){
         changeLanguage(language)
       }else{
         findPara();
@@ -157,6 +156,8 @@ export default function NewsSection({ data }) {
   },[language])
 
   const changeLanguage = async (language) => {
+
+    dispatch({type:'SHOW_PROGRESS'})
     let promises = []
     let heading = await translateText(defaultValues?.newsHead,language)
     setNewsHead(heading)
@@ -164,10 +165,11 @@ export default function NewsSection({ data }) {
       promises.push(translateText(val,language)); 
     })
 
-    
     Promise.all(promises).then((data)=>{
       setParaArray([...data])
     })
+    dispatch({type:'HIDE_PROGRESS'})
+
   }
 
   return (
@@ -273,7 +275,7 @@ export default function NewsSection({ data }) {
           )}
 
           <div className="mt-1">
-            <b>{data?.likes}</b>&nbsp;likes
+            <b>{data?.likes}</b>&nbsp;<span className={`${authData?.user !== null && 'mob-hide'}`}>likes</span>
           </div>
 
           <div
@@ -283,7 +285,7 @@ export default function NewsSection({ data }) {
             }}
           >
             <MessageIcon />
-            &nbsp;Comments {data?.comments?.length}
+            &nbsp;<b>{data?.comments?.length}</b> <span className="ms-1 mob-hide">Comments</span>
           </div>
         </div>
 
@@ -295,9 +297,9 @@ export default function NewsSection({ data }) {
           exclusive
           onChange={handleChange}
         >
-          <ToggleButton className="px-3" name='lang' value="en">E</ToggleButton>
-          <ToggleButton className="px-3" name='lang' value="ml">മ</ToggleButton>
-          <ToggleButton className="px-3" name='lang' value="hi">हा</ToggleButton>
+          <ToggleButton className="px-3 lang-btn" name='lang' value="en">E</ToggleButton>
+          <ToggleButton className="px-3 lang-btn" name='lang' value="ml">മ</ToggleButton>
+          <ToggleButton className="px-3 lang-btn" name='lang' value="hi">हा</ToggleButton>
         </ToggleButtonGroup>
 
           <span className="news-views ms-3"><VisibilityIcon/>&nbsp;&nbsp;{data?.views}</span>

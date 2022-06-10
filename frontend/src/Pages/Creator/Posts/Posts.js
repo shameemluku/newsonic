@@ -12,29 +12,24 @@ export default function Posts() {
   const dispatch = useDispatch()
   const { channelDetails, addedPosts } = useSelector((state) => state);
 
-  const handleChange = (event, newStatus) => {
-    setFilterStatus(newStatus);
-  };
 
   useEffect(()=>{
     dispatch(getCreatorPosts(channelDetails.channel._id,"ALL",10))
   },[])
 
   useEffect(()=>{
-    if(filterStatus==='DRAFT'){
-      alert("Draft")
-    }else{
-      console.log(filterStatus);
-      dispatch(getCreatorPosts(channelDetails.channel._id,filterStatus,10))
-    }
+    dispatch(getCreatorPosts(channelDetails.channel._id,filterStatus,10))
+
   },[filterStatus])
 
+  const handleChange = (event, newStatus) => {
+    setFilterStatus(newStatus);
+  };
 
   return (
     <Container>
         <div className='content-end mt-4 status-sec'>
         <ToggleButtonGroup
-          color="primary"
           style={{backgroundColor:"white"}}
           value={filterStatus}
           exclusive
@@ -47,7 +42,12 @@ export default function Posts() {
         </ToggleButtonGroup>
         </div>
         <div className='mt-1'>
-            <TableComp data={addedPosts.posts} loading={addedPosts.loading} isDeleting={addedPosts.isDeleting}/>
+            <TableComp 
+              data={addedPosts.posts} 
+              loading={addedPosts.loading} 
+              isDeleting={addedPosts.isDeleting} 
+              filter={filterStatus}
+            />
         </div>
     </Container>
   )

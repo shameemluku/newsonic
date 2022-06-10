@@ -31,7 +31,7 @@
     color: gray;
 }
 
-@media only screen and (max-width: 992px) {
+/* @media screen and (max-width: 600px) {
     .spon-heading{
         font-size: 50px;
         width: 100% !important;
@@ -52,6 +52,68 @@
     .handshake-img{
         display: none;
     }
+    body{
+        background-color: rgb(208, 110, 34);
+    }
 }
 
 
+
+@media screen and (max-width: 1200px) {
+    .sponsor-main-content{
+        margin-top: 150px !important;
+    }
+    .spon-col-left{
+        background-size:120px !important;
+        background-repeat: no-repeat;
+        background-position-x: 280px !important;
+        background-position-y:  0px !important;
+    }
+
+    body{
+        background-color: aqua;
+    }
+} */
+
+
+@media screen and (max-width: 992px) {
+    .sponsor-main-content{
+        margin-top: 150px !important;
+    }
+    .spon-col-left{
+        background-size:120px !important;
+        background-repeat: no-repeat;
+        background-position-x: 280px !important;
+        background-position-y:  0px !important;
+    }
+    .handshake-left{
+        margin-top: 10px !important;
+        display: block !important;
+    }
+  }
+  
+  /* On screens that are 600px or less, set the background color to olive */
+  @media screen and (max-width: 600px) {
+    .spon-heading{
+        font-size: 50px;
+        width: 100% !important;
+        line-height:50px;
+        margin-top: 50px !important;
+    }
+
+    .left-holder{
+        margin-left: 20px !important;
+    }
+
+    .handshake-img{
+        display: none;
+    }
+
+    .spon-col-left{
+        background-size:150px !important;
+        background-repeat: no-repeat;
+        background-position-x: 190px !important;
+        background-position-y: 0px !important;
+    }
+   
+  }

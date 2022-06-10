@@ -7,6 +7,7 @@ const mime = require("mime-types");
 const Revenues = require("../models/revenues");
 const Transactions = require("../models/transactions");
 const Payouts = require("../models/payouts");
+const Drafts = require("../models/drafts");
 
 // @desc    Create a channel
 // @rout    POST /api/channel/create
@@ -106,12 +107,29 @@ const getAddedPosts = async (req, res) => {
   const { channel: channelId, filter, limit } = req.query;
   let added_posts;
 
-  console.log(limit);
-
   if (filter === "ALL") {
     added_posts = await Posts.find({ channelId: ObjectId(channelId) }).sort({
       _id: -1,
     });
+  }else if(filter === "DRAFT"){
+
+    added_posts = await Drafts.aggregate([
+      {
+        $match: {
+          channelId: ObjectId(channelId)
+        },
+      },
+      {
+        $limit: parseInt(limit),
+      },
+      {
+        $sort: { _id: -1 },
+      },
+    ]);
+    added_posts.image = []
+    added_posts.seenBy = []
+    added_posts.likes = []
+
   } else {
     added_posts = await Posts.aggregate([
       {
@@ -202,17 +220,28 @@ const getDashData = async (req, res) => {
     },
     { $group: { _id: "$isPaid", amount: { $sum: "$amount" } } },
   ]);
+  
 
   let totalEarnings =
     Earnings.length === 2
       ? Earnings[0]?.amount + Earnings[1]?.amount
       : Earnings[0]?.amount;
 
-  let withdrawable = 0;
+  let withdrawable = await Revenues.aggregate([
+    {
+      $match: {
+        channelId: ObjectId(channelId),
+        isPaid: true,
+        isWithdrawn:false
+      },
+    },
+    { $group: { _id: "", amount: { $sum: "$amount" } } },
+  ]);
 
-  Earnings.map((val) => {
-    if (val._id) withdrawable = val.amount;
-  });
+  console.log(withdrawable);
+
+  withdrawable = withdrawable.length===0 ? 0.00 : withdrawable[0]?.amount
+
 
   res.status(200).json({
     most_liked,
@@ -337,6 +366,7 @@ const getTransactionDetails = async (req, res) => {
       $match: {
         channelId: ObjectId(channelId),
         isPaid: true,
+        isWithdrawn:false
       },
     },
     { $group: { _id: "", amount: { $sum: "$amount" } } },
@@ -471,6 +501,55 @@ const updateChannelPic = async (req, res) => {
   }
 }
 
+const fetchAllChannels = async (req,res) => {
+
+  const {skip,limit,status} = req.query
+  let match = {}
+
+  if(status==='ALL') match = {}
+  if(status==='APPROVED') match = { isApproved:true }
+  if(status==='PENDING') match = { isApproved:false }
+  if(status==='BLOCKED') match = { isBlocked:true }
+
+  let channels = await Channel.aggregate([
+      {
+        $match: match
+      },
+      {
+          $sort: { _id: -1 },
+      },
+      { $skip: parseInt(skip) },
+      { $limit: parseInt(limit) },
+  ])
+  
+  if(await Channel.countDocuments() === parseInt(skip)) return  res.status(200).json({
+      channels, 
+      message:"No more to load"
+  })
+
+  res.status(200).json({channels})
+}
+
+const approveChannel = async (req,res) => {
+  const { id } = req.query
+  let channel = await Channel.findById(id)
+  channel.isApproved=true
+  channel.save()
+  res.status(200).json({message:"Operation successfull"})
+}
+
+const blockChannel = async (req,res) => {
+
+
+  const { id,status } = req.query
+  let channel = await Channel.findById(id)
+  channel.isBlocked=status
+  channel.save();
+
+  res.status(200).json({message:"Operation successfull"})
+
+}
+
 
 module.exports = {
   createChannel,
@@ -481,6 +560,9 @@ module.exports = {
   getTransactionDetails,
   payoutRequest,
   cancelPayout,
+  approveChannel,
   updateChannelData,
-  updateChannelPic
+  updateChannelPic,
+  fetchAllChannels,
+  blockChannel
 };

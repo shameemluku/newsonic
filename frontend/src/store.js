@@ -1,11 +1,32 @@
 import { createStore, applyMiddleware, compose, combineReducers } from "redux";
 import thunk from "redux-thunk";
 
-import { posts, categoryPosts, selectedPost } from "./reducers/postReducers";
-import { authReducer, showLoginModal } from "./reducers/userAuthReducers";
-import { createChannel, channelDetails, addedPosts, creatorSelectedPost } from "./reducers/channelReducer";
+import { 
+  posts, 
+  categoryPosts, 
+  selectedPost,
+  selectedDraft 
+} from "./reducers/postReducers";
+
+import { 
+  authReducer, 
+  showLoginModal 
+} from "./reducers/userAuthReducers";
+
+import { 
+  createChannel, 
+  channelDetails, 
+  addedPosts, 
+  creatorSelectedPost 
+} from "./reducers/channelReducer";
+
 import { sponsorDetails } from "./reducers/adReducer";
 import { showTopProgress } from "./reducers/progressReducer";
+
+import { 
+  adminDetails,
+  showAdminProgress
+} from "./reducers/adminReducers";
 
 const reducers = combineReducers({
   posts,
@@ -15,10 +36,13 @@ const reducers = combineReducers({
   channelCreate: createChannel,
   channelDetails,
   selectedPost,
+  selectedDraft,
   addedPosts,
   sponsorDetails,
   creatorSelectedPost,
-  showTopProgress
+  showTopProgress,
+  adminDetails,
+  showAdminProgress
 });
 
 const store = createStore(

@@ -99,6 +99,10 @@
     font-size: 13px;
 }
 
+.user-sign-loading{
+    color: gray;
+}
+
 @keyframes FadeIn {
     0% {
       opacity:0;

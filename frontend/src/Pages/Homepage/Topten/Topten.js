@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { clickAd, displayAd } from "../../../actions/adActions";
 import { BACKEND_URL } from "../../../constants/url";
 import Skeleton from "@mui/material/Skeleton";
+import adpic from '../../../Images/ad2.jpg';
 
 export default function Topten() {
   const { ref: adBanner, inView, entry } = useInView();
@@ -33,14 +34,15 @@ export default function Topten() {
   const handleAdClick = async (url) => {
     let adParams = {
       format: "FRM2",
-      adId: ad._id,
-      sponsorId: ad.sponsorId,
+      adId: ad?._id,
+      sponsorId: ad?.sponsorId,
     };
 
     console.log("Here");
     clickAd(adParams);
     window.open(`https://${url}`, "_blank");
   };
+
 
   return (
     <>
@@ -124,8 +126,21 @@ export default function Topten() {
       <Container className="p-0">
         <Row className="p-0">
           <Col ref={adBanner}>
-            {ad === null ? (
-              <p>Loading.........</p>
+            { !ad  ?  (
+              <div
+              className="w-100 mt-3"
+              onClick={() => {
+                navigate('/sponsor')
+              }}
+            >
+              <span className="sponsor-txt">$ Sponsored</span>
+              <img
+                className="pointer"
+                src={adpic}
+                width="100%"
+                alt=""
+              ></img>
+            </div>
             ) : (
               <div
                 className="w-100 mt-3"

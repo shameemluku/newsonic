@@ -12,12 +12,11 @@ const {
     getBillingData
 } = require("../controllers/adController");
 
-const { isUserValid,isCreator } = require('../middlewares/auth')
+const { isUserValid,isCreator } = require('../middlewares/authMiddleware')
 const { checkUserType } = require('../middlewares/adMiddleware');
 
 router.post('/create' , isUserValid, createAd)
 router.post('/load-ad', checkUserType , loadDisplayAd)
-router.post('/approve-ad' , approveAd)
 router.post('/click-ad' , checkUserType , adClicked)
 router.get('/sponsor-ads' , isUserValid , sponsorDetails)
 router.get('/ad-revenue-details/:adId' , isUserValid , getRevenueDetails)

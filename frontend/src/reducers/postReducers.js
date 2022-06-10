@@ -11,6 +11,8 @@ import {
   DELETE_COMMENT_SUCCESS,
   REQUEST_DELETE_COMMENT,
   DELETE_COMMENT_FAILED,
+  CLEAR_SELECTED_DRAFT,
+  SET_SELECTED_DRAFT,
 } from "../constants/actionTypes";
 
 export const posts = (posts = [], action) => {
@@ -120,5 +122,19 @@ export const selectedPost = (
 
     default:
       return posts;
+  }
+};
+
+
+export const selectedDraft = (draft = null, action) => {
+  switch (action.type) {
+    case SET_SELECTED_DRAFT:
+      return {
+        ...action.payload
+      };
+    case CLEAR_SELECTED_DRAFT:
+      return null;
+    default:
+      return draft;
   }
 };

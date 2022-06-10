@@ -38,11 +38,28 @@ function LandingPage() {
             <div className="content-center mt-5">
               <div className="channel-name-box d-flex">
                 <div>
-                  <img src={`${BACKEND_URL}/uploads/${channelDetails?.channel?.image}`} alt="dp"></img>
+                  <img
+                    src={`${BACKEND_URL}/uploads/${channelDetails?.channel?.image}`}
+                    alt="dp"
+                  ></img>
                 </div>
                 <div>
-                  <div className="name mb-1">{channelDetails?.channel?.name}</div>
-                  <span className="approve-status">Pending approval</span>
+                  <div className="name mb-1">
+                    {channelDetails?.channel?.name}
+                  </div>
+                  {!channelDetails?.channel?.isApproved ? (
+                    <>
+                      <span className="approve-status">Pending approval</span>
+                    </>
+                  ) : (
+                    <>
+                      {channelDetails.channel?.isBlocked && (
+                        <span className="approve-status block-status">
+                          Channel Blocked
+                        </span>
+                      )}
+                    </>
+                  )}
                 </div>
               </div>
             </div>

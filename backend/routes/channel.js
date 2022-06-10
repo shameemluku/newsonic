@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { getFileStream } = require('../config/s3');
-const { isUserValid,isCreator } = require('../middlewares/auth')
+const { isUserValid,isCreator } = require('../middlewares/authMiddleware')
 
 const {
     createChannel,

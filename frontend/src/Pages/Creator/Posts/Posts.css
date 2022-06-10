@@ -10,9 +10,9 @@
     padding: 5px!important;
 }
 
-.news-load-btn{
+/* .news-load-btn{
     
-}
+} */
 
 .status-label{
     padding-top: 5px;
@@ -22,6 +22,10 @@
     padding-right: 15px;
     color: aliceblue;
     border-radius: 8px;
+}
+
+.table-links{
+    color: black !important;
 }
 
 .PUBLIC{

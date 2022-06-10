@@ -21,6 +21,8 @@ import { Col, Container, Row } from "react-bootstrap";
 import { BACKEND_URL } from "../../../../constants/url";
 import loadingAnim from "../../../../Images/loading.gif";
 import { useSelector } from "react-redux";
+import empty from "../../../../Images/no-ads.svg";
+import AddIcon from '@mui/icons-material/Add';
 
 function AdList({ adsList, handleDetails }) {
   const [filterStatus, setFilterStatus] = useState("ALL");
@@ -67,7 +69,7 @@ function AdList({ adsList, handleDetails }) {
 
   return (
     <>
-      <div className="ad-toggle-status mt-5">
+      <div className="ad-toggle-status mt-5 d-none d-sm-block">
         <ToggleButtonGroup
           style={{ backgroundColor: "white" }}
           value={filterStatus}
@@ -112,12 +114,12 @@ function AdList({ adsList, handleDetails }) {
                                 </Col>
                                 <Col lg={5}>
                                   <p className="titles">Title:</p>
-                                  <p>{val?.title}</p>
+                                  <p className="fw-500">{val?.title}</p>
 
                                   <p className="titles">
                                     <BiLinkAlt /> Url:
                                   </p>
-                                  <p>{val?.url}</p>
+                                  <p className="fw-500">{val?.url}</p>
 
                                   <p className="titles">
                                     <MdCropFree /> Format: {val?.format}
@@ -151,7 +153,7 @@ function AdList({ adsList, handleDetails }) {
                                   <p className="titles mt-3">
                                     <IoMdAlarm /> Duration
                                   </p>
-                                  <p>
+                                  <p className="fw-500">
                                     {moment(val?.startDate).format(
                                       "MMMM d, YYYY"
                                     )}{" "}
@@ -161,7 +163,7 @@ function AdList({ adsList, handleDetails }) {
                                     )}
                                   </p>
                                   <p>
-                                    <AiOutlineEye /> Views : {val?.viewsCount}
+                                    <AiOutlineEye /> Views : <span className="fw-500">{val?.viewsCount}</span>
                                   </p>
                                 </Col>
                               </Row>
@@ -184,7 +186,15 @@ function AdList({ adsList, handleDetails }) {
                     })}
                   </>
                 ) : (
-                  <>Nothing</>
+                  <>
+                  <div className="content-center">
+                    <img height={"350px"} src={empty} draggable={false}></img>
+                  </div>
+                  <div className="content-center mt-3">
+                    <Button className="f-green"><AddIcon className="me-2"/>START A NEW CAMPAIGN</Button>
+                  </div>
+                  
+                  </>
                 )}
               </>
             ) : (

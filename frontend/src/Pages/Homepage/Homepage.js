@@ -43,10 +43,10 @@ export default function Homepage({response}) {
       <Tile />
       <Container>
         <Row>
-          <Col xs={12} md={6} className="p-0">
+          <Col xs={12} lg={6} className="p-0">
             <Latest />
           </Col>
-          <Col xs={12} md={6} className="ps-md-0">
+          <Col xs={12} lg={6} className="ps-md-0">
             <Topten />
           </Col>
         </Row>
@@ -55,15 +55,15 @@ export default function Homepage({response}) {
       <section className="three-section-wrapper">
         <Container>
           <Row>
-            <Col xs={12} md={3}>
+            <Col xl={3}>
               <Educational data={catPosts?.education}/>
             </Col>
 
-            <Col xs={12} md={6}>
+            <Col xl={6}>
               <Technology data={catPosts?.technology} />
             </Col>
 
-            <Col xs={12} md={3}>
+            <Col xl={3}>
               <Business data={catPosts?.business} head={"BUSINESS NEWS"} limit={5}/>
             </Col>
           </Row>
@@ -71,9 +71,7 @@ export default function Homepage({response}) {
       </section>
 
       <section>
-      <Container>
         <Infinite></Infinite>
-      </Container>
       </section>
     </>
   );

@@ -8,6 +8,7 @@ import "./SponsorHome.css";
 import Typewriter from "typewriter-effect";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import FooterComp from "../../../components/Footer/Footer";
 
 const SponsorHome = () => {
   const { authUser: authData } = useSelector((state) => state);
@@ -18,7 +19,7 @@ const SponsorHome = () => {
     <>
       <Header hide={true} />
       <Container>
-        <div className="sponsor-main-content">
+        <div className="sponsor-main-content mb-5">
           <Row className="w-100">
             <Col
               lg={6}
@@ -73,6 +74,10 @@ const SponsorHome = () => {
                   </>
                 }
 
+
+                <div className="content-center d-none handshake-left">
+                <img src={bgElem} width={"100%"} alt="" />
+                </div>
     
 
                 <p className="spon-home-desc">
@@ -86,7 +91,6 @@ const SponsorHome = () => {
                     if (authData.user !== null) {
                       navigate("/sponsor/dashboard");
                     } else {
-                      alert("Here")
                       dispatch({
                         type: "SHOW_MODAL",
                       });
@@ -104,6 +108,7 @@ const SponsorHome = () => {
           </Row>
         </div>
       </Container>
+      <FooterComp/>
     </>
   );
 };

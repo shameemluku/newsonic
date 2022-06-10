@@ -47,7 +47,7 @@ export default function Dashboard() {
         <div className="mt-5">
           <Container>
           <Row>
-            <Col lg={2} className={"p-1"}>
+            <Col xl={2} lg={4} md={6} className={"p-1"}>
               <div className="ad-analytics-col dash-count-card bg-white">
                 <div className="d-flex">
                   <Avatar className="me-3">
@@ -69,7 +69,7 @@ export default function Dashboard() {
                 </p>
               </div>
             </Col>
-            <Col lg={2} className={"p-1"}>
+            <Col xl={2} lg={4} md={6} className={"p-1"}>
               <div className="ad-analytics-col dash-count-card bg-white">
                 <div className="d-flex">
                   <Avatar className="me-3">
@@ -91,7 +91,7 @@ export default function Dashboard() {
                 </p>
               </div>
             </Col>
-            <Col lg={2} className={"p-1"}>
+            <Col xl={2} lg={4} md={6} className={"p-1"}>
               <div className="ad-analytics-col dash-count-card bg-white">
                 <div className="d-flex">
                   <Avatar className="me-3">
@@ -114,7 +114,7 @@ export default function Dashboard() {
               </div>
             </Col>
 
-            <Col lg={2} className={"p-1"}>
+            <Col xl={2} lg={4} md={6} className={"p-1"}>
               <div className="ad-analytics-col dash-count-card bg-white">
                 <div className="d-flex">
                   <Avatar className="me-3">
@@ -138,7 +138,7 @@ export default function Dashboard() {
             </Col>
 
             
-            <Col lg={2} className={"p-1"}>
+            <Col xl={2} lg={4} md={6} className={"p-1"}>
               <div 
                 className="ad-analytics-col  creator-analytics-withdrawable fixed-height pointer"
                 onClick={()=>{
@@ -158,7 +158,7 @@ export default function Dashboard() {
               </div>
             </Col>
 
-            <Col lg={2} className={"p-1"}>
+            <Col xl={2} lg={4} md={6} className={"p-1"}>
               <div className="ad-analytics-col  ad-analytics-total fixed-height">
                 ₹{" "}
                 {loading ? (
@@ -182,7 +182,7 @@ export default function Dashboard() {
         <div>
           <Row>
           <Col lg={6}>
-              <div className="creator-dash-card">
+              <div className="creator-dash-card mb-3">
                   <p className="dash-card-heading"><AiOutlineEye className="me-2"/>Most Viewed</p>
               { dashData?.most_viewed ?
                 dashData?.most_viewed.map((val,i,arr)=>{
@@ -230,7 +230,7 @@ export default function Dashboard() {
             </Col>
             
             <Col lg={6}>
-              <div className="creator-dash-card">
+              <div className="creator-dash-card mb-3">
                   <p className="dash-card-heading"><BiLike className="me-2"/>Most Liked</p>
               { dashData?.most_liked ? 
                 dashData?.most_liked.map((val,i,arr)=>{

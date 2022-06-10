@@ -1,0 +1,162 @@
+.profile-main-content{
+    margin-top: 100px;
+}
+
+.user-profile-pic{
+    display: flex;
+    width: 120px;
+    height: 120px;
+    background-color: rgb(153, 153, 153);
+    border-radius: 50%;
+    cursor: pointer;
+    justify-content: center;
+    align-items: center;
+    box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
+    background-repeat: no-repeat;
+    background-size: contain;
+}
+
+.user-profile-pic-parent{
+    position: relative;
+}
+
+.user-profile-pic-parent:hover > .hide {
+    display: block !important;
+}
+
+/* .user-profile-pic:hover > .hide {
+    display: block !important;
+} */
+
+.profile-card{
+    margin-top: 70px;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px !important;
+    padding-bottom: 30px;
+}
+
+.profile-card .profile-pic{
+    margin-top: -50px !important;
+}
+
+.profile-card .username{
+    font-size: 35px;
+    text-align: center;
+    margin-top: 10px;
+    font-weight: 500;
+}
+.profile-card .userid{
+    font-size: 13px;
+    color: gray;
+    text-align: center;
+}
+
+.profile-card .info-section{
+    margin-top: 50px;
+    margin-left: 50px;
+}
+
+.profile-card .titles{
+    color: grey;
+}
+.profile-card .value{
+    font-weight: 500;
+}
+
+.channel-card{
+    width: 100% !important;
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px !important;
+    padding: 10px;
+    margin-top: 20px;
+    height: 200px !important;
+}
+
+.channel-card .holder{
+    position: relative;
+    height: 100%
+}
+
+.channel-card .holder .console-btn{
+    position: absolute;
+    background-color: green !important;
+    color:white !important;
+    width: 100%;
+    margin: 0;
+    top: auto;
+    bottom: 5px;
+}
+.saved-card .holder .plane-btn{
+    color:green !important;
+    width: 100%;
+}
+
+.profile-card-head{
+    font-size: 17px;
+    color: gray;
+}
+
+.saved-card{
+    box-shadow: rgba(0, 0, 0, 0.05) 0px 0px 0px 1px !important;
+    padding: 10px;
+    margin-top: 20px;
+}
+
+.channel-card .ad-count{
+    font-size: 35px;
+    font-weight: 500;
+    color: green;
+    margin-bottom: 0;
+}
+
+.user-profile-pic .blured{
+    filter: blur(5px);
+}
+
+.user-profile-pic-parent:hover > .user-profile-pic{
+    filter: brightness(50%);
+}
+
+
+.user-profile-pic-parent .upload-btn{
+    color: white !important;
+    position: absolute;
+    top: 40px;
+    margin: 0;
+    left: 10px;
+    right: auto;
+    bottom: auto;
+}
+
+.user-profile-pic-parent .remove-btn{
+    color: rgb(255, 140, 140) !important;
+    position: absolute;
+    top: 60px;
+    margin: 0;
+    left: 15px;
+    right: auto;
+    bottom: auto;
+}
+
+.submitTick{
+    color: green !important;
+    cursor: pointer;
+}
+.profile-link{
+    color: green !important;
+    cursor: pointer;
+}
+.profile-link:hover{
+    color: rgb(67, 168, 67) !important;
+}
+.change-password-dialog{
+    width: 500px !important;
+}
+
+@media only screen and (max-width: 992px) {
+    .profile-left-sec{
+        padding-top: 0 !important;
+    }
+    .profile-right-sec {
+        margin-top: 5px !important;
+    }
+}
+

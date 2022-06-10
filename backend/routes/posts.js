@@ -2,7 +2,6 @@ const express = require('express');
 const router = express.Router();
 
 const {
-    getPosts,
     addPosts,
     fetchNews,
     fetchDetails,
@@ -12,7 +11,6 @@ const {
     savePost,
     deletePost,
     getCategory,
-    homePosts,
     fetchHomeData,
     relatedPost,
     getNavLinks,
@@ -21,7 +19,9 @@ const {
     updatePostCategory,
     updatePostIsComment,
     updatePostIsMonetize,
-    translatePost
+    translatePost,
+    saveDraft,
+    deleteDraft
 } = require('../controllers/postControllers');
 const { 
     isLiked,
@@ -32,11 +32,11 @@ const {
     isRead,
     isCreator,
     isUserValid
-} = require('../middlewares/auth');
+} = require('../middlewares/authMiddleware');
 
 
-router.get('/', getPosts)
 router.post('/addpost', addPosts)
+router.patch('/save-draft', saveDraft)
 router.get('/fetch-home', fetchHomeData)
 router.get('/fetch-news/:category', fetchNews)
 router.get('/fetch-details/:id', isRead, isLiked, isSaved, fetchDetails)
@@ -46,14 +46,14 @@ router.post('/like-post', isUserValid, likePost)
 router.post('/save-post', isUserValid, savePost)
 router.get('/fetch-saved', isUserValid, savedPosts)
 router.post('/delete-post', isUserValid, isCreator, deletePost)
+router.post('/delete-draft', isUserValid, isCreator, deleteDraft)
 router.get('/category', getCategory)
 router.get('/nav-links', getNavLinks)
-router.get('/home-posts', homePosts)
 router.post('/fetch-related', relatedPost)
 router.patch('/update-post-data', isUserValid, isCreator, updatePostText)
 router.patch('/update-post-category', isUserValid, isCreator, updatePostCategory)
 router.patch('/update-post-iscomment', isUserValid, isCreator, updatePostIsComment)
 router.patch('/update-post-ismonetize', isUserValid, isCreator, updatePostIsMonetize)
-router.get('/translate', translatePost)
+router.get('/translate/:content', translatePost)
 
 module.exports = router;

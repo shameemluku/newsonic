@@ -7,15 +7,19 @@ import { MdErrorOutline } from "react-icons/md";
 import { GrClose } from "react-icons/gr";
 import { VariantType, useSnackbar } from "notistack";
 import Button from "@mui/material/Button";
-import {GoogleLogin} from 'react-google-login'
-import {useDispatch} from 'react-redux'
-import { signUp , signIn } from '../../actions/userActions'
-import {useNavigate} from 'react-router-dom'
-import { isRegisterValid, isEmailValid, isPassValid } from "../../validations/registerForm";
+import { GoogleLogin } from "react-google-login";
+import { useDispatch, useSelector } from "react-redux";
+import { signUp, signIn } from "../../actions/userActions";
+import { useNavigate } from "react-router-dom";
+import {
+  isRegisterValid,
+  isEmailValid,
+  isPassValid,
+} from "../../validations/registerForm";
 import "../Login/Login.css";
+import { CircularProgress } from "@mui/material";
 
 function Login(props) {
-
   const [toggleLogin, setToggle] = useState(true);
   const [loginFields, setLoginField] = useState({ email: "", password: "" });
   const [registerFields, setRegisterField] = useState({
@@ -23,7 +27,7 @@ function Login(props) {
     email: "",
     password: "",
     phone: "",
-    type:"normal"
+    type: "normal",
   });
   const [loginErrors, setLoginError] = useState({
     email: false,
@@ -37,93 +41,84 @@ function Login(props) {
     name: "",
   });
 
+  const { authUser,posts } = useSelector((state) => state);
   const { enqueueSnackbar } = useSnackbar();
-  const dispatch = useDispatch()
-  const navigate = useNavigate()
-  const [response,setResponse] = useState({status:false,message:""})
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const [response, setResponse] = useState({ status: false, message: "" });
 
   function handleLogin() {
     let isValid = true;
 
-    if (!isEmailValid(loginFields,setLoginError,enqueueSnackbar)) isValid = false;
-    if (!isPassValid(loginFields,setLoginError,enqueueSnackbar)) isValid = false;
+    if (!isEmailValid(loginFields, setLoginError, enqueueSnackbar))
+      isValid = false;
+    if (!isPassValid(loginFields, setLoginError, enqueueSnackbar))
+      isValid = false;
     if (isValid) {
       let params = {
         loginFields,
         setResponse,
         response,
-        hideModal:props.onHide,
-        setLoginField
-      }
-      dispatch(signIn(params))
+        hideModal: props.onHide,
+        setLoginField,
+      };
+      dispatch(signIn(params));
     }
   }
 
   //User Register API Call
 
-  function handleRegister(){
+  function handleRegister() {
+    if (isRegisterValid(registerFields, setRegisterError, registerErrors)) {
+      setRegisterField({ ...registerFields, type: "normal" });
 
-    if(isRegisterValid(registerFields,setRegisterError,registerErrors)){
-      
-      setRegisterField({...registerFields,type:"normal"})
-  
       let params = {
-          registerFields,
-          setResponse,
-          response,
-          hideModal:props.onHide,
-          setRegisterField
-        }
-  
-      dispatch(signUp(params))
-    }else{
+        registerFields,
+        setResponse,
+        response,
+        hideModal: props.onHide,
+        setRegisterField,
+      };
+
+      dispatch(signUp(params));
+    } else {
       console.log(registerErrors);
     }
-
   }
 
-
-
-
-  const googleSuccess = async (res)=>{
+  const googleSuccess = async (res) => {
     console.log(res);
     const result = res.profileObj;
     const token = res.tokenId;
 
     let userData = {
-      email:result.email,
-      name:result.givenName,
-      phone:null,
-      type:"google"
-    }
+      email: result.email,
+      name: result.givenName,
+      phone: null,
+      type: "google",
+    };
 
-    
     try {
-
       let params = {
-        registerFields:userData,
+        registerFields: userData,
         setResponse,
         response,
-        hideModal:props.onHide
-      }
+        hideModal: props.onHide,
+      };
 
       dispatch(signUp(params));
-    } catch (error) {
-      
-    }
-  }
+    } catch (error) {}
+  };
 
-  const googleFailure = ()=>{
-    console.log("Google Sign in error")
+  const googleFailure = () => {
+    console.log("Google Sign in error");
     enqueueSnackbar("Google Sign in error!", { variant: "error" });
-  }
+  };
 
-
-  useEffect(()=>{
-    if(response.status) enqueueSnackbar(response.message, { variant: "error" }); 
-  },[response])
-
-
+  useEffect(() => {
+    if (response.status)
+      enqueueSnackbar(response.message, { variant: "error" });
+  }, [response]);
 
   return (
     <>
@@ -149,25 +144,27 @@ function Login(props) {
                 </Col>
                 <Col className="d-flex flex-column w-100">
                   <div className="w-100 d-flex justify-content-end pe-4 mt-3">
-                    <span style={{ cursor: "pointer" }} onClick={
-                        ()=>{
-                          setLoginField({...loginFields,
-                            email: "",
-                            password: "",
-                          })
-                          setLoginError({})
-                          setRegisterError({})
-                          setRegisterField({
-                            ...registerFields,
-                            name: "",
-                            email: "",
-                            password: "",
-                            phone: "",
-                          })
-                          props.onHide()
-                          dispatch({type:"CLOSE_MODAL"})
-                        }
-                      }>
+                    <span
+                      style={{ cursor: "pointer" }}
+                      onClick={() => {
+                        setLoginField({
+                          ...loginFields,
+                          email: "",
+                          password: "",
+                        });
+                        setLoginError({});
+                        setRegisterError({});
+                        setRegisterField({
+                          ...registerFields,
+                          name: "",
+                          email: "",
+                          password: "",
+                          phone: "",
+                        });
+                        props.onHide();
+                        dispatch({ type: "CLOSE_MODAL" });
+                      }}
+                    >
                       <GrClose />
                     </span>
                   </div>
@@ -192,7 +189,7 @@ function Login(props) {
                         });
                         setLoginError({ ...loginErrors, email: false });
                       }}
-                      autoComplete="on"
+                      autoComplete="email"
                     />
 
                     <input
@@ -214,32 +211,42 @@ function Login(props) {
                       }}
                     />
 
-                    <input
-                      type="button"
-                      className="login-button mt-2"
-                      style={{ width: "100%" }}
-                      value="Sign In"
-                      onClick={() => {
-                        handleLogin();
-                      }}
-                    />
+                    {!authUser.signInLoading ? (
+                      <input
+                        type="button"
+                        className="login-button mt-2"
+                        style={{ width: "100%" }}
+                        value="Sign In"
+                        onClick={() => {
+                          handleLogin();
+                        }}
+                      />
+                    ) : (
+                      <p className="user-sign-loading content-center mt-5">
+                        <CircularProgress size={25} color="success" className="me-2"/>
+                        Getting you in</p>
+                    )}
 
                     <div className="login-line"></div>
 
-                    <GoogleLogin
-                      clientId="129734090902-mkllv1oog7546m93bsoho1r2b8pgfc2h.apps.googleusercontent.com"
-                      render={(renderProps)=>(
-                        <div className="login-google w-100 text-center">
-                          <img src={google} height="40px" alt="" />
-                          <span onClick={renderProps.onClick}>Google</span>
-                        </div>
-                      )}
-
-                      onSuccess={googleSuccess}
-                      onFailure={googleFailure}
-                    />
-                    
-                    
+                    {!authUser.signUpLoading ? 
+                    (
+                      <GoogleLogin
+                        clientId="129734090902-mkllv1oog7546m93bsoho1r2b8pgfc2h.apps.googleusercontent.com"
+                        render={(renderProps) => (
+                          <div className="login-google w-100 text-center">
+                            <img src={google} height="40px" alt="" />
+                            <span onClick={renderProps.onClick}>Google</span>
+                          </div>
+                        )}
+                        onSuccess={googleSuccess}
+                        onFailure={googleFailure}
+                      />
+                    ) : (
+                      <p className="user-sign-loading content-center mt-4">
+                        <CircularProgress size={25} color="success" className="me-2"/>
+                        Getting you in</p>
+                    )}
                   </div>
                   <div className="register-button align-self-center mt-4">
                     <span className="justify-content-center me-2">
@@ -260,24 +267,26 @@ function Login(props) {
               <Row>
                 <Col className="d-flex flex-column w-100">
                   <div className="w-100 d-flex justify-content-end pe-4 mt-3">
-                    <span style={{ cursor: "pointer" }} onClick={
-                        ()=>{
-                          setLoginField({...loginFields,
-                            email: "",
-                            password: "",
-                          })
-                          setLoginError({})
-                          setRegisterError({})
-                          setRegisterField({
-                            ...registerFields,
-                            name: "",
-                            email: "",
-                            password: "",
-                            phone: "",
-                          })
-                          props.onHide()
-                        }
-                      }>
+                    <span
+                      style={{ cursor: "pointer" }}
+                      onClick={() => {
+                        setLoginField({
+                          ...loginFields,
+                          email: "",
+                          password: "",
+                        });
+                        setLoginError({});
+                        setRegisterError({});
+                        setRegisterField({
+                          ...registerFields,
+                          name: "",
+                          email: "",
+                          password: "",
+                          phone: "",
+                        });
+                        props.onHide();
+                      }}
+                    >
                       <GrClose />
                     </span>
                   </div>
@@ -294,12 +303,16 @@ function Login(props) {
                         variant="outlined"
                         className="w-100"
                         value={registerFields.name}
-                        onChange={
-                          (e)=>{
-                            setRegisterField({...registerFields,name:e.target.value})
-                            setRegisterError((prevState)=>({...prevState,name:""}))
-                          }
-                        }
+                        onChange={(e) => {
+                          setRegisterField({
+                            ...registerFields,
+                            name: e.target.value,
+                          });
+                          setRegisterError((prevState) => ({
+                            ...prevState,
+                            name: "",
+                          }));
+                        }}
                         error={registerErrors.name}
                         helperText={registerErrors.name}
                       />
@@ -311,12 +324,16 @@ function Login(props) {
                         variant="outlined"
                         className="w-100 mt-2"
                         value={registerFields.email}
-                        onChange={
-                          (e)=>{
-                            setRegisterField({...registerFields,email:e.target.value})
-                            setRegisterError((prevState)=>({...prevState,email:""}))
-                          }
-                        }
+                        onChange={(e) => {
+                          setRegisterField({
+                            ...registerFields,
+                            email: e.target.value,
+                          });
+                          setRegisterError((prevState) => ({
+                            ...prevState,
+                            email: "",
+                          }));
+                        }}
                         error={registerErrors.email}
                         helperText={registerErrors.email}
                       />
@@ -328,15 +345,19 @@ function Login(props) {
                         variant="outlined"
                         className="w-100 mt-2"
                         value={registerFields.phone}
-                        onChange={
-                          (e)=>{
-                            setRegisterField({...registerFields,phone:e.target.value})
-                            setRegisterError((prevState)=>({...prevState,phone:""}))
-                          }
-                        }
+                        onChange={(e) => {
+                          setRegisterField({
+                            ...registerFields,
+                            phone: e.target.value,
+                          });
+                          setRegisterError((prevState) => ({
+                            ...prevState,
+                            phone: "",
+                          }));
+                        }}
                         error={registerErrors.phone}
                         helperText={registerErrors.phone}
-                        autoComplete='off'
+                        autoComplete="off"
                       />
 
                       <TextField
@@ -346,12 +367,16 @@ function Login(props) {
                         variant="outlined"
                         className="w-100 mt-2"
                         value={registerFields.password}
-                        onChange={
-                          (e)=>{
-                            setRegisterField({...registerFields,password:e.target.value})
-                            setRegisterError((prevState)=>({...prevState,password:""}))
-                          }
-                        }
+                        onChange={(e) => {
+                          setRegisterField({
+                            ...registerFields,
+                            password: e.target.value,
+                          });
+                          setRegisterError((prevState) => ({
+                            ...prevState,
+                            password: "",
+                          }));
+                        }}
                         error={registerErrors.password}
                         helperText={registerErrors.password}
                       />
@@ -361,8 +386,8 @@ function Login(props) {
                         className="login-button mt-2"
                         style={{ width: "100%" }}
                         value="Register"
-                        onClick={()=>{
-                          handleRegister()
+                        onClick={() => {
+                          handleRegister();
                         }}
                       />
 

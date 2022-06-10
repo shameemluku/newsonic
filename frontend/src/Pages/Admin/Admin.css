@@ -1,0 +1,38 @@
+.wrapper{
+    width: 100%;
+    height: 100vh;
+    position: relative;
+}
+.login-card{
+    width: 30%;
+    height: 550px;
+    position: absolute;
+    top:0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    margin: auto;
+}
+
+.center{
+    width: 130px;
+    margin: auto;
+}
+
+.admin-avatar{
+    height: 100px;
+    border-radius: 50%;
+}
+
+.admin-login-btn{
+    height: 50px !important;
+    box-shadow: none !important;
+    background-color: green !important;
+}
+
+@media only screen and (max-width: 992px) {
+    .login-card{
+        width: 90%;
+        height: 530px;
+    }
+}

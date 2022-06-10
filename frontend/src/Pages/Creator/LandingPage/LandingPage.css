@@ -38,3 +38,7 @@
     border-radius: 10px;
     padding: 5px 30px 5px 30px;
 }
+
+.block-status{
+    background-color: rgb(196, 64, 50) !important;
+}

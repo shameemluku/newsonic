@@ -86,10 +86,13 @@
     background-color: rgb(176, 176, 176);
 }
 
-.comment-item{
+.comment-card-body .comment-item{
+    position: relative;
     margin-top: 10px;
     margin-bottom: 10px;
 }
+
+
 
 .comment-dp {
     width: 60px;
@@ -110,7 +113,7 @@
 
 .comment-text{
     width: 90%;
-    margin-top: 20px;
+    margin-left: 70px;
 }
 
 .comment-type{
@@ -229,7 +232,10 @@
 
 .single-comment{
     border: 2px solid #e0f4cb;
-    padding: 20px;
+    padding-top: 5px;
+    padding-left: 20px;
+    padding-right: 20px;
+    padding-bottom: 20px;
     border-radius: 20px
 }
 
@@ -244,8 +250,22 @@
     border: none;
 }
 
-.delete-comment-btn{
+.single-comment .delete-comment-btn{
     color: #b3b8b6;
+    margin: 0;
+    bottom: auto;
+    right: auto;
+    top: 150px;
+    right: 10px;
+}
+
+.comment-delete-holder{
+    position: absolute;
+    margin: 0;
+    top: 20px;
+    right: 20px;
+    left: auto;
+    bottom: auto;
 }
 
 
@@ -279,12 +299,15 @@
     .comment-footer{
         padding: 13px !important;
     }
+    .mob-hide{
+        display: none;
+    }
 }
 
 
 @media only screen and (max-width: 992px) {
     #progressBarContainer {
-        margin-top: 88px;
+        margin-top: 104px;
     }
 }
 
@@ -292,5 +315,8 @@
 @media only screen and (max-width: 600px) {
     .news-views {
         display: none!important;
+    }
+    .lang-btn {
+        padding: 6px !important;
     }
 }

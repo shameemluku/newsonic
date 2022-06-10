@@ -1,0 +1,40 @@
+/* Users */
+
+.id-row{
+    font-size: 10px !important;
+    color: gray !important;
+}
+
+.remove-row{
+    color: rgb(188, 27, 27) !important;
+}
+
+.delete-confirm-btn{
+    color: red !important;
+}
+
+/* Posts */
+
+.admin-post-status{
+    background-color: rgb(69, 167, 69);
+    color: white;
+    font-size: 10px;
+    padding: 8px;
+    border-radius: 20px;
+}
+
+.status-review{
+    background-color: rgb(206, 170, 42) !important;
+}
+
+
+/* Channel */
+
+.admin-channel-dp{
+    width: 40px;
+    border-radius: 50%;
+}
+
+.admin-view-more{
+    font-size: 10px !important;
+}

@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import form1 from "../../../Images/format1.png";
-import form2 from "../../../Images/format2.svg";
-import form3 from "../../../Images/format3.svg";
+import form2 from "../../../Images/format2.png";
+import form3 from "../../../Images/format3.png";
 
 function Step1({updateData,updateRatio}) {
 
@@ -29,7 +29,7 @@ function Step1({updateData,updateRatio}) {
               })
               updateRatio([9,21])
             }}>
-                <p className="format-info">Vertical Banner (120 x 240)</p>
+                <p className="format-info">Home Banner (9 x 20)</p>
               <div className="format-box content-center">
                 <img className="" src={form1} width="80%" alt="" />
               </div>
@@ -46,9 +46,9 @@ function Step1({updateData,updateRatio}) {
               })
               updateRatio([4,5])
             }}>
-                <p className="format-info">Vertical Banner (120 x 240)</p>
+                <p className="format-info">Horizontal Banner (4 x 5)</p>
               <div className="format-box content-center">
-                <img className="" src={form1} width="80%" alt="" />
+                <img className="" src={form2} width="80%" alt="" />
               </div>
             </label>
           </Col>
@@ -63,9 +63,9 @@ function Step1({updateData,updateRatio}) {
                 })
                 updateRatio([20,9])
               }}>
-                <p className="format-info">Vertical Banner (120 x 240)</p>
+                <p className="format-info">Post Banner (20 x 9)</p>
               <div className="format-box content-center">
-                <img className="" src={form1} width="80%" alt="" />
+                <img className="" src={form3} width="80%" alt="" />
               </div>
             </label>
           </Col>

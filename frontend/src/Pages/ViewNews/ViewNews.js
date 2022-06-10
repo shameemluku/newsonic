@@ -12,6 +12,9 @@ import { getPostDetails, getPosts } from "../../actions/postActions";
 import { getRelated } from "../../api";
 import { clickAd, displayAd } from "../../actions/adActions";
 import { BACKEND_URL } from "../../constants/url";
+import FooterComp from "../../components/Footer/Footer";
+import ScrollContainer from "react-indiana-drag-scroll";
+import { CLEAR_POST_DETAILS } from "../../constants/actionTypes";
 
 export default function ViewNews() {
   const {
@@ -29,15 +32,17 @@ export default function ViewNews() {
   useEffect(() => {
     dispatch(getPostDetails(postId));
 
-    if (posts.length !== 0) {
-      console.log("Already Loaded");
-    } else {
+    if (posts.length === 0) {
       dispatch(getPosts());
     }
   }, [authData]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
+
+    return ()=>{
+      dispatch({type:CLEAR_POST_DETAILS})
+    }
   }, []);
 
   useEffect(() => {
@@ -87,7 +92,6 @@ export default function ViewNews() {
       channelId: selectedPost?.details?.channelDetails[0]?._id,
     };
 
-    console.log("Here");
     clickAd(adParams);
     window.open(`https://${url}`, "_blank");
   };
@@ -100,10 +104,10 @@ export default function ViewNews() {
       </div>
       <Container className="main-section">
         <Row>
-          <Col sm={8}>
+          <Col lg={8}>
             <NewsSection data={selectedPost?.details} />
           </Col>
-          <Col sm={4} className="mt-5">
+          <Col lg={4} className="mt-5">
             <Business
               head={"MORE RELATED POSTS"}
               view={true}
@@ -137,7 +141,7 @@ export default function ViewNews() {
         </Row>
 
         <Row>
-          <div className="d-flex card-scroll mt-3">
+          <ScrollContainer className="scroll-container d-flex card-scroll mt-3">
             {posts.slice(0, 7).map((val) => {
               return (
                 <span className="me-2">
@@ -145,15 +149,17 @@ export default function ViewNews() {
                 </span>
               );
             })}
-          </div>
+          </ScrollContainer>
         </Row>
       </Container>
 
-      <section className="comment-section">
+      <section className="comment-section py-5">
         <Container style={{ width: "90%" }} className="comment-container">
           <Comments comments={selectedPost.details?.comments} id={postId} />
         </Container>
       </section>
+
+      <FooterComp/>
     </>
   );
 }

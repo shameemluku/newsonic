@@ -1,6 +1,6 @@
 import React, { useEffect } from "react";
 import Autocomplete from "./Autocomplete";
-import { Row, Col, Container, Card, ProgressBar } from "react-bootstrap";
+import { Row, Col, Container, Card, ProgressBar, Alert } from "react-bootstrap";
 import { useState } from "react";
 import { IoCloseSharp, IoSaveOutline } from "react-icons/io5";
 import { RiMoneyDollarCircleLine } from "react-icons/ri";
@@ -14,12 +14,15 @@ import Uploader from "../../../components/Admin/ImageUpload/Uploader";
 import { style } from "@mui/system";
 
 import { useDispatch,useSelector } from "react-redux";
-import { createPost } from "../../../actions/postActions";
+import { createPost, saveDraft } from "../../../actions/postActions";
 import { useNavigate } from "react-router-dom";
 import { verifyUser } from "../../../actions/userActions";
 import { getCategory } from "../../../api";
+import { useSnackbar } from "notistack";
+import { CLEAR_SELECTED_DRAFT } from "../../../constants/actionTypes";
 
 export default function Addnews() {
+
   const maxLength = 5000;
   const [category, setCat] = useState([]);
   const [categories, setCategories] = useState([]);
@@ -27,6 +30,7 @@ export default function Addnews() {
   const [monetize, setMonetize] = useState(false);
   const [comment, setComment] = useState(false);
   const [remainig, setRemain] = useState(maxLength);
+  const [draftId, setDraftId] = useState(null);
 
   const [images, setImages] = useState([]);
   const [titleError, setTitleError] = useState(false);
@@ -39,11 +43,26 @@ export default function Addnews() {
   const navigate = useNavigate()
   const authData = useSelector((state) => state.authUser);
   const channelDetails = useSelector((state) => state.channelDetails);
-
+  const draft = useSelector((state) => state.selectedDraft);
+  const { enqueueSnackbar } = useSnackbar();
 
   useEffect( () => {
     fetchCategory()
+    if(draft){
+      draft?.category && setCat([...draft?.category])
+      draft?.monetize && setMonetize(draft?.monetize)
+      draft?.comment && setComment(draft?.comment)
+      setNewsText({
+        newsHead:draft?.newsHead,
+        newsBody:draft?.newsBody
+      })
+      setDraftId(draft?._id)
+    }
+    return () => {
+      dispatch({type:CLEAR_SELECTED_DRAFT})
+    }
   },[]);
+
 
   const fetchCategory = async () => {
     let {data} = await getCategory()
@@ -119,10 +138,34 @@ export default function Addnews() {
       comment,
       monetize,
       images,
-      channelId
+      channelId,
+      draftId:draftId
     };
 
     dispatch(createPost(data, setProgress, progress));
+  }
+
+  const handleDraft = async () => {
+
+    const {newsHead,newsBody} = newsText
+    const {_id:channelId} = channelDetails.channel
+
+    if(newsHead.length>30 || newsBody.length>30){
+      let data = {
+        ...newsText,
+        category,
+        comment,
+        monetize,
+        channelId,
+        draftId:draftId
+      }
+      dispatch({type:'SHOW_PROGRESS'})
+      if(await saveDraft(data)) enqueueSnackbar('Saved to draft', { variant: 'success' });
+      else enqueueSnackbar('Operation Failed', { variant: 'error' });
+      dispatch({type:'HIDE_PROGRESS'})
+    }else{
+      enqueueSnackbar('Atleast 30 characters to create draft', { variant: 'info' })
+    }
   }
 
   useEffect(()=>{
@@ -133,16 +176,20 @@ export default function Addnews() {
   },[progress])
 
   function isErrorHead() {
-    if (newsText.newsHead === "" || newsText.newsHead[0] === " ") {
+    const {newsHead,newsBody} = newsText
+    if (newsHead.length < 30 || newsHead[0] === " ") {
       setTitleError(true);
+      enqueueSnackbar('Heading cannot be empty or atleast 30 characters', { variant: 'info' })
       return true;
     }
     return false;
   }
 
   function isErrorBody() {
-    if (newsText.newsBody === "" || newsText.newsBody[0] === " ") {
+    const {newsHead,newsBody} = newsText
+    if (newsBody.length< 30 || newsBody[0] === " ") {
       setHeadError(true);
+      enqueueSnackbar('Body cannot be empty or atleast 30 characters', { variant: 'info' })
       return true;
     }
     return false;
@@ -163,6 +210,7 @@ export default function Addnews() {
     }
     return false;
   }
+
 
   return (
     <>
@@ -277,8 +325,8 @@ export default function Addnews() {
                     );
                   })}
                 </div>
-                <button className="save-btn mt-2">
-                  <IoSaveOutline className="me-2" />
+                <button className="save-btn mt-2" onClick={handleDraft}>
+                  <IoSaveOutline className="me-2"/>
                   Save Draft
                 </button>
                 <button className="publish-btn mt-2" onClick={handleSave}>

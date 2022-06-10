@@ -119,7 +119,7 @@ const MakePay = ({ totalAmount }) => {
       <Container className="p-0 mt-5">
         {payStatus === 'INITIAL' && <Row>
           <Col lg={7}>
-            <div className="billing-left-card">
+            <div className="billing-left-card mb-3">
               <p className="heading ms-3">
                 <CreditCardIcon className="me-2 mb-1" />
                 Summary
@@ -153,7 +153,7 @@ const MakePay = ({ totalAmount }) => {
                   <ListItemText primary="" secondary="" />
                   <p className="mb-0" style={{ color: "gray" }}>
                     To pay:{" "}
-                    <span className="totalAmount ms-3">₹ {totalAmount}</span>
+                    <span className="totalAmount ms-3">₹ {totalAmount.toFixed(2)}</span>
                   </p>
                 </ListItem>
               </List>
@@ -161,9 +161,9 @@ const MakePay = ({ totalAmount }) => {
           </Col>
 
           <Col lg={5}>
-            <div className="billing-right-card">
+            <div className="billing-right-card mb-3">
               <div>
-                Pay using:
+                <span className="f-gray">Pay using:</span>
                 <div className="payment-options">
                 <ToggleButton
                   className="razor"
@@ -182,7 +182,7 @@ const MakePay = ({ totalAmount }) => {
               </Button>
               </> 
               : <Button className="pay-btn" onClick={loadRazorpay} disabled={!selected}>
-                Pay now&nbsp;&nbsp; - &nbsp;&nbsp;₹ {totalAmount}{" "}
+                Pay now&nbsp;&nbsp; - &nbsp;&nbsp;₹ {totalAmount.toFixed(2)}{" "}
               </Button>}
             </div>
           </Col>

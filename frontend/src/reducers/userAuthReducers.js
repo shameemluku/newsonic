@@ -3,57 +3,92 @@ import {
   USER_SIGNUP,
   USER_SIGNIN,
   USER_VERIFIED,
-  USER_SIGNOUT
+  USER_SIGNOUT,
+  UPDATE_USER,
+  USER_SIGNUP_LOAD,
+  USER_SIGNIN_LOAD,
+  USER_LOAD_END
 } from "../constants/actionTypes";
 
-let authData = { user: null };
+let authData = {}
 
 try {
   authData = localStorage.getItem("userInfo")
     ? {
         ...authData,
         user: decodeData(localStorage.getItem("userInfo")),
-        message: "Main-try-true",
       }
-    : { user: null, message: "Main-try-false" };
+    : { 
+      user: null , 
+      signInLoading:false, 
+      signUpLoading:false  
+    }
+
 } catch (error) {
-  authData = { ...authData, user: null, message: "MainCatch" };
+  authData = { 
+    ...authData, 
+    user: null,
+    signInLoading:false, 
+    signUpLoading:false 
+  };
   localStorage.removeItem("userInfo");
 }
 
 export const authReducer = (user = authData, action) => {
   switch (action.type) {
     case USER_SIGNUP:
-      console.log("Here inside auth");
       localStorage.setItem("userInfo", encodeData(action.payload));
       return { 
         ...user, 
-        user: action.payload, 
-        message: "signup" 
+        user: action.payload,
+        signUpLoading:false
       };
 
     case USER_SIGNIN:
       localStorage.setItem("userInfo", encodeData(action.payload));
       return { 
         ...user, 
-        user: action.payload, 
-        message: "signin" 
+        user: action.payload,
+        signInLoading:false
       };
 
     case USER_VERIFIED:
       localStorage.setItem("userInfo", encodeData(action.payload));
       return { 
         ...user, 
-        user: action.payload, 
-        message: "varify" 
+        user: action.payload
+      };
+
+    case UPDATE_USER:
+      localStorage.setItem("userInfo", encodeData(action.payload));
+      return { 
+        ...user, 
+        user: action.payload
+      };
+
+    case USER_SIGNUP_LOAD:
+      return { 
+        ...user,
+        signUpLoading:true
+      };
+    case USER_SIGNIN_LOAD:
+      return { 
+        ...user,
+        signInLoading:true
+      };
+
+    case USER_LOAD_END:
+      return { 
+        ...user,
+        signInLoading:false,
+        signUpLoading:false
       };
 
     case USER_SIGNOUT:
       localStorage.removeItem("userInfo");
       return { 
         ...user, 
-        user: null,
-        message: "Signout" 
+        user: null
       };
 
     default:

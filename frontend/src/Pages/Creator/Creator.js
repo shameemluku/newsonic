@@ -10,54 +10,48 @@ import "../../components/Admin/Admin.css";
 import { verifyUser } from "../../actions/userActions";
 import { LinearProgress } from "@mui/material";
 
-
 export default function Creator({ children, active }) {
-
-  const { 
+  const {
     authUser: authData,
-    channelDetails ,
-    creatorSelectedPost
+    channelDetails,
+    creatorSelectedPost,
   } = useSelector((state) => state);
   const dispatch = useDispatch();
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
-
-  useEffect(()=>{
-    dispatch(verifyUser())
+  useEffect(() => {
+    dispatch(verifyUser());
     if (authData.user?.isCreator) {
       dispatch(getChannelDetails());
-    }else{
-      navigate("/creator/register")
+    } else {
+      navigate("/creator/register");
     }
-  },[])
-
-
-  
-
-
+  }, []);
 
   return (
     <>
-
-    <style>{"body {background-color:#edf0f5;}"}</style>
-      {channelDetails.channel?.isApproved ? (
+      <style>{"body {background-color:#edf0f5;}"}</style>
+      {channelDetails.channel?.isApproved &&
+      !channelDetails.channel?.isBlocked ? (
         <>
-          {creatorSelectedPost.loading && <div className="creator-progress"><LinearProgress color="success" sx={{height:"10px"}}/></div>}
+          {creatorSelectedPost.loading && (
+            <div className="creator-progress">
+              <LinearProgress color="success" sx={{ height: "10px" }} />
+            </div>
+          )}
+
           <Sidenav active={active} />
           <div className="main-content">
             <Container>
-              <Header />
+              <Header active={active} />
 
               {children}
-
             </Container>
           </div>
         </>
       ) : (
-        <LandingPage/>
+        <LandingPage />
       )}
-
-
     </>
   );
 }

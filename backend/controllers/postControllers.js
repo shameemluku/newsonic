@@ -1,62 +1,27 @@
 const base64ToImage = require("base64-to-image");
-const { uploadBaseFile } = require("../config/s3");
+const { uploadBaseFile, deleteFile } = require("../config/s3");
 const User = require("../models/user");
 const Posts = require("../models/posts");
 const Categories = require("../models/category");
 const Navlinks = require("../models/navlinks");
+const Drafts = require("../models/drafts");
 const ObjectId = require("mongodb").ObjectID;
 const {Translate} = require('@google-cloud/translate').v2
 
-// @desc    Creating a Brands
-// @rout    POST /api/coupons
-const getPosts = async (req, res) => {
-  let posts = await Posts.aggregate([
-    {
-      $lookup: {
-        from: "channels",
-        localField: "channelId",
-        foreignField: "_id",
-        as: "channelDetails",
-      },
-    },
-    { $sort: { _id: -1 } },
-  ]);
 
-  let eduPosts = await fetchByCategory("Education", 10);
-  let techPosts = await fetchByCategory("Technology", 10);
-  let businessPosts = await fetchByCategory("Business", 10);
-
-  res.status(200).json({
-    posts,
-    education: eduPosts,
-    technology: techPosts,
-    business: businessPosts,
-  });
-};
-
-// @desc    Creating a Brands
-// @rout    POST /api/coupons
-const homePosts = async (req, res) => {
-  let eduPosts = await fetchByCategory("Education", 10);
-  let techPosts = await fetchByCategory("Technology", 10);
-  let businessPosts = await fetchByCategory("Business", 10);
-
-  console.log(eduPosts);
-  console.log(techPosts);
-  console.log(businessPosts);
-
-  res.status(200).json({
-    status: true,
-    education: eduPosts,
-    technology: techPosts,
-    business: businessPosts,
-  });
-};
 
 // @desc    Creating a Brands
 // @rout    POST /api/coupons
 const addPosts = async (req, res) => {
-  let { newsHead, newsBody, category, comment, monetize, channelId } = req.body;
+  let { 
+    newsHead, 
+    newsBody, 
+    category, 
+    comment, 
+    monetize, 
+    channelId,
+    draftId
+  } = req.body;
 
   let channel_result = await Posts.create({
     newsHead,
@@ -68,6 +33,7 @@ const addPosts = async (req, res) => {
     postDate: new Date(),
   });
 
+  if(draftId) await Drafts.deleteOne({_id:ObjectId(draftId)})
   let promises = [];
 
   req.body.images.forEach((file, i) => {
@@ -84,6 +50,7 @@ const addPosts = async (req, res) => {
     };
 
     promises.push(uploadBaseFile(data));
+
   });
 
   Promise.all(promises)
@@ -104,6 +71,29 @@ const addPosts = async (req, res) => {
     });
 };
 
+
+const saveDraft = async (req, res) => {
+  
+  let { newsHead, newsBody, category, comment, monetize, channelId , draftId } = req.body;
+
+  await Drafts.replaceOne(
+  { _id: ObjectId(draftId) },
+  {
+    newsHead,
+    newsBody,
+    channelId: new ObjectId(channelId),
+    category,
+    isComment: !comment,
+    isMonetize: monetize
+  },
+  {upsert:true});
+
+  res.status(200).json({status:true, message:'Saved to drafts'})
+
+};
+
+
+
 const fetchHomeData = async (req, res) => {
 
   let posts = await fetchByCategory("all", 20);
@@ -112,6 +102,7 @@ const fetchHomeData = async (req, res) => {
   let businessPosts = await fetchByCategory("Business", 10);
   
   let most_liked = await Posts.aggregate([
+    { $match: {status:"PUBLIC"} },
     { $addFields: { likes: { $size: { $ifNull: ["$likes", []] } } } },
     { $addFields: { image: { $arrayElemAt: ["$images", 0] } } },
     {
@@ -134,15 +125,17 @@ const fetchHomeData = async (req, res) => {
 };
 
 const fetchNews = async (req, res) => {
+
   let { limit, skip } = req.query;
   let { category } = req.params;
 
   if (category && category !== "all") {
     category = category[0].toUpperCase() + category.toLowerCase().slice(1);
   }
-  console.log(category);
 
-  let match = category === "all" ? {} : { category: category };
+  let match = category === "all" 
+    ? { status:"PUBLIC" } 
+    : { category: category, status:"PUBLIC" };
 
   let posts = await Posts.aggregate([
     {
@@ -237,6 +230,7 @@ const fetchDetails = async (req, res) => {
           "comments.commentId": "$comments.commentId",
           "comments.userId": "$postcomments._id",
           "comments.username": "$postcomments.name",
+          "comments.userImage": "$postcomments.image",
           "comments.text": "$comments.text",
           "comments.date": "$comments.date",
         },
@@ -319,7 +313,6 @@ const postComment = async (req, res) => {
 };
 
 const deleteComment = async (req, res) => {
-  console.log(req.body);
   const { commentId, decodeId, postId } = req.body;
 
   let response = await Posts.updateOne(
@@ -391,14 +384,38 @@ const savePost = async (req, res) => {
 };
 
 const deletePost = async (req, res) => {
-  const { id: idArray } = req.body;
+
+  const { 
+    deleteIDs: idArray ,
+    deleteImages: images
+  } = req.body;
+
+
   let response = await Posts.deleteMany({ _id: { $in: idArray } });
 
   if (response) {
+
+    await deletePostFiles(images)
     res
       .status(200)
       .json({ status: true, message: "Documents deleted successfully!" });
   }
+
+};
+
+const deleteDraft = async (req, res) => {
+
+  const {  deleteIDs: idArray} = req.body;
+
+  let response = await Drafts.deleteMany({ _id: { $in: idArray } });
+  if (response) {
+
+    res.status(200).json({ 
+      status: true, 
+      message: "Documents deleted successfully!" 
+    });
+  }
+
 };
 
 const getCategory = async (req, res) => {
@@ -502,19 +519,18 @@ const updatePostIsMonetize = async (req, res) => {
 const translatePost = async (req, res) => {
   try {
 
-    
     const translate = new Translate({
       projectId:"newsonic-350320",
       credentials:JSON.parse(process.env.GOOGLE_CREDENTIALS)
-      
     })
-    const text = 'Hello, world!';
-
-    const target = 'ml';
     
-    const [translation] = await translate.translate(text, target);
-    console.log(`Text: ${text}`);
-    res.status(200).json({message:`Translation: ${translation}`});
+    const { content } = req.params;
+    const { lang:target } = req.query;
+
+    if(content===null) return res.status(400).json({})
+    
+    const [translation] = await translate.translate(content, target);
+    res.status(200).json({ status:true, translation});
 
   } catch (error) {
     console.log(error);
@@ -522,12 +538,110 @@ const translatePost = async (req, res) => {
 };
 
 
+// For Admin //
+
+
+const fetchPosts = async (req,res) => {
+
+    const {skip,limit,status} = req.query
+    let match = {}
+
+    if(status==='ALL') match = {}
+    if(status==='PUBLIC') match = { status:"PUBLIC" }
+    if(status==='REVIEW') match = { status:"REVIEW" }
+
+    let posts = await Posts.aggregate([
+        {
+          $match: match
+        },
+        { $addFields: { likes: { $size: { $ifNull: ["$likes", []] } } } },
+        { $addFields: { comments: { $size: { $ifNull: ["$comments", []] } } } },
+        { $addFields: { seen: { $size: { $ifNull: ["$seenBy", []] } } } },
+        { $addFields: { image: { $arrayElemAt: ["$images", 0] } } },
+        {
+          $project: { 
+              _id: 1, 
+              newsHead: 1, 
+              postDate:1,
+              likes: 1, 
+              seen:1,
+              image: 1,
+              comments:1,
+              status:1,
+              isMonetized: 1, 
+            },
+        },
+        {
+            $sort: { _id: -1 },
+        },
+        { $skip: parseInt(skip) },
+        { $limit: parseInt(limit) },
+    ])
+    
+    if(await Posts.countDocuments() === parseInt(skip)) return  res.status(200).json({
+        posts, 
+        message:"No more to load"
+    })
+
+    res.status(200).json({posts})
+}
+
+
+const getSelectedPost = async (req, res) => {
+    
+    const id = req.query.id;
+  
+    let post_details = await Posts.aggregate([
+      {
+        $match: {
+          _id: ObjectId(id)
+        }
+      },
+      { $addFields: { views: { $size: { $ifNull: ["$seenBy", []] } } } },
+      { $addFields: { likes: { $size: { $ifNull: ["$likes", []] } } } },
+      { $addFields: { comments: { $size: { $ifNull: ["$comments", []] } } } },
+      { $project: {
+          _id:1,
+          newsHead:1,
+          newsBody:1,
+          comments:1,
+          category:1,
+          images:1,
+          likes:1,
+          views:1,
+          status:1,
+          postDate:1
+        } 
+      }
+    ]);
+  
+    res.status(200).json({ status: true, post: post_details[0] });
+
+};
+
+
+const updatePostStatus = async (req, res) => { 
+
+  const { id, status } = req.query;
+  console.log(req.query);
+
+  let post = await Posts.findById(id)
+  post.status = status
+  await post.save();
+
+  res.status(200).json({status:true,message:'Status changed successfully!!'})
+
+}
+
+
 
 //////////////////////////////////////////////////////////////////
 
 const fetchByCategory = (category, limit) => {
   return new Promise(async (res, rej) => {
-    let match = category === "all" ? {} : { category: category };
+    let match = category === "all" 
+      ? { status:"PUBLIC" } 
+      : { category: category, status:"PUBLIC"  };
 
     let posts = await Posts.aggregate([
       {
@@ -551,9 +665,26 @@ const fetchByCategory = (category, limit) => {
   });
 };
 
+const deletePostFiles = (images) => {
+  
+  let promises = [];
+
+  images.forEach((file, i) => {
+    promises.push(deleteFile(file));
+  });
+
+  Promise.all(promises)
+    .then(async function () {
+      return true
+    })
+    .catch(function (err) {
+      return false
+    });
+}
+
 module.exports = {
-  getPosts,
   addPosts,
+  saveDraft,
   fetchHomeData,
   fetchNews,
   fetchDetails,
@@ -561,8 +692,8 @@ module.exports = {
   deleteComment,
   likePost,
   deletePost,
+  deleteDraft,
   getCategory,
-  homePosts,
   relatedPost,
   savePost,
   savedPosts,
@@ -571,5 +702,8 @@ module.exports = {
   updatePostCategory,
   updatePostIsComment,
   updatePostIsMonetize,
-  translatePost
+  translatePost,
+  fetchPosts,
+  getSelectedPost,
+  updatePostStatus
 };

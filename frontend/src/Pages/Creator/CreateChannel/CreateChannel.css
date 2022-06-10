@@ -24,7 +24,7 @@
     display: flex;
     width: 150px;
     height: 150px;
-    background-color: brown;
+    background-color: rgb(148, 148, 148);
     border-radius: 50%;
     cursor: pointer;
     justify-content: center;

@@ -138,6 +138,7 @@ const adClicked = async (req, res) => {
 };
 
 const loadDisplayAd = async (req, res) => {
+
   const { userId, type } = req.identity;
   const { format, postId, channelId } = req.body;
 
@@ -293,10 +294,10 @@ const getRevenueDetails = async (req, res) => {
 const endCampaign = async (req,res) => {
   
   const { adId } = req.params;
-  console.log(adId);
   let ad = await Ads.findById(ObjectId(adId))
   ad.isCancelled = true
   ad.save()
+  res.status(200).json({status:true, message:"Campaign cancelled successfully"})
 
 }
 
@@ -335,6 +336,98 @@ const getBillingData = async (req,res) => {
 
   res.status(200).json({ status:true , payable_ads })
   
+}
+
+
+const fetchAllAds = async (req,res) => {
+
+  const {skip,limit,status} = req.query
+  console.log(req.query);
+  let match = {}
+
+  if(status==='ALL') match = {}
+  if(status==='PENDING') {
+    match = { 
+      isApproved:false,
+      endDate: { $gte: today() }
+    }
+  }
+  if(status==='ACTIVE') {
+    match = { 
+      startDate: { $lt: today() }, 
+      endDate: { $gte: today() }, 
+      isCancelled: false,
+      isApproved:true
+    }
+  }
+  if(status==='INACTIVE') {
+    match = { 
+      startDate: { $gt: today()},
+      isCancelled: false,
+      isApproved:true
+    }
+  }
+  if(status==='ENDED') {
+    match = { 
+      $or : [
+        { endDate: { $lt: today() } },
+        { isCancelled: true }
+      ]
+    }
+  }
+
+  let ads = await Ads.aggregate([
+      {
+        $match: match
+      },
+      { $addFields: { views: { $size: { $ifNull: ["$views", []] } } } },
+      { $addFields: { clicks: { $size: { $ifNull: ["$clicks", []] } } } },
+      {
+        $project: { 
+            _id: 1, 
+            sponsorId: 1, 
+            title:1,
+            url: 1, 
+            startDate:1,
+            endDate: 1,
+            isApproved:1,
+            isCancelled: 1,
+            format:1, 
+            imageFrm:1,
+            imageSqr:1,
+            views:1,
+            estView:1,
+            estAmount:1,
+            clicks:1
+          },
+      },
+      {
+          $sort: { _id: -1 },
+      },
+      { $skip: parseInt(skip) },
+      { $limit: parseInt(limit) },
+  ])
+
+
+  ads.forEach((val) => {
+    if (val.isApproved) {
+      if (val.endDate > new Date(today())) {
+        if (val.startDate < new Date(today())) val.status = "Active";
+        else val.status = "Not Started";
+      } else {  val.status = "Ended"  }
+    }else{ val.status = "Pending" }
+
+    if(val.isCancelled) val.status = "Cancelled" 
+
+  });
+
+  
+  if(await Ads.countDocuments() === parseInt(skip)) return  res.status(200).json({
+      ads, 
+      message:"No more to load"
+  })
+
+  res.status(200).json({ads})
 }
 
 
@@ -399,7 +492,7 @@ const today = () => {
   const mm = d.getMonth() + 1 < 10 ? `0${d.getMonth() + 1}` : d.getMonth() + 1;
   const dd = d.getDate() < 10 ? `0${d.getDate()}` : d.getDate();
   const newDate = `${yy}-${mm}-${dd}`;
-  return newDate;
+  return new Date(newDate);
 };
 
 module.exports = {
@@ -410,5 +503,6 @@ module.exports = {
   sponsorDetails,
   getRevenueDetails,
   endCampaign,
-  getBillingData
+  getBillingData,
+  fetchAllAds
 };

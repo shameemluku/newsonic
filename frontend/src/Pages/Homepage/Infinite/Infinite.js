@@ -8,6 +8,8 @@ import { clickAd, fetchPosts } from "../../../api";
 import { useInView } from 'react-intersection-observer';
 import { displayAd } from "../../../actions/adActions";
 import { BACKEND_URL } from "../../../constants/url";
+import adpic from '../../../Images/ad2.jpg';
+import FooterComp from "../../../components/Footer/Footer";
 
 export default function Infinite() {
   const [items, setItem] = useState([]);
@@ -83,7 +85,10 @@ export default function Infinite() {
 
   }
 
-
+  
+  useEffect(()=>{
+    console.log(ad);
+  },[ad])
 
   const loading = <>
     <div className="infiite-loading-anime">
@@ -98,8 +103,9 @@ export default function Infinite() {
       next={fetchMoreData}
       hasMore={hasMore}
       loader={loading}
-      endMessage={<p className="">Footer</p>}
+      endMessage={<FooterComp/>}
     >
+      <Container>
       <Row className="p-0 m-0">
         {items.map((post, index) =>{
 
@@ -107,15 +113,14 @@ export default function Infinite() {
             return <>
             <Col sm={12} md={8} className="p-0">
             <div ref={adBanner} style={{height:"300px"}} className="p-0 content-center ad-slot-3-div" key={index}>
-                {/* <div className="bg-dark h-100">dgdg</div> */}
-                { ad !== null ?
+                {ad ?
                 <span onClick={()=>{
                   handleAdClick(ad?.url)
                 }}>
-                 <img className="ad-slot-3 pointer"  src={`${BACKEND_URL}/uploads/${ad?.imageFrm}`} alt=''/> 
-                 <img className="ad-slot-3-mob d-none" src={`${BACKEND_URL}/uploads/${ad?.imageSqr}`} alt=''/> 
+                 <img className="ad-slot-3 pointer" width={"100%"} height="100%"  src={`${BACKEND_URL}/uploads/${ad?.imageFrm}`} alt=''/> 
+                 <img className="ad-slot-3-mob d-none" width={"100%"} height="100%" src={`${BACKEND_URL}/uploads/${ad?.imageSqr}`} alt=''/> 
                 </span>
-                : <p>Loading..</p>}
+                : <img className="ad-slot-3 pointer"  src={adpic} alt=''/> }
             </div>
           </Col>
             </>
@@ -131,7 +136,9 @@ export default function Infinite() {
           </Col>
           </>
         } )}
+        
       </Row>
+      </Container>
     </InfiniteScroll>
   );
 }

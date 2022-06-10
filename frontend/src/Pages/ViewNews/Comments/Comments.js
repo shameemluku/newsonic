@@ -5,9 +5,11 @@ import { deleteComment, postComment } from "../../../actions/postActions";
 import { AiFillLock } from "react-icons/ai";
 import noComment from "../../../Images/nocomments.jpg";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { Button, CircularProgress } from "@mui/material";
+import { Avatar, Button, CardHeader, CircularProgress } from "@mui/material";
 import SendIcon from '@mui/icons-material/Send';
 import CommentsDisabledIcon from '@mui/icons-material/CommentsDisabled';
+import { BACKEND_URL } from "../../../constants/url";
+import moment from "moment";
 
 export default function Comments({ comments, id }) {
   const [typedComment, setTypedComment] = useState("");
@@ -25,6 +27,13 @@ export default function Comments({ comments, id }) {
 
   };
 
+  const isRecent = (date) => {
+    var duration = moment.duration(date.diff(new Date()));
+    var minute = duration.asMinutes()
+    if(minute<=1) return true
+    return false
+  }
+
   return (
     <div id="comments" className="comment-card">
       <div className="card-head">
@@ -36,26 +45,28 @@ export default function Comments({ comments, id }) {
           comments.map((val) => {
             return (
               <div
-                className={`comment-item d-flex single-comment ${
+                className={`comment-item single-comment ${
                   val?.userId === authData.user?._id && "self-comment"
                 }`}
               >
-                <img
-                  className="comment-dp"
-                  src="https://cdn.landesa.org/wp-content/uploads/default-user-image.png"
-                  alt=""
-                ></img>
-                <div className="ms-3 w-75">
-                  <div className="comment-name">{val.username}</div>
-                  <div className="comment-date">{val.date}</div>
-                  <div className="comment-text mb-2">{val.text}</div>
-                </div>
+
+                <CardHeader
+                  avatar={
+                    <Avatar alt={val.username} 
+                      src={val.userImage ? `${BACKEND_URL}/uploads/${val.userImage}` : null} 
+                    />
+                  }
+                  title={val.username}
+                  subheader={moment(val.date).format("ddd MMM DD YYYY hh:mm:ss")}
+                />
+                <div className="comment-text mb-2">{val.text}</div>
 
                 {val?.userId === authData.user?._id && (
                   <>
-                    <div className="d-flex w-25 justify-content-end">
+                    <div className="comment-delete-holder d-flex w-25 justify-content-end">
                       {
-                        (selectedPost?.deleteComment) && (deleteId===val?.commentId) ? <CircularProgress size={25} sx={{color:"#bb3131"}}/>
+                        (selectedPost?.deleteComment) && (deleteId===val?.commentId) ? 
+                          <CircularProgress size={25} sx={{color:"#bb3131"}}/>
                         :<DeleteIcon className="delete-comment-btn pointer" onClick={() => {
                           setDeleteId(val.commentId)
                           dispatch(deleteComment(val));

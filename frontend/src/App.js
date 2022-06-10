@@ -31,16 +31,23 @@ import TopProgress from "./components/Elements/TopProgress";
 import Transactions from "./Pages/Creator/Transactions/Transactions";
 import ChannelSettings from "./Pages/Creator/ChannelSettings/ChannelSettings";
 
+import Login from "./Pages/Admin/Login";
+import Layout from "./Pages/Admin/Layout";
+import AdminPosts from "./Pages/Admin/Childrens/Posts";
+import Users from "./Pages/Admin/Childrens/Users";
+import AdminPostDetails from "./Pages/Admin/Childrens/PostDetails";
+import ChannelsList from "./Pages/Admin/Childrens/Channels";
+import AdList from "./Pages/Admin/Childrens/AdList";
+import Payouts from "./Pages/Admin/Childrens/Payouts";
+import AdminDashboard from "./Pages/Admin/Childrens/Dashboard";
+import Profile from "./Pages/Profile/Profile";
+
 function App() {
 
   const user = useSelector((state) => state.authUser.user);
+  const admin = useSelector((state) => state.adminDetails.user);
   const {showTopProgress} = useSelector((state) => state);
   const { enqueueSnackbar } = useSnackbar()
-
-  // useEffect(()=>{
-  //   // enqueueSnackbar("Welcome", { variant: "error" })
-  //   // generateSignature()
-  // },[])
 
   return (
     
@@ -50,8 +57,9 @@ function App() {
         <Routes>
           <Route exact path="/" element={<Homepage />} />
           <Route exact path="/post/:id" element={<ViewNews />} />
-          <Route exact path="category/:category" element={<CategoryPage/>} />
-          <Route exact path="post/saved" element={<Saved/>} />
+          <Route exact path="category/:category" element={<CategoryPage/>} />  
+          <Route exact path="/post/saved" element={<Saved/>} />
+          <Route exact path="/profile" element={user ? <Profile/> : <Homepage response={true}/> } />
 
           <Route exact path="/creator">
             <Route path="register" element={ user ? <CreateChannel /> : <Homepage response={true} />}/>
@@ -68,6 +76,17 @@ function App() {
             <Route path="" element={ <SponsorHome/> }/>
             <Route path="create" element={ user ? <CreateAd/> : <SponsorHome/> }/>
             <Route path="dashboard" element={ user ? <SponsorDashboard/> : <SponsorHome/> }/>
+          </Route>
+
+
+          <Route exact path="/admin">
+            <Route path="" element={ admin ? <Layout children={<AdminDashboard/>}/> : <Login/> }/>
+            <Route path="posts" element={ admin ? <Layout children={<AdminPosts/>}  active='posts'/> : <Login/> }/>
+            <Route path="users" element={ admin ? <Layout children={<Users/>} active='users'/> : <Login/> }/>
+            <Route path="post/:id" element={ admin ? <Layout children={<AdminPostDetails/>}/> : <Login/> }/>
+            <Route path="channels" element={ admin ? <Layout children={<ChannelsList/>} active='channels'/> : <Login/> }/>
+            <Route path="ads" element={ admin ? <Layout children={<AdList/>} active='ads'/> : <Login/> }/>
+            <Route path="payouts" element={ admin ? <Layout children={<Payouts/>} active='payouts'/> : <Login/> }/>
           </Route>
 
 
