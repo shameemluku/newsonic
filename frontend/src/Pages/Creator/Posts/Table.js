@@ -431,11 +431,9 @@ export default function TableComp({ data, loading, isDeleting, filter }) {
   }, [page, rowsPerPage]);
 
   React.useEffect(() => {
-    // if(rows.length === data.length){
-    //   alert("Nothing to load more")
-    // }
+
     setRows(data);
-    console.log(data);
+
   }, [data]);
 
   const handleLoadMore = () => {

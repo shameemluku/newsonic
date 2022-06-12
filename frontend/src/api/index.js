@@ -1,18 +1,19 @@
 import axios from 'axios';
-import { USER_SIGNOUT } from '../constants/actionTypes';
 import store from '../store';
+import { USER_SIGNOUT } from '../constants/actionTypes';
+import { BACKEND_URL } from '../constants/url'
 
-const API = axios.create({baseURL:'http://localhost:5000/api',withCredentials: true})
+const API = axios.create({baseURL:BACKEND_URL,withCredentials: true})
 
 // Post endpoints
 
 export const fetchHomeData = () => API.get(`/posts/fetch-home`);
 export const fetchPosts = (limit,skip,category) => API.get(`/posts/fetch-news/${category}?limit=${limit}&&skip=${skip}`);
 export const fetchPostDetails = (id,signature) => API.get(`/posts/fetch-details/${id}?signature=${signature}`);
-export const postComment = (data) => API.post('/posts/post-comment/',data);
-export const deleteComment = (data) => API.post('/posts/delete-comment/',data);
-export const likePost = (data) => API.post('/posts/like-post/',data);
-export const savePost = (data) => API.post('/posts/save-post/',data);
+export const postComment = (data) => API.patch('/posts/post-comment/',data);
+export const deleteComment = (data) => API.patch('/posts/delete-comment/',data);
+export const likePost = (data) => API.patch('/posts/like-post/',data);
+export const savePost = (data) => API.patch('/posts/save-post/',data);
 export const deletePost = (data,channelId) => API.post(`/posts/delete-post?channel=${channelId}`,data);
 export const deleteDraft = (data,channelId) => API.post(`/posts/delete-draft?channel=${channelId}`,data);
 export const getRelated = (cat) => API.post('/posts/fetch-related/',cat);
@@ -100,9 +101,21 @@ export const translate = (text,language) => API.get(`posts/translate/${text}?lan
                 store.dispatch({
                     type: USER_SIGNOUT,
                 })
+                store.dispatch({
+                    type: "HIDE_PROGRESS",
+                })
             }
-            if (error.response.status === 403) {
-                window.location.reload()
+            if (error.response.status === 403)  window.location.reload()
+            if (error.response.status === 404 ) {
+                const { type } = error.response.data
+                if(type === 'USER_NOT_FOUND') {
+                    store.dispatch({
+                        type: USER_SIGNOUT,
+                    })
+                    store.dispatch({
+                        type: "HIDE_PROGRESS",
+                    })
+                }
             }
             rej(error)
         } catch (error) {

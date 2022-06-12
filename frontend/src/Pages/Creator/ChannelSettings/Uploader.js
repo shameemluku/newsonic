@@ -138,7 +138,7 @@ class AlertDialogSlide extends PureComponent {
             !this.props.loading ?
             <span className="creator-profile flex-column" 
             style={{backgroundImage:`url(${this.props.image})`}}>
-            <div className="hide" onClick={()=>fileInput.current.click()}><IoCameraOutline className="me-1"/>Change pic</div>
+            <div className="hide upload-btn" onClick={()=>fileInput.current.click()}><IoCameraOutline className="me-1"/>Change pic</div>
           </span>
             :
             <span className="creator-profile flex-column" style={{backgroundImage:`url(${this.props.image})`}}>

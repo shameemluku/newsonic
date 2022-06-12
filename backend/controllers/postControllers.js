@@ -6,22 +6,14 @@ const Categories = require("../models/category");
 const Navlinks = require("../models/navlinks");
 const Drafts = require("../models/drafts");
 const ObjectId = require("mongodb").ObjectID;
-const {Translate} = require('@google-cloud/translate').v2
+const { Translate } = require("@google-cloud/translate").v2;
+const asyncHandler = require("express-async-handler");
 
-
-
-// @desc    Creating a Brands
-// @rout    POST /api/coupons
-const addPosts = async (req, res) => {
-  let { 
-    newsHead, 
-    newsBody, 
-    category, 
-    comment, 
-    monetize, 
-    channelId,
-    draftId
-  } = req.body;
+// @desc    Creating a Post
+// @rout    POST /api/post/addpost
+const addPosts = asyncHandler(async (req, res) => {
+  let { newsHead, newsBody, category, comment, monetize, channelId, draftId } =
+    req.body;
 
   let channel_result = await Posts.create({
     newsHead,
@@ -33,7 +25,7 @@ const addPosts = async (req, res) => {
     postDate: new Date(),
   });
 
-  if(draftId) await Drafts.deleteOne({_id:ObjectId(draftId)})
+  if (draftId) await Drafts.deleteOne({ _id: ObjectId(draftId) });
   let promises = [];
 
   req.body.images.forEach((file, i) => {
@@ -50,7 +42,6 @@ const addPosts = async (req, res) => {
     };
 
     promises.push(uploadBaseFile(data));
-
   });
 
   Promise.all(promises)
@@ -69,40 +60,40 @@ const addPosts = async (req, res) => {
     .catch(function (err) {
       res.send(err.stack);
     });
-};
+});
 
-
-const saveDraft = async (req, res) => {
-  
-  let { newsHead, newsBody, category, comment, monetize, channelId , draftId } = req.body;
+// @desc    Save to patch
+// @rout    PATCH /api/post/save-draft
+const saveDraft = asyncHandler(async (req, res) => {
+  let { newsHead, newsBody, category, comment, monetize, channelId, draftId } =
+    req.body;
 
   await Drafts.replaceOne(
-  { _id: ObjectId(draftId) },
-  {
-    newsHead,
-    newsBody,
-    channelId: new ObjectId(channelId),
-    category,
-    isComment: !comment,
-    isMonetize: monetize
-  },
-  {upsert:true});
+    { _id: ObjectId(draftId) },
+    {
+      newsHead,
+      newsBody,
+      channelId: new ObjectId(channelId),
+      category,
+      isComment: !comment,
+      isMonetize: monetize,
+    },
+    { upsert: true }
+  );
 
-  res.status(200).json({status:true, message:'Saved to drafts'})
+  res.status(200).json({ status: true, message: "Saved to drafts" });
+});
 
-};
-
-
-
-const fetchHomeData = async (req, res) => {
-
+// @desc    Fetch home posts
+// @rout    GET /api/post/fetch-home
+const fetchHomeData = asyncHandler(async (req, res) => {
   let posts = await fetchByCategory("all", 20);
   let eduPosts = await fetchByCategory("Education", 10);
   let techPosts = await fetchByCategory("Technology", 10);
   let businessPosts = await fetchByCategory("Business", 10);
-  
+
   let most_liked = await Posts.aggregate([
-    { $match: {status:"PUBLIC"} },
+    { $match: { status: "PUBLIC" } },
     { $addFields: { likes: { $size: { $ifNull: ["$likes", []] } } } },
     { $addFields: { image: { $arrayElemAt: ["$images", 0] } } },
     {
@@ -120,12 +111,13 @@ const fetchHomeData = async (req, res) => {
     education: eduPosts,
     technology: techPosts,
     business: businessPosts,
-    top:most_liked,
+    top: most_liked,
   });
-};
+});
 
-const fetchNews = async (req, res) => {
-
+// @desc    Fetch news by category
+// @rout    GET /api/post/fetch-news
+const fetchNews = asyncHandler(async (req, res) => {
   let { limit, skip } = req.query;
   let { category } = req.params;
 
@@ -133,9 +125,10 @@ const fetchNews = async (req, res) => {
     category = category[0].toUpperCase() + category.toLowerCase().slice(1);
   }
 
-  let match = category === "all" 
-    ? { status:"PUBLIC" } 
-    : { category: category, status:"PUBLIC" };
+  let match =
+    category === "all"
+      ? { status: "PUBLIC" }
+      : { category: category, status: "PUBLIC" };
 
   let posts = await Posts.aggregate([
     {
@@ -158,12 +151,17 @@ const fetchNews = async (req, res) => {
 
   if (posts.length === 0) res.status(200).json({ status: false });
   else res.status(200).json({ status: true, posts });
-};
+});
 
-const fetchDetails = async (req, res) => {
+// @desc    Fetch full details
+// @rout    GET /api/post/fetch-details
+const fetchDetails = asyncHandler(async (req, res) => {
   try {
     const { userId, type } = req.identity;
     const { id } = req.params;
+
+    if (!ObjectId.isValid(id))
+      return res.status(400).json({ type: "POST_ERROR" });
 
     let response = await Posts.updateOne(
       {
@@ -278,7 +276,7 @@ const fetchDetails = async (req, res) => {
     ]);
 
     if (post_details.length === 0) {
-      res.status(200).json({ post_details });
+      res.status(400).json({ type: "POST_ERROR" });
     } else {
       post_details[0].comments =
         Object.keys(post_details[0]?.comments[0]).length === 0
@@ -290,9 +288,11 @@ const fetchDetails = async (req, res) => {
     console.log(error);
     res.status(400).json({ error: "Internal Error", message: error.message });
   }
-};
+});
 
-const postComment = async (req, res) => {
+// @desc    Post comment
+// @rout    PATCH /api/post/post-comment
+const postComment = asyncHandler(async (req, res) => {
   const { postId, comment, decodeId } = req.body;
 
   let commentData = {
@@ -310,9 +310,11 @@ const postComment = async (req, res) => {
   if (response) {
     res.status(200).json({ status: true, comment: commentData });
   }
-};
+});
 
-const deleteComment = async (req, res) => {
+// @desc    Delete a comment
+// @rout    POST /api/post/delete-comment
+const deleteComment = asyncHandler(async (req, res) => {
   const { commentId, decodeId, postId } = req.body;
 
   let response = await Posts.updateOne(
@@ -325,9 +327,11 @@ const deleteComment = async (req, res) => {
   } else {
     res.status(400).json({ status: true });
   }
-};
+});
 
-const likePost = async (req, res) => {
+// @desc    Like comment
+// @rout    PATCH /api/post/like-post
+const likePost = asyncHandler(async (req, res) => {
   let { userId, postId } = req.body;
 
   if (!userId) {
@@ -353,9 +357,11 @@ const likePost = async (req, res) => {
       res.status(200).json({ status: true, message: "You liked the post" });
     }
   }
-};
+});
 
-const savePost = async (req, res) => {
+// @desc    Save comment
+// @rout    PATCH /api/post/save-post
+const savePost = asyncHandler(async (req, res) => {
   let { userId, postId } = req.body;
 
   if (!userId) {
@@ -381,60 +387,58 @@ const savePost = async (req, res) => {
       res.status(200).json({ status: true, message: "You Saved the post" });
     }
   }
-};
+});
 
-const deletePost = async (req, res) => {
-
-  const { 
-    deleteIDs: idArray ,
-    deleteImages: images
-  } = req.body;
-
+// @desc    Save comment
+// @rout    POST /api/post/delete-post
+const deletePost = asyncHandler(async (req, res) => {
+  const { deleteIDs: idArray, deleteImages: images } = req.body;
 
   let response = await Posts.deleteMany({ _id: { $in: idArray } });
 
   if (response) {
-
-    await deletePostFiles(images)
+    await deletePostFiles(images);
     res
       .status(200)
       .json({ status: true, message: "Documents deleted successfully!" });
   }
+});
 
-};
-
-const deleteDraft = async (req, res) => {
-
-  const {  deleteIDs: idArray} = req.body;
+// @desc    Delete draft
+// @rout    POST /api/post/delete-draft
+const deleteDraft = asyncHandler(async (req, res) => {
+  const { deleteIDs: idArray } = req.body;
 
   let response = await Drafts.deleteMany({ _id: { $in: idArray } });
   if (response) {
-
-    res.status(200).json({ 
-      status: true, 
-      message: "Documents deleted successfully!" 
+    res.status(200).json({
+      status: true,
+      message: "Documents deleted successfully!",
     });
   }
+});
 
-};
-
-const getCategory = async (req, res) => {
+// @desc    Get category
+// @rout    GET /api/post/category
+const getCategory = asyncHandler(async (req, res) => {
   let response = await Categories.find();
-
   if (response) {
     res.status(200).json({ status: true, categories: response });
   }
-};
+});
 
-const getNavLinks = async (req, res) => {
+// @desc    Get navigation links
+// @rout    GET /api/post/nav-links
+const getNavLinks = asyncHandler(async (req, res) => {
   let response = await Navlinks.find();
-
   if (response) {
     res.status(200).json({ status: true, categories: response });
   }
-};
+});
 
-const relatedPost = async (req, res) => {
+// @desc    Fetch related posts
+// @rout    GET /api/post/fetch-related
+const relatedPost = asyncHandler(async (req, res) => {
   let response = await Posts.find({ $in: { category: req.body } }).sort({
     _id: -1,
   });
@@ -442,9 +446,11 @@ const relatedPost = async (req, res) => {
   if (response) {
     res.status(200).json({ status: true, posts: response });
   }
-};
+});
 
-const savedPosts = async (req, res) => {
+// @desc    Fetch saved posts
+// @rout    GET /api/post/fetch-saved
+const savedPosts = asyncHandler(async (req, res) => {
   const { decodeId: userId } = req.body;
 
   let response = await User.findOne({ _id: ObjectId(userId) }).populate(
@@ -452,221 +458,216 @@ const savedPosts = async (req, res) => {
     "_id newsHead newsBody images"
   );
   res.status(200).json({ status: true, posts: response.saved });
-};
+});
 
-const updatePostText = async (req, res) => {
+// @desc    Update post data
+// @rout    PATCH /api/post/update-post-data
+const updatePostText = asyncHandler(async (req, res) => {
+  const { postId, title, body } = req.body;
+
+  let update_post = await Posts.findById(postId);
+  update_post.newsHead = title;
+  update_post.newsBody = body;
+
+  await update_post.save();
+  res.status(200).json({ status: true });
+});
+
+// @desc    Update post category
+// @rout    PATCH /api/post/update-post-category
+const updatePostCategory = asyncHandler(async (req, res) => {
   try {
-
-    const { postId, title, body } = req.body;
-
-
-    let update_post = await Posts.findById(postId)
-    update_post.newsHead = title
-    update_post.newsBody = body
-
-    
-    await update_post.save();
-    res.status(200).json({ status: true });
-
-  } catch (error) {
-    console.log(error);
-  }
-};
-
-
-const updatePostCategory = async (req, res) => {
-  try {
-
     const { postId, category } = req.body;
 
-    let update_post = await Posts.findById(postId)
-    update_post.category = category
+    let update_post = await Posts.findById(postId);
+    update_post.category = category;
     await update_post.save();
 
     res.status(200).json({ status: true });
-
   } catch (error) {}
-};
+});
 
-const updatePostIsComment = async (req, res) => {
+// @desc    update comment status by creator
+// @rout    PATCH /api/post/update-post-iscomment
+const updatePostIsComment = asyncHandler(async (req, res) => {
   try {
-
     const { postId, isComment } = req.body;
 
-    let update_post = await Posts.findById(postId)
-    update_post.isComment = isComment
+    let update_post = await Posts.findById(postId);
+    update_post.isComment = isComment;
     await update_post.save();
 
     res.status(200).json({ status: true });
-
   } catch (error) {}
-};
+});
 
-const updatePostIsMonetize = async (req, res) => {
+// @desc    update monetization status by creator
+// @rout    PATCH /api/post/update-post-ismonetize
+const updatePostIsMonetize = asyncHandler(async (req, res) => {
   try {
-
     const { postId, isMonetize } = req.body;
 
-    let update_post = await Posts.findById(postId)
-    update_post.isMonetize = isMonetize
+    let update_post = await Posts.findById(postId);
+    update_post.isMonetize = isMonetize;
     await update_post.save();
 
     res.status(200).json({ status: true });
-
   } catch (error) {}
-};
+});
 
-const translatePost = async (req, res) => {
+// @desc    Translate post
+// @rout    GET /api/post/translate
+const translatePost = asyncHandler(async (req, res) => {
   try {
-
     const translate = new Translate({
-      projectId:"newsonic-350320",
-      credentials:JSON.parse(process.env.GOOGLE_CREDENTIALS)
-    })
-    
+      projectId: process.env.GOOGLE_PROJECT_ID,
+      credentials: JSON.parse(process.env.GOOGLE_CREDENTIALS),
+    });
+
     const { content } = req.params;
-    const { lang:target } = req.query;
+    const { lang: target } = req.query;
 
-    if(content===null) return res.status(400).json({})
-    
+    if (content === null) return res.status(400).json({});
+
     const [translation] = await translate.translate(content, target);
-    res.status(200).json({ status:true, translation});
-
+    res.status(200).json({ status: true, translation });
   } catch (error) {
-    console.log(error);
+    res.status(400).json({ status: false, message: "Translation Failed!" });
   }
-};
+});
 
+// FOR ADMIN //
 
-// For Admin //
+// @desc    Fetch all posts
+// @rout    GET /api/admin/fetch-posts
+const fetchPosts = asyncHandler(async (req, res) => {
+  const { skip, limit, status } = req.query;
+  let match = {};
 
+  if (status === "ALL") match = {};
+  if (status === "PUBLIC") match = { status: "PUBLIC" };
+  if (status === "REVIEW") match = { status: "REVIEW" };
 
-const fetchPosts = async (req,res) => {
-
-    const {skip,limit,status} = req.query
-    let match = {}
-
-    if(status==='ALL') match = {}
-    if(status==='PUBLIC') match = { status:"PUBLIC" }
-    if(status==='REVIEW') match = { status:"REVIEW" }
-
-    let posts = await Posts.aggregate([
-        {
-          $match: match
-        },
-        { $addFields: { likes: { $size: { $ifNull: ["$likes", []] } } } },
-        { $addFields: { comments: { $size: { $ifNull: ["$comments", []] } } } },
-        { $addFields: { seen: { $size: { $ifNull: ["$seenBy", []] } } } },
-        { $addFields: { image: { $arrayElemAt: ["$images", 0] } } },
-        {
-          $project: { 
-              _id: 1, 
-              newsHead: 1, 
-              postDate:1,
-              likes: 1, 
-              seen:1,
-              image: 1,
-              comments:1,
-              status:1,
-              isMonetized: 1, 
-            },
-        },
-        {
-            $sort: { _id: -1 },
-        },
-        { $skip: parseInt(skip) },
-        { $limit: parseInt(limit) },
-    ])
-    
-    if(await Posts.countDocuments() === parseInt(skip)) return  res.status(200).json({
-        posts, 
-        message:"No more to load"
-    })
-
-    res.status(200).json({posts})
-}
-
-
-const getSelectedPost = async (req, res) => {
-    
-    const id = req.query.id;
-  
-    let post_details = await Posts.aggregate([
-      {
-        $match: {
-          _id: ObjectId(id)
-        }
+  let posts = await Posts.aggregate([
+    {
+      $match: match,
+    },
+    { $addFields: { likes: { $size: { $ifNull: ["$likes", []] } } } },
+    { $addFields: { comments: { $size: { $ifNull: ["$comments", []] } } } },
+    { $addFields: { seen: { $size: { $ifNull: ["$seenBy", []] } } } },
+    { $addFields: { image: { $arrayElemAt: ["$images", 0] } } },
+    {
+      $project: {
+        _id: 1,
+        newsHead: 1,
+        postDate: 1,
+        likes: 1,
+        seen: 1,
+        image: 1,
+        comments: 1,
+        status: 1,
+        isMonetized: 1,
       },
-      { $addFields: { views: { $size: { $ifNull: ["$seenBy", []] } } } },
-      { $addFields: { likes: { $size: { $ifNull: ["$likes", []] } } } },
-      { $addFields: { comments: { $size: { $ifNull: ["$comments", []] } } } },
-      { $project: {
-          _id:1,
-          newsHead:1,
-          newsBody:1,
-          comments:1,
-          category:1,
-          images:1,
-          likes:1,
-          views:1,
-          status:1,
-          postDate:1
-        } 
-      }
-    ]);
-  
-    res.status(200).json({ status: true, post: post_details[0] });
+    },
+    {
+      $sort: { _id: -1 },
+    },
+    { $skip: parseInt(skip) },
+    { $limit: parseInt(limit) },
+  ]);
 
-};
+  if ((await Posts.countDocuments()) === parseInt(skip))
+    return res.status(200).json({
+      posts,
+      message: "No more to load",
+    });
 
+  res.status(200).json({ posts });
+});
 
-const updatePostStatus = async (req, res) => { 
+// @desc    Selected post details
+// @rout    GET /api/admin/get-selected-post
+const getSelectedPost = asyncHandler(async (req, res) => {
+  const id = req.query.id;
 
+  let post_details = await Posts.aggregate([
+    {
+      $match: {
+        _id: ObjectId(id),
+      },
+    },
+    { $addFields: { views: { $size: { $ifNull: ["$seenBy", []] } } } },
+    { $addFields: { likes: { $size: { $ifNull: ["$likes", []] } } } },
+    { $addFields: { comments: { $size: { $ifNull: ["$comments", []] } } } },
+    {
+      $project: {
+        _id: 1,
+        newsHead: 1,
+        newsBody: 1,
+        comments: 1,
+        category: 1,
+        images: 1,
+        likes: 1,
+        views: 1,
+        status: 1,
+        postDate: 1,
+      },
+    },
+  ]);
+
+  res.status(200).json({ status: true, post: post_details[0] });
+});
+
+// @desc    Update post status
+// @rout    PATCH /api/admin/update-post-status
+const updatePostStatus = asyncHandler(async (req, res) => {
   const { id, status } = req.query;
-  console.log(req.query);
 
-  let post = await Posts.findById(id)
-  post.status = status
+  let post = await Posts.findById(id);
+  post.status = status;
   await post.save();
 
-  res.status(200).json({status:true,message:'Status changed successfully!!'})
-
-}
-
-
+  res
+    .status(200)
+    .json({ status: true, message: "Status changed successfully!!" });
+});
 
 //////////////////////////////////////////////////////////////////
 
 const fetchByCategory = (category, limit) => {
-  return new Promise(async (res, rej) => {
-    let match = category === "all" 
-      ? { status:"PUBLIC" } 
-      : { category: category, status:"PUBLIC"  };
+  try {
+    return new Promise(async (res, rej) => {
+      let match =
+        category === "all"
+          ? { status: "PUBLIC" }
+          : { category: category, status: "PUBLIC" };
 
-    let posts = await Posts.aggregate([
-      {
-        $match: match,
-      },
-      {
-        $project: {
-          newsHead: 1,
-          newsBody: 1,
-          category: 1,
-          channelId: 1,
-          images: 1,
-          postDate: 1,
+      let posts = await Posts.aggregate([
+        {
+          $match: match,
         },
-      },
-      { $sort: { _id: -1 } },
-      { $limit: limit },
-    ]);
+        {
+          $project: {
+            newsHead: 1,
+            newsBody: 1,
+            category: 1,
+            channelId: 1,
+            images: 1,
+            postDate: 1,
+          },
+        },
+        { $sort: { _id: -1 } },
+        { $limit: limit },
+      ]);
 
-    res(posts);
-  });
+      res(posts);
+    });
+  } catch (error) {
+    rej(error);
+  }
 };
 
 const deletePostFiles = (images) => {
-  
   let promises = [];
 
   images.forEach((file, i) => {
@@ -675,12 +676,12 @@ const deletePostFiles = (images) => {
 
   Promise.all(promises)
     .then(async function () {
-      return true
+      return true;
     })
     .catch(function (err) {
-      return false
+      return false;
     });
-}
+};
 
 module.exports = {
   addPosts,
@@ -705,5 +706,5 @@ module.exports = {
   translatePost,
   fetchPosts,
   getSelectedPost,
-  updatePostStatus
+  updatePostStatus,
 };

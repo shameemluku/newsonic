@@ -1,3 +1,4 @@
+import React, { useEffect, useState } from "react";
 import {
   Avatar,
   Breadcrumbs,
@@ -15,7 +16,6 @@ import {
   ToggleButtonGroup,
   Typography,
 } from "@mui/material";
-import React, { useEffect, useState } from "react";
 import { Col, Container, Row } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
 import Header from "../../../components/Header/Header";
@@ -34,7 +34,10 @@ import MakePay from "./Children/MakePay";
 import Transactions from "./Children/Transactions";
 
 const SponsorDashboard = () => {
-  const { authUser: authData, sponsorDetails } = useSelector((state) => state);
+  const { 
+    authUser: authData, 
+    sponsorDetails 
+  } = useSelector((state) => state);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [current, setCurrent] = useState("ADLIST");
@@ -44,6 +47,7 @@ const SponsorDashboard = () => {
     if (authData.user !== null) {
       dispatch(getSponsorAds());
     }
+    document.title = `Sponsor - Newsonic`
   }, [authData]);
 
   const handleDetails = (data) => {
@@ -58,7 +62,7 @@ const SponsorDashboard = () => {
         <Container>
           <Row>
           <Breadcrumbs aria-label="breadcrumb" className="d-xl-none mb-4">
-                <Link underline="hover" color="inherit" to="/">
+                <Link underline="hover" color="inherit" to="/profile">
                   Account
                 </Link>
                 <Link underline="hover" color="inherit" to="/sponsor">
@@ -147,7 +151,17 @@ const SponsorDashboard = () => {
                             <FeaturedVideoIcon />
                           </Avatar>
                         </ListItemAvatar>
-                        Active Ads: <ListItemText primary="3" className="ms-2"/>
+                        <span className="f-gray">Active Ads:</span> 
+                        <ListItemText 
+                          primary={sponsorDetails.loading 
+                            ? <CircularProgress
+                            size={15}
+                            style={{ color: "black" }}
+                          />
+                            : sponsorDetails?.active
+                          } 
+                          className="ms-2"
+                        />
                       </ListItem>
                       <Divider variant="inset" component="li" />
                       <ListItem
@@ -172,7 +186,7 @@ const SponsorDashboard = () => {
 
             <Col xl={9}>
               <Breadcrumbs aria-label="breadcrumb" className="d-none d-xl-block">
-                <Link underline="hover" color="inherit" to="/">
+                <Link underline="hover" color="inherit" to="/profile">
                   Account
                 </Link>
                 <Link underline="hover" color="inherit" to="/sponsor">

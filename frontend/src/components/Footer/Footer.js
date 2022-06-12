@@ -16,28 +16,28 @@ function FooterComp() {
         <div class="container">
           <div class="row">
             <div class="col-sm-6 col-md-3 item">
-            <p className="fw-500 f-17">Categories</p>
+              <p className="fw-500 f-17">Categories</p>
               <ul>
                 <li>
-                  <Link to="/">Sports</Link>
+                  <Link to="/category/sports">Sports</Link>
                 </li>
                 <li>
-                  <Link to="/">Bussiness</Link>
+                  <Link to="/category/business">Bussiness</Link>
                 </li>
                 <li>
-                  <Link to="/">Entertainment</Link>
+                  <Link to="/category/entertainment">Entertainment</Link>
                 </li>
                 <li>
-                  <Link to="/">Educational</Link>
+                  <Link to="/category/education">Educational</Link>
                 </li>
                 <li>
-                  <Link to="/">Technology</Link>
+                  <Link to="/category/technology">Technology</Link>
                 </li>
                 <li>
-                  <Link to="/">Politics</Link>
+                  <Link to="/category/politics">Politics</Link>
                 </li>
                 <li>
-                  <Link to="/">Movies</Link>
+                  <Link to="/category/movies">Movies</Link>
                 </li>
               </ul>
             </div>
@@ -57,7 +57,7 @@ function FooterComp() {
             </div>
 
             <div class="col-sm-6 col-md-3 item">
-            <p className="fw-500 f-17">Payments</p>
+              <p className="fw-500 f-17">Supported Payments</p>
               <ul>
                 <li>
                   <GrPaypal /> PayPal
@@ -71,23 +71,55 @@ function FooterComp() {
               <img src={logo} height={15}></img>
               <p className="mt-2">
                 Latest India News, Breaking News, Today Headlines and Live News
-                Online - Newsonic provides the latest news from India and
-                around the world
+                Online - Newsonic provides the latest news from India and around
+                the world
               </p>
             </div>
             <div class="col item social mt-3">
-              <Link to="/">
+              <span
+                className="pointer"
+                onClick={() =>
+                  window.open(
+                    `https://www.facebook.com/shameemlukmanpk/`,
+                    "_blank"
+                  )
+                }
+              >
                 <FaFacebookF />
-              </Link>
-              <Link to="/">
+              </span>
+              <span
+                className="pointer"
+                onClick={() =>
+                  window.open(
+                    `https://github.com/shameemluku/`,
+                    "_blank"
+                  )
+                }
+              >
                 <DiGithubAlt />
-              </Link>
-              <Link to="/">
+              </span>
+              <span
+                className="pointer"
+                onClick={() =>
+                  window.open(
+                    `https://www.instagram.com/shameemluku/`,
+                    "_blank"
+                  )
+                }
+              >
                 <AiFillInstagram />
-              </Link>
-              <Link to="/">
+              </span>
+              <span
+                className="pointer"
+                onClick={() =>
+                  window.open(
+                    `https://twitter.com/shameemluku`,
+                    "_blank"
+                  )
+                }
+              >
                 <BsTwitter />
-              </Link>
+              </span>
             </div>
           </div>
           <p class="copyright">Newsonic © 2022 | Developed by Shameem Lukman</p>

@@ -1,17 +1,18 @@
+const asyncHandler = require("express-async-handler");
 const Channel = require("../models/channels");
 const User = require("../models/user");
 const Posts = require("../models/posts");
 const ObjectId = require("mongodb").ObjectID;
-const { uploadFile, uploadBaseFile } = require("../config/s3");
-const mime = require("mime-types");
 const Revenues = require("../models/revenues");
 const Transactions = require("../models/transactions");
 const Payouts = require("../models/payouts");
 const Drafts = require("../models/drafts");
+const mime = require("mime-types");
+const { uploadFile, uploadBaseFile } = require("../config/s3");
 
 // @desc    Create a channel
 // @rout    POST /api/channel/create
-const createChannel = async (req, res) => {
+const createChannel = asyncHandler(async (req, res) => {
   let result,
     filesArray = [];
   let userId = req.body.decodeId;
@@ -30,10 +31,6 @@ const createChannel = async (req, res) => {
     userId,
     website,
   });
-
-  // let ext = propic.match(/[^:/]\w+(?=;|,)/)[0];
-  // let bufferObj = Buffer.from(propic, "base64");
-  // let proDetails = await uploadFile(bufferObj,`propic-${result._id}.${ext}`)
 
   let buffer = Buffer.from(
     propic.replace(/^data:image\/\w+;base64,/, ""),
@@ -92,18 +89,19 @@ const createChannel = async (req, res) => {
     );
     res.status(200).json({ status: true, details: update_result });
   }
-};
+});
 
-// @desc    Create a channel
-// @rout    POST /api/channel/get-details
-
-const getChannelDetails = async (req, res) => {
+// @desc    Get channel details
+// @rout    GET /api/channel/get-details
+const getChannelDetails = asyncHandler(async (req, res) => {
   let userId = req.body.decodeId;
   let details = await Channel.findOne({ userId: ObjectId(userId) });
   res.status(200).json({ channelDetails: details });
-};
+});
 
-const getAddedPosts = async (req, res) => {
+// @desc    Get channel posts
+// @rout    GET /api/channel/fetch-added-posts
+const getAddedPosts = asyncHandler(async (req, res) => {
   const { channel: channelId, filter, limit } = req.query;
   let added_posts;
 
@@ -111,12 +109,11 @@ const getAddedPosts = async (req, res) => {
     added_posts = await Posts.find({ channelId: ObjectId(channelId) }).sort({
       _id: -1,
     });
-  }else if(filter === "DRAFT"){
-
+  } else if (filter === "DRAFT") {
     added_posts = await Drafts.aggregate([
       {
         $match: {
-          channelId: ObjectId(channelId)
+          channelId: ObjectId(channelId),
         },
       },
       {
@@ -126,10 +123,9 @@ const getAddedPosts = async (req, res) => {
         $sort: { _id: -1 },
       },
     ]);
-    added_posts.image = []
-    added_posts.seenBy = []
-    added_posts.likes = []
-
+    added_posts.image = [];
+    added_posts.seenBy = [];
+    added_posts.likes = [];
   } else {
     added_posts = await Posts.aggregate([
       {
@@ -148,9 +144,11 @@ const getAddedPosts = async (req, res) => {
   }
 
   res.status(200).json({ posts: added_posts });
-};
+});
 
-const getDashData = async (req, res) => {
+// @desc    Get channel dashboard data
+// @rout    GET /api/channel/get-dashdata
+const getDashData = asyncHandler(async (req, res) => {
   const channelId = req.channelId;
 
   let most_liked = await Posts.aggregate([
@@ -220,7 +218,6 @@ const getDashData = async (req, res) => {
     },
     { $group: { _id: "$isPaid", amount: { $sum: "$amount" } } },
   ]);
-  
 
   let totalEarnings =
     Earnings.length === 2
@@ -232,16 +229,13 @@ const getDashData = async (req, res) => {
       $match: {
         channelId: ObjectId(channelId),
         isPaid: true,
-        isWithdrawn:false
+        isWithdrawn: false,
       },
     },
     { $group: { _id: "", amount: { $sum: "$amount" } } },
   ]);
 
-  console.log(withdrawable);
-
-  withdrawable = withdrawable.length===0 ? 0.00 : withdrawable[0]?.amount
-
+  withdrawable = withdrawable.length === 0 ? 0.0 : withdrawable[0]?.amount;
 
   res.status(200).json({
     most_liked,
@@ -253,9 +247,11 @@ const getDashData = async (req, res) => {
     withdrawable,
     total_earning: totalEarnings,
   });
-};
+});
 
-const getCreatorPostDetails = async (req, res) => {
+// @desc    Get Creator post details
+// @rout    GET /api/channel/get-full-post
+const getCreatorPostDetails = asyncHandler(async (req, res) => {
   const postId = req.query.postid;
   const channelId = req.channelId;
 
@@ -345,6 +341,24 @@ const getCreatorPostDetails = async (req, res) => {
     },
   ]);
 
+  const revenue_details = await Revenues.aggregate([
+    { $match: { postId: ObjectId(postId) } },
+    {
+      $group: { _id: "$revType", sum: { $sum: "$amount" } },
+    },
+  ]);
+
+  let combined = {};
+  revenue_details.map((val) => {
+    combined[val._id] = val.sum.toFixed(3);
+  });
+
+  if (combined?.CPI) {
+    combined.total = combined?.CPC
+      ? parseFloat(combined?.CPC) + parseFloat(combined?.CPI)
+      : parseFloat(combined?.CPI);
+  }
+
   if (post_details.length === 0) {
     res.status(200).json({ status: true, post: {} });
   } else {
@@ -352,11 +366,14 @@ const getCreatorPostDetails = async (req, res) => {
       Object.keys(post_details[0]?.comments[0]).length === 0
         ? []
         : post_details[0]?.comments;
+    post_details[0].revenue = combined;
     res.status(200).json({ status: true, post: post_details[0] });
   }
-};
+});
 
-const getTransactionDetails = async (req, res) => {
+// @desc    Get creator transactions
+// @rout    GET /api/channel/get-transactions
+const getTransactionDetails = asyncHandler(async (req, res) => {
   const channelId = req.channelId;
   let transactions = await Transactions.find({
     channelId: ObjectId(channelId),
@@ -366,7 +383,7 @@ const getTransactionDetails = async (req, res) => {
       $match: {
         channelId: ObjectId(channelId),
         isPaid: true,
-        isWithdrawn:false
+        isWithdrawn: false,
       },
     },
     { $group: { _id: "", amount: { $sum: "$amount" } } },
@@ -383,173 +400,158 @@ const getTransactionDetails = async (req, res) => {
     isRequested,
     prevAmount: payout?.amount,
   });
-};
+});
 
-const payoutRequest = async (req, res) => {
-  try {
-    const channelId = req.channelId;
-    const { amount, paypalId } = req.body;
+// @desc    Request Payout
+// @rout    PUT /api/channel/request-payout
+const payoutRequest = asyncHandler(async (req, res) => {
+  const channelId = req.channelId;
+  const { amount, paypalId } = req.body;
 
-    console.log(paypalId);
-
-    let withdrawable = await Revenues.aggregate([
-      {
-        $match: {
-          channelId: ObjectId(channelId),
-          isPaid: true,
-        },
+  let withdrawable = await Revenues.aggregate([
+    {
+      $match: {
+        channelId: ObjectId(channelId),
+        isPaid: true,
       },
-      { $group: { _id: "", amount: { $sum: "$amount" } } },
-    ]);
+    },
+    { $group: { _id: "", amount: { $sum: "$amount" } } },
+  ]);
 
-    if (withdrawable[0].amount !== amount) {
-      return res.status(404).json({ message: "Invalid Amount" });
-    }
-
-    let payout = await Payouts.create({
-      amount,
-      channelId,
-      date: new Date(),
-      paypalId,
-    });
-
-    res.status(200).json({ status: true, message: "Payout request sent" });
-  } catch (error) {
-    console.log(error);
+  if (withdrawable[0].amount !== amount) {
+    return res.status(404).json({ message: "Invalid Amount" });
   }
-};
 
-const cancelPayout = async (req, res) => {
-  try {
+  let payout = await Payouts.create({
+    amount,
+    channelId,
+    date: new Date(),
+    paypalId,
+  });
 
-    const channelId = req.channelId;
-    let delete_data = await Payouts.deleteMany({
-      channelId:ObjectId(channelId),
-      isPaid:false
-    })
+  res.status(200).json({ status: true, message: "Payout request sent" });
+});
 
-    res.status(200).json({ status: true, message: "Payout request cancelled" });
+// @desc    Cancel Payout
+// @rout    DELETE /api/channel/cancel-payout
+const cancelPayout = asyncHandler(async (req, res) => {
+  const channelId = req.channelId;
+  let delete_data = await Payouts.deleteMany({
+    channelId: ObjectId(channelId),
+    isPaid: false,
+  });
 
-  } catch (error) {
-    console.log(error);
-  }
-} 
+  res.status(200).json({ status: true, message: "Payout request cancelled" });
+});
 
-const updateChannelData = async (req, res) => {
-  try {
+// @desc    Update channel
+// @rout    PATCH /api/channel/update-channel
+const updateChannelData = asyncHandler(async (req, res) => {
+  const channelId = req.channelId;
+  let { phone, website, email, paymentAccount } = req.body;
 
-    const channelId = req.channelId;
-    let { phone, website, email, paymentAccount } = req.body
-    
-    paymentAccount = (paymentAccount === "") ? null : paymentAccount
+  paymentAccount = paymentAccount === "" ? null : paymentAccount;
 
-    let response = await Channel.updateOne({
-      _id:ObjectId(channelId)
+  let response = await Channel.updateOne(
+    {
+      _id: ObjectId(channelId),
     },
     {
-      $set:{
+      $set: {
         phone,
         website,
         email,
-        paymentAccount
-      }
+        paymentAccount,
+      },
     }
-    )
+  );
 
-    console.log(response);
+  res.status(200).json({ status: true, message: "Channel data Updated" });
+});
 
-    res.status(200).json({ status: true, message: "Channel data Updated" });
+// @desc    Update channel image
+// @rout    PATCH /api/channel/update-channel-image
+const updateChannelPic = asyncHandler(async (req, res) => {
+  const channelId = req.channelId;
+  let { propic } = req.body;
 
-  } catch (error) {
-    console.log(error);
-  }
-} 
+  let buffer = Buffer.from(
+    propic.replace(/^data:image\/\w+;base64,/, ""),
+    "base64"
+  );
 
+  let data = {
+    Key: `propic-${channelId}`,
+    Body: buffer,
+    ContentEncoding: "base64",
+    ContentType: "image/jpeg",
+  };
 
-const updateChannelPic = async (req, res) => {
-  try {
-    const channelId = req.channelId;
-    let { propic } = req.body
+  let proDetails = await uploadBaseFile(data);
 
-    let buffer = Buffer.from(
-      propic.replace(/^data:image\/\w+;base64,/, ""),
-      "base64"
-    );
-  
-    let data = {
-      Key: `propic-${channelId}`,
-      Body: buffer,
-      ContentEncoding: "base64",
-      ContentType: "image/jpeg",
-    };
-  
-    let proDetails = await uploadBaseFile(data);
+  const update_result = await Channel.findOneAndUpdate(
+    { _id: ObjectId(channelId) },
+    {
+      $set: {
+        image: proDetails,
+      },
+    }
+  );
 
-    const update_result = await Channel.findOneAndUpdate(
-      { _id: ObjectId(channelId) },
-      {
-        $set: {
-          image: proDetails
-        }
-      }
-    )
+  res.status(200).json({ status: true, message: "Channel image updated" });
+});
 
-    res.status(200).json({ status: true, message: "Channel image updated" });
+// @desc    Fetch all channels for admin
+// @rout    GET /api/channel/fetch-channels
+const fetchAllChannels = asyncHandler(async (req, res) => {
+  const { skip, limit, status } = req.query;
+  let match = {};
 
-  } catch (error) {
-    console.log(error);
-  }
-}
-
-const fetchAllChannels = async (req,res) => {
-
-  const {skip,limit,status} = req.query
-  let match = {}
-
-  if(status==='ALL') match = {}
-  if(status==='APPROVED') match = { isApproved:true }
-  if(status==='PENDING') match = { isApproved:false }
-  if(status==='BLOCKED') match = { isBlocked:true }
+  if (status === "ALL") match = {};
+  if (status === "APPROVED") match = { isApproved: true };
+  if (status === "PENDING") match = { isApproved: false };
+  if (status === "BLOCKED") match = { isBlocked: true };
 
   let channels = await Channel.aggregate([
-      {
-        $match: match
-      },
-      {
-          $sort: { _id: -1 },
-      },
-      { $skip: parseInt(skip) },
-      { $limit: parseInt(limit) },
-  ])
-  
-  if(await Channel.countDocuments() === parseInt(skip)) return  res.status(200).json({
-      channels, 
-      message:"No more to load"
-  })
+    {
+      $match: match,
+    },
+    {
+      $sort: { _id: -1 },
+    },
+    { $skip: parseInt(skip) },
+    { $limit: parseInt(limit) },
+  ]);
 
-  res.status(200).json({channels})
-}
+  if ((await Channel.countDocuments()) === parseInt(skip))
+    return res.status(200).json({
+      channels,
+      message: "No more to load",
+    });
 
-const approveChannel = async (req,res) => {
-  const { id } = req.query
-  let channel = await Channel.findById(id)
-  channel.isApproved=true
-  channel.save()
-  res.status(200).json({message:"Operation successfull"})
-}
+  res.status(200).json({ channels });
+});
 
-const blockChannel = async (req,res) => {
+// @desc    Approve channel admin
+// @rout    PATCH /api/channel/approve-channel
+const approveChannel = asyncHandler(async (req, res) => {
+  const { id } = req.query;
+  let channel = await Channel.findById(id);
+  channel.isApproved = true;
+  channel.save();
+  res.status(200).json({ message: "Operation successfull" });
+});
 
-
-  const { id,status } = req.query
-  let channel = await Channel.findById(id)
-  channel.isBlocked=status
+// @desc    Block channel admin
+// @rout    PATCH /api/channel/block-channel
+const blockChannel = asyncHandler(async (req, res) => {
+  const { id, status } = req.query;
+  let channel = await Channel.findById(id);
+  channel.isBlocked = status;
   channel.save();
 
-  res.status(200).json({message:"Operation successfull"})
-
-}
-
+  res.status(200).json({ message: "Operation successfull" });
+});
 
 module.exports = {
   createChannel,
@@ -564,5 +566,5 @@ module.exports = {
   updateChannelData,
   updateChannelPic,
   fetchAllChannels,
-  blockChannel
+  blockChannel,
 };

@@ -91,14 +91,10 @@ function CreateAd() {
     setActiveStep(0);
   };
 
-
   useEffect(()=>{
-    console.log(fieldErrors);
-  },[fieldErrors])
+    document.title = `Create Ad - Newsonic`
+  },[])
 
-  // useEffect(()=>{
-  //   console.log(adDetails);
-  // },[adDetails])
 
   return (
     <>
@@ -106,7 +102,7 @@ function CreateAd() {
       <Container className="pb-5">
         <div className="spons-main-content">
           <Breadcrumbs aria-label="breadcrumb">
-            <Link underline="hover" color="inherit" to="/">
+            <Link underline="hover" color="inherit" to="/profile">
               Account
             </Link>
             <Link underline="hover" color="inherit" to="/sponsor">

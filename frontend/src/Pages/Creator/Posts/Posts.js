@@ -29,6 +29,7 @@ export default function Posts() {
   return (
     <Container>
         <div className='content-end mt-4 status-sec'>
+        <div className='post-toggle'>
         <ToggleButtonGroup
           style={{backgroundColor:"white"}}
           value={filterStatus}
@@ -39,7 +40,7 @@ export default function Posts() {
           <ToggleButton value="DRAFT" className='show-post-toogle'>Draft</ToggleButton>
           <ToggleButton value="PUBLIC" className='show-post-toogle'>Published</ToggleButton>
           <ToggleButton value="REVIEW" className='show-post-toogle'>Review</ToggleButton>
-        </ToggleButtonGroup>
+        </ToggleButtonGroup></div>
         </div>
         <div className='mt-1'>
             <TableComp 

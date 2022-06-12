@@ -1,51 +1,54 @@
 import React, { useEffect, useState } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
-import { useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { getPosts } from "../../actions/postActions";
 import { fetchPosts } from "../../api";
 import Header from "../../components/Header/Header";
 import LatestCard from "../Homepage/Latest/LatestCard/LatestCard";
 import BlackCard from "../Homepage/Technology/BlackCard";
 import Technology from "../Homepage/Technology/Technology";
-import "./CategoryPage.css";
 import Infinite from "./Infinite";
 import noResult from "../../Images/noresult.gif"
+import "./CategoryPage.css";
+import FooterComp from "../../components/Footer/Footer";
 
 function CategoryPage() {
+  
   const [catPosts, setCatPosts] = useState([]);
   const [category, setCategory] = useState(useParams().category);
   const [notFound, setNotFound] = useState(false);
   const { posts } = useSelector((state) => state);
+  
   const dispatch = useDispatch();
+  const navigate = useNavigate();
+  const location = useLocation()
 
   useEffect(() => {
     (async () => {
       try {
-        let posts = await (await fetchPosts(9, 0, category)).data?.posts;
-        console.log(posts);
-        if (posts?.length === 0) {
+        
+        setNotFound(false)
+        setCategory(location.pathname.slice(10))
+        dispatch({type:"SHOW_PROGRESS"})
+        let catposts = await (await fetchPosts(9, 0, category)).data?.posts;
+        dispatch({type:"HIDE_PROGRESS"})
+        if (catposts?.length === 0) {
           setNotFound(true);
         } else {
-          setCatPosts([...posts]);
+          setCatPosts([...catposts]);
         }
       } catch (error) {
-        console.log(error);
         setNotFound(true);
       }
     })();
-
+    document.title = `${category} - Newsonic`
     posts.length === 0 && dispatch(getPosts());
-  }, [category]);
+  }, [category,navigate]);
 
   const formatedCategory = ()=>{
     return (category[0].toUpperCase() + category.toLowerCase().slice(1))
   }
-
-  // useEffect(()=>{
-  //   console.log(catPosts);
-  //   console.log(catPosts.length);
-  // },[catPosts])
 
 
 
@@ -113,7 +116,7 @@ function CategoryPage() {
                 </div>
               </div>
               <span className="cat-continue-head">Continue Reading...</span>
-              <div className="d-flex card-scroll mt-3">
+              <div className="d-flex card-scroll mt-3 mb-3">
                 {posts.slice(0, 7).map((val) => {
                   return (
                     <span className="me-2">
@@ -126,6 +129,7 @@ function CategoryPage() {
           </>
         )}
       </div>
+      <FooterComp/>
     </>
   );
 }

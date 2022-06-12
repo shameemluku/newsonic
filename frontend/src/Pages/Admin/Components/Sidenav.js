@@ -1,18 +1,39 @@
 import React from "react";
-import "./Components.css";
-import logo from "../../../Images/mainlogo.svg";
-import { MdOutlineAnalytics } from "react-icons/md";
+import * as api from "../../../api/admin";
+import { Link, useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
+import { ADMIN_SIGNOUT } from "../../../constants/actionTypes";
+
 import {
   IoNewspaperOutline,
   IoSettingsOutline,
   IoAddCircleOutline,
 } from "react-icons/io5";
-import{ FiUsers } from "react-icons/fi";
-import{ GrChannel } from "react-icons/gr";
-import { RiAdvertisementLine, RiMoneyDollarCircleLine, RiPaypalLine } from "react-icons/ri";
-import { Link } from "react-router-dom";
+import {
+  RiAdvertisementLine,
+  RiMoneyDollarCircleLine,
+  RiPaypalLine,
+} from "react-icons/ri";
+import { MdOutlineAnalytics } from "react-icons/md";
+import { FiUsers } from "react-icons/fi";
+import { GrChannel } from "react-icons/gr";
+import LogoutIcon from "@mui/icons-material/Logout";
+import logo from "../../../Images/mainlogo.svg";
+import "./Components.css";
 
 export default function Sidenav({ active }) {
+  
+  const navigate = useNavigate()
+  const dispatch = useDispatch()
+
+  const handleLogout = async () => {
+    await api.logoutAdmin()
+    dispatch({
+      type: ADMIN_SIGNOUT,
+    });
+    navigate('/admin')
+  }
+
   return (
     <>
       <div
@@ -24,8 +45,6 @@ export default function Sidenav({ active }) {
             <img src={logo} height="20px" alt="logo"></img>{" "}
           </div>
         </Link>
-
-
 
         <ul className="nav nav-pills flex-column mb-auto mt-5">
           <li>
@@ -63,7 +82,6 @@ export default function Sidenav({ active }) {
             </Link>
           </li>
 
-
           <li>
             <Link
               to="/admin/channels"
@@ -75,7 +93,6 @@ export default function Sidenav({ active }) {
               <span className="ms-2 admin-link">Channels</span>
             </Link>
           </li>
-
 
           <li>
             <Link
@@ -100,8 +117,17 @@ export default function Sidenav({ active }) {
               <span className="ms-2 admin-link">Payouts</span>
             </Link>
           </li>
-          
 
+          <li>
+            <Link
+              to=""
+              className={`nav-link text-white`}
+              onClick={handleLogout}
+            >
+              <LogoutIcon style={{ color: "black" }} />
+              <span className="ms-2 admin-link">Logout</span>
+            </Link>
+          </li>
 
           {/* <li>
             <Link to="/admin" className={`nav-link text-white ${

@@ -27,7 +27,6 @@ export default function Infinite({posts, category}) {
       setHasmore(true)
       setItem([...posts.filter((val,i)=>{
         if(i>3){ 
-          console.log(val);
           return val}
       })])
     }

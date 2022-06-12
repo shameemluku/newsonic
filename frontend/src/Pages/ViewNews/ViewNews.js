@@ -24,25 +24,30 @@ export default function ViewNews() {
   } = useSelector((state) => state);
   const [scroll, setScroll] = useState(0);
   const [related, setRelated] = useState(null);
+  const [isNotFound, setNotFound] = useState(false);
   const [ad, setAd] = useState(null);
   const { id: postId } = useParams();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   useEffect(() => {
-    dispatch(getPostDetails(postId));
-
+    dispatch(getPostDetails(postId, setNotFound));
     if (posts.length === 0) {
       dispatch(getPosts());
     }
-  }, [authData]);
+    document.title = `${
+      selectedPost?.details?.newsHead
+        ? selectedPost?.details?.newsHead.slice(0, 20)
+        : "Post"
+    } - Newsonic`;
+  }, [authData, navigate]);
 
   useEffect(() => {
     window.scrollTo(0, 0);
 
-    return ()=>{
-      dispatch({type:CLEAR_POST_DETAILS})
-    }
+    return () => {
+      dispatch({ type: CLEAR_POST_DETAILS });
+    };
   }, []);
 
   useEffect(() => {
@@ -83,12 +88,18 @@ export default function ViewNews() {
     }
   }, [selectedPost]);
 
+  useEffect(() => {
+    if (isNotFound) {
+      navigate("/error");
+    }
+  }, [isNotFound]);
+
   const handleAdClick = async (url) => {
     let adParams = {
       format: "FRM2",
       postId: selectedPost?.details?._id,
       adId: ad._id,
-      sponsorId:ad.sponsorId,
+      sponsorId: ad.sponsorId,
       channelId: selectedPost?.details?.channelDetails[0]?._id,
     };
 
@@ -159,7 +170,7 @@ export default function ViewNews() {
         </Container>
       </section>
 
-      <FooterComp/>
+      <FooterComp />
     </>
   );
 }

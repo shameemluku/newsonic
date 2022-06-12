@@ -136,13 +136,9 @@ class AlertDialogSlide extends PureComponent {
             })`,
           }}
         >
-          <div className="hide" onClick={() => fileInput.current.click()}>
+          <div className="hide upload-btn" onClick={() => fileInput.current.click()}>
             <IoCameraOutline className="me-1" />
             Upload pic
-          </div>
-          <div className="hide" onClick={() => alert("Hello")}>
-            <AiOutlineDelete className="me-1" />
-            Remove
           </div>
         </span>
 

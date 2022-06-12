@@ -1,16 +1,21 @@
 import React, { useEffect, useState } from "react";
-import * as api from "../../../api/admin";
-import moment from "moment";
-import { Col, Container, Dropdown, Row } from "react-bootstrap";
+import { 
+  Col, 
+  Container, 
+  Dropdown, 
+  Row 
+} from "react-bootstrap";
 import { BiArrowBack, BiLinkAlt } from "react-icons/bi";
 import { IoMdAlarm } from "react-icons/io";
 import { MdCropFree } from "react-icons/md";
 import { RiMoneyDollarCircleLine } from "react-icons/ri";
-import DoDisturbAltIcon from "@mui/icons-material/DoDisturbAlt";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { BACKEND_URL } from "../../../constants/url";
 import { Button, CircularProgress } from "@mui/material";
+import DoDisturbAltIcon from "@mui/icons-material/DoDisturbAlt";
+import moment from "moment";
+import * as api from "../../../api/admin";
 
 function AdDetails({ adData, setSelectedAd }) {
   const [fullDetails, setFullDetails] = useState({});
@@ -27,7 +32,7 @@ function AdDetails({ adData, setSelectedAd }) {
           try {
             setLoading(true);
             const { data } = await api.getAdRevenueDetails(adData?._id);
-            console.log(data);
+
             if (data.status) {
               setLoading(false);
               setFullDetails({ ...data?.details });
@@ -36,7 +41,6 @@ function AdDetails({ adData, setSelectedAd }) {
             }
           } catch (err) {
             setLoading(false);
-            console.log(err);
           }
         })();
     }

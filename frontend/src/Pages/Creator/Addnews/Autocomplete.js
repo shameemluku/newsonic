@@ -68,7 +68,6 @@ export class Autocomplete extends Component {
       this.setState({ activeOption: activeOption - 1 });
     } else if (e.keyCode === 40) {
       if (activeOption === filteredOptions.length - 1) {
-        console.log(activeOption);
         return;
       }
       this.setState({ activeOption: activeOption + 1 });

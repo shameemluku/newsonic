@@ -45,7 +45,6 @@ export default function Infinite() {
             format:"FRM3"
         }
         setAd(await displayAd(adParams))
-        console.log(await displayAd(adParams));
     })()
   }
 
@@ -86,9 +85,6 @@ export default function Infinite() {
   }
 
   
-  useEffect(()=>{
-    console.log(ad);
-  },[ad])
 
   const loading = <>
     <div className="infiite-loading-anime">

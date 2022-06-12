@@ -1,7 +1,10 @@
 const express = require('express');
 const router = express.Router();
-const { getFileStream } = require('../config/s3');
-const { isUserValid,isCreator } = require('../middlewares/authMiddleware')
+
+const { 
+    isUserValid,
+    isCreator 
+} = require('../middlewares/authMiddleware')
 
 const {
     createChannel,
@@ -15,6 +18,7 @@ const {
     updateChannelData,
     updateChannelPic
 } = require('../controllers/channelController')
+const { getFileStream } = require('../config/s3');
 
 
 

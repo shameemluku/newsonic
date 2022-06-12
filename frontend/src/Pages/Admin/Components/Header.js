@@ -18,7 +18,8 @@ export default function () {
             <MdDashboard  style={{fontSize:"30px",marginTop:"-12px"}}/>
             <span className='page-title ms-2'>Admin Dashboard</span>
             </Col>
-            <Col className='d-flex justify-content-end'>
+            <Col className='d-flex justify-content-end' 
+            >
                 <p className='admin-name'>{adminDetails.user?.name}</p>
                 <img className='admin-dp' 
                   src={logo} 

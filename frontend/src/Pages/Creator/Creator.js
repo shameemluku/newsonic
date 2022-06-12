@@ -20,6 +20,7 @@ export default function Creator({ children, active }) {
   const navigate = useNavigate();
 
   useEffect(() => {
+    document.title = `Creator - Newsonic`
     dispatch(verifyUser());
     if (authData.user?.isCreator) {
       dispatch(getChannelDetails());

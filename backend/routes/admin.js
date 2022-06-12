@@ -4,7 +4,8 @@ const router = express.Router();
 const { 
     adminLogin, 
     verifyAdmin,
-    getDashData
+    getDashData,
+    logoutAdmin
 } = require('../controllers/adminController');
 const { 
     fetchAllChannels ,
@@ -28,16 +29,17 @@ const {
     approveAd, 
     endCampaign
 } = require('../controllers/adController');
-const { isAdmin } = require('../middlewares/authMiddleware');
 const { 
     fetchPayouts,
     getPaypalId,
     approvePayout
- } = require('../controllers/paymentController');
+} = require('../controllers/paymentController');
+const { isAdmin } = require('../middlewares/authMiddleware');
 
 
 router.post('/signin', adminLogin);
 router.get('/verify', isAdmin, verifyAdmin);
+router.get('/logout', isAdmin, logoutAdmin);
 router.get('/get-dash-data', isAdmin, getDashData);
 router.get('/get-paypal-id', isAdmin, getPaypalId);
 router.get('/fetch-posts', isAdmin, fetchPosts);

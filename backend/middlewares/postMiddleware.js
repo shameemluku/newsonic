@@ -1,8 +1,9 @@
 const User = require("../models/user");
 const Posts = require("../models/posts");
 const ObjectId = require("mongodb").ObjectID;
+const asyncHandler = require("express-async-handler");
 
-const isLiked = async (req, res, next) => {
+const isLiked = asyncHandler(async (req, res, next) => {
   const { userId, type } = req.identity;
 
   if (type === "USER_ID") {
@@ -20,9 +21,9 @@ const isLiked = async (req, res, next) => {
   } else {
     next();
   }
-};
+});
 
-const isSaved = async (req, res, next) => {
+const isSaved = asyncHandler(async (req, res, next) => {
   const { userId, type } = req.identity;
 
   if (type === "USER_ID") {
@@ -40,7 +41,7 @@ const isSaved = async (req, res, next) => {
   } else {
     next();
   }
-};
+});
 
 module.exports = {
   isLiked,

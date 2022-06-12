@@ -73,7 +73,6 @@ export default function NewsSection({ data }) {
       images.push(`${BACKEND_URL}/uploads/${val}`);
       setImages([...images]);
     });
-    console.log(images);
   };
 
   const openImageViewer = useCallback((index) => {

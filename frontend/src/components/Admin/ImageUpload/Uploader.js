@@ -6,8 +6,8 @@ import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import Slide from "@mui/material/Slide";
 import ReactCrop from "react-image-crop";
-import "react-image-crop/dist/ReactCrop.css";
 import { withStyles } from "@mui/material/styles";
+import "react-image-crop/dist/ReactCrop.css";
 
 const Transition = React.forwardRef(function Transition(props, ref) {
   return <Slide direction="up" ref={ref} {...props} />;

@@ -27,7 +27,6 @@ export default function Topten() {
         format: "FRM3",
       };
       setAd(await displayAd(adParams));
-      console.log(await displayAd(adParams));
     })();
   };
 
@@ -38,7 +37,6 @@ export default function Topten() {
       sponsorId: ad?.sponsorId,
     };
 
-    console.log("Here");
     clickAd(adParams);
     window.open(`https://${url}`, "_blank");
   };
@@ -123,7 +121,7 @@ export default function Topten() {
         </Container>
       </div>
 
-      <Container className="p-0">
+      <Container className="p-0 mb-2">
         <Row className="p-0">
           <Col ref={adBanner}>
             { !ad  ?  (

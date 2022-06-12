@@ -57,10 +57,6 @@ function Step2({ updateData, ratio, adDetails, fieldErrors, setFieldErrors }) {
     },
   ];
 
-  function valuetext(value) {
-    console.log(value);
-    return `${value}°C`;
-  }
 
   function addImage(img, imgState) {
     let reader = new FileReader();

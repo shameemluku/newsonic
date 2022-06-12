@@ -150,7 +150,7 @@ class AlertDialogSlide extends PureComponent {
                   backgroundImage:`url(${user?.image? BACKEND_URL+'/uploads/'+user?.image : defaultPic })`
                 }}>
             </span>
-            <div className="hide upload-btn pointer" onClick={()=>fileInput.current.click()}>
+            <div className="hide pro-upload-btn pointer" onClick={()=>fileInput.current.click()}>
               <IoCameraOutline className="me-1"/>Upload pic</div>
             <div className="hide remove-btn pointer" 
               onClick={async ()=>{

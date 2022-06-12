@@ -2,11 +2,23 @@ import React, { useEffect, useState } from "react";
 import { Card, Col, Container, FormControl, Row } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
 import { useParams } from "react-router-dom";
-import { getFullDetails, updatePostCategory, updatePostIsComment, updatePostIsMonetize, updatePostText } from "../../../actions/channelActions";
+import {
+  getFullDetails,
+  updatePostCategory,
+  updatePostIsComment,
+  updatePostIsMonetize,
+  updatePostText,
+} from "../../../actions/channelActions";
 import EditIcon from "@mui/icons-material/Edit";
 import CancelIcon from "@mui/icons-material/Cancel";
 import "./PostDetails.css";
-import { Button, CircularProgress, LinearProgress, Switch, TextField } from "@mui/material";
+import {
+  Button,
+  CircularProgress,
+  LinearProgress,
+  Switch,
+  TextField,
+} from "@mui/material";
 import { AiOutlineEye } from "react-icons/ai";
 import { BiLike, BiCommentDetail } from "react-icons/bi";
 import { IoCloseSharp } from "react-icons/io5";
@@ -17,7 +29,6 @@ import { BACKEND_URL } from "../../../constants/url";
 import { useSnackbar } from "notistack";
 
 function PostDetails() {
-  
   const { id } = useParams();
   const dispatch = useDispatch();
   const { enqueueSnackbar } = useSnackbar();
@@ -99,43 +110,62 @@ function PostDetails() {
     } else setUpdateBtn(false);
   }, [editedTexts]);
 
+  const updateData = () => {
+    dispatch(
+      updatePostText(
+        {
+          postId: post._id,
+          title: editedTexts.title,
+          body: editedTexts.body,
+        },
+        showToast
+      )
+    );
+  };
 
-  const updateData = ()=>{
-    dispatch(updatePostText({
-      postId:post._id,
-      title:editedTexts.title,
-      body:editedTexts.body
-    },showToast))
-  }
+  const updateCategory = () => {
+    dispatch(
+      updatePostCategory(
+        {
+          postId: post._id,
+          category,
+        },
+        showToast
+      )
+    );
+  };
 
-  const updateCategory = ()=>{
-    dispatch(updatePostCategory({
-      postId:post._id,
-      category
-    },showToast))
-  }
+  const updateIsComment = (e) => {
+    setPost({ ...post, isComment: e.target.checked });
+    dispatch(
+      updatePostIsComment(
+        {
+          postId: post._id,
+          isComment: e.target.checked,
+        },
+        showToast
+      )
+    );
+  };
 
-  const updateIsComment = (e)=>{
-    setPost({...post,isComment:e.target.checked})
-    dispatch(updatePostIsComment({
-      postId:post._id,
-      isComment:e.target.checked
-    },showToast))
-  }
+  const updateIsMonetize = (e) => {
+    setPost({ ...post, isComment: e.target.checked });
+    dispatch(
+      updatePostIsMonetize(
+        {
+          postId: post._id,
+          isMonetize: e.target.checked,
+        },
+        showToast
+      )
+    );
+  };
 
-  const updateIsMonetize = (e)=>{
-    setPost({...post,isComment:e.target.checked})
-    dispatch(updatePostIsMonetize({
-      postId:post._id,
-      isMonetize:e.target.checked
-    },showToast))
-  }
-
-  const showToast = (message,variant) => {
+  const showToast = (message, variant) => {
     enqueueSnackbar(message, { variant: variant });
-    setCatEditable(false)
-    setEditable(false)
-  }
+    setCatEditable(false);
+    setEditable(false);
+  };
 
   return (
     <>
@@ -198,9 +228,17 @@ function PostDetails() {
 
                 {showUpdateBtn && isEditable && (
                   <p className="text-end mb-0">
-                    {creatorSelectedPost.loading 
-                    ?<><CircularProgress className="mt-2" color="success" size={26}/></> 
-                    :<Button onClick={updateData}>Update</Button>}
+                    {creatorSelectedPost.loading ? (
+                      <>
+                        <CircularProgress
+                          className="mt-2"
+                          color="success"
+                          size={26}
+                        />
+                      </>
+                    ) : (
+                      <Button onClick={updateData}>Update</Button>
+                    )}
                   </p>
                 )}
               </Card.Body>
@@ -254,7 +292,10 @@ function PostDetails() {
                     <Button className="comment-view-btn ms-4">View all</Button>
                   </p>
                   <span className="ms-1">Comment status:</span>
-                  <Switch onChange={updateIsComment} checked={post?.isComment} />
+                  <Switch
+                    onChange={updateIsComment}
+                    checked={post?.isComment}
+                  />
                   <span className="fw-500">
                     {post?.isComment ? "enabled" : "disabled"}
                   </span>
@@ -318,9 +359,17 @@ function PostDetails() {
 
                 {showCatUpdateBtn && isCatEditable && category.length !== 0 && (
                   <p className="text-end mb-0">
-                    {creatorSelectedPost.loading 
-                    ?<><CircularProgress className="mt-2" color="success" size={26}/></> 
-                    :<Button onClick={updateCategory}>Update</Button>}
+                    {creatorSelectedPost.loading ? (
+                      <>
+                        <CircularProgress
+                          className="mt-2"
+                          color="success"
+                          size={26}
+                        />
+                      </>
+                    ) : (
+                      <Button onClick={updateCategory}>Update</Button>
+                    )}
                   </p>
                 )}
               </Card.Body>
@@ -331,7 +380,10 @@ function PostDetails() {
                 <p className="dash-card-heading">Analytics</p>
 
                 <span className="ms-3">Monetization status:</span>
-                <Switch onChange={updateIsMonetize} checked={post?.isMonetize} />
+                <Switch
+                  onChange={updateIsMonetize}
+                  checked={post?.isMonetize}
+                />
                 <span className="fw-500">
                   {post?.isMonetize ? "enabled" : "disabled"}
                 </span>
@@ -339,21 +391,28 @@ function PostDetails() {
                 <p className="ms-3 mt-3 mb-0">
                   <AiOutlineEye className="me-2" />
                   Cost per Impression:{" "}
-                  <span className="fw-500 f-17 ms-2">₹ 0</span>
+                  <span className="fw-500 f-17 ms-2">
+                    ₹ {post?.revenue?.CPI ? post?.revenue?.CPI : "0"}
+                  </span>
                 </p>
                 <p className="ms-3">
                   <GiClick className="me-2" />
-                  Cost per Click: <span className="fw-500 f-17 ms-2">₹ 0</span>
+                  Cost per Click:{" "}
+                  <span className="fw-500 f-17 ms-2">
+                    ₹ {post?.revenue?.CPC ? post?.revenue?.CPC : "0"}
+                  </span>
                 </p>
                 <p className="mb-0 mt-2 text-end post-total">
-                  Total Earnings <span className="post-total-span">₹ 0.00</span>
+                  Total Earnings{" "}
+                  <span className="post-total-span">
+                    ₹ {post?.revenue?.total ? post?.revenue?.total : "0.00"}
+                  </span>
                 </p>
               </Card.Body>
             </Card>
           </Col>
         </Row>
       </Container>
-
     </>
   );
 }

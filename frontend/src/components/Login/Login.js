@@ -1,16 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Modal } from "react-bootstrap";
-import peanut from "../../Images/peanut.svg";
-import google from "../../Images/google.svg";
 import TextField from "@mui/material/TextField";
 import { MdErrorOutline } from "react-icons/md";
 import { GrClose } from "react-icons/gr";
 import { VariantType, useSnackbar } from "notistack";
-import Button from "@mui/material/Button";
 import { GoogleLogin } from "react-google-login";
 import { useDispatch, useSelector } from "react-redux";
 import { signUp, signIn } from "../../actions/userActions";
 import { useNavigate } from "react-router-dom";
+import Button from "@mui/material/Button";
 import {
   isRegisterValid,
   isEmailValid,
@@ -18,6 +16,10 @@ import {
 } from "../../validations/registerForm";
 import "../Login/Login.css";
 import { CircularProgress } from "@mui/material";
+import newspaper from "../../Images/peanut.svg";
+import newspaper1 from "../../Images/newspaper.svg";
+import newspaper2 from "../../Images/newspaper2.svg";
+import google from "../../Images/google.svg";
 
 function Login(props) {
   const [toggleLogin, setToggle] = useState(true);
@@ -41,11 +43,12 @@ function Login(props) {
     name: "",
   });
 
-  const { authUser,posts } = useSelector((state) => state);
+  const { authUser, posts } = useSelector((state) => state);
   const { enqueueSnackbar } = useSnackbar();
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [response, setResponse] = useState({ status: false, message: "" });
+  const images = [newspaper, newspaper1, newspaper2];
 
   function handleLogin() {
     let isValid = true;
@@ -71,7 +74,6 @@ function Login(props) {
   function handleRegister() {
     if (isRegisterValid(registerFields, setRegisterError, registerErrors)) {
       setRegisterField({ ...registerFields, type: "normal" });
-
       let params = {
         registerFields,
         setResponse,
@@ -81,13 +83,10 @@ function Login(props) {
       };
 
       dispatch(signUp(params));
-    } else {
-      console.log(registerErrors);
     }
   }
 
   const googleSuccess = async (res) => {
-    console.log(res);
     const result = res.profileObj;
     const token = res.tokenId;
 
@@ -111,7 +110,6 @@ function Login(props) {
   };
 
   const googleFailure = () => {
-    console.log("Google Sign in error");
     enqueueSnackbar("Google Sign in error!", { variant: "error" });
   };
 
@@ -140,7 +138,11 @@ function Login(props) {
             <Container className="p-0">
               <Row>
                 <Col className="p-0 login-image">
-                  <img src={peanut} alt="" draggable="false"></img>
+                  <img
+                    src={images[Math.floor(Math.random() * images.length)]}
+                    alt=""
+                    draggable="false"
+                  ></img>
                 </Col>
                 <Col className="d-flex flex-column w-100">
                   <div className="w-100 d-flex justify-content-end pe-4 mt-3">
@@ -223,16 +225,20 @@ function Login(props) {
                       />
                     ) : (
                       <p className="user-sign-loading content-center mt-5">
-                        <CircularProgress size={25} color="success" className="me-2"/>
-                        Getting you in</p>
+                        <CircularProgress
+                          size={25}
+                          color="success"
+                          className="me-2"
+                        />
+                        Getting you in
+                      </p>
                     )}
 
                     <div className="login-line"></div>
 
-                    {!authUser.signUpLoading ? 
-                    (
+                    {!authUser.signUpLoading ? (
                       <GoogleLogin
-                        clientId="129734090902-mkllv1oog7546m93bsoho1r2b8pgfc2h.apps.googleusercontent.com"
+                        clientId={process.env.REACT_APP_GOOGLE_ID}
                         render={(renderProps) => (
                           <div className="login-google w-100 text-center">
                             <img src={google} height="40px" alt="" />
@@ -244,8 +250,13 @@ function Login(props) {
                       />
                     ) : (
                       <p className="user-sign-loading content-center mt-4">
-                        <CircularProgress size={25} color="success" className="me-2"/>
-                        Getting you in</p>
+                        <CircularProgress
+                          size={25}
+                          color="success"
+                          className="me-2"
+                        />
+                        Getting you in
+                      </p>
                     )}
                   </div>
                   <div className="register-button align-self-center mt-4">
@@ -381,15 +392,28 @@ function Login(props) {
                         helperText={registerErrors.password}
                       />
 
-                      <input
-                        type="button"
-                        className="login-button mt-2"
-                        style={{ width: "100%" }}
-                        value="Register"
-                        onClick={() => {
-                          handleRegister();
-                        }}
-                      />
+                      {!authUser.signUpLoading ? (
+                        <input
+                          type="button"
+                          className="login-button mt-2"
+                          style={{ width: "100%" }}
+                          value="Register"
+                          onClick={() => {
+                            handleRegister();
+                          }}
+                        />
+                      ) : (
+                        <>
+                          <p className="user-sign-loading content-center mt-4">
+                            <CircularProgress
+                              size={25}
+                              color="success"
+                              className="me-2"
+                            />
+                            Joining the biggest Network
+                          </p>
+                        </>
+                      )}
 
                       <div className="login-line"></div>
                     </div>

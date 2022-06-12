@@ -6,7 +6,11 @@ const {
   verifyPayment,
   fetchTransactions,
 } = require("../controllers/paymentController");
-const { isUserValid, isCreator } = require("../middlewares/authMiddleware");
+
+const { 
+  isUserValid, 
+  isCreator 
+} = require("../middlewares/authMiddleware");
 
 router.get("/get-razor-key", getRazorKey);
 router.post("/create-order", createOrder);

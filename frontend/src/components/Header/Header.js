@@ -1,24 +1,25 @@
 import React, { useEffect, useState } from "react";
 import { Nav, Navbar, Container, Dropdown } from "react-bootstrap";
 import { Link, useNavigate } from "react-router-dom";
-import logo from "../../Images/mainlogo.svg";
-import Login from "../Login/Login";
-import "./Header.css";
 
 import { RiFacebookCircleLine, RiInstagramLine } from "react-icons/ri";
 import { IoLogoTwitter, IoMdLock } from "react-icons/io";
 import { AiFillCaretRight } from "react-icons/ai";
 import { IoSettingsOutline, IoLogOutOutline } from "react-icons/io5";
 import { FaFacebook } from "react-icons/fa";
+import { BiMoney } from "react-icons/bi";
 import { useSelector, useDispatch } from "react-redux";
 import { signOut } from "../../actions/userActions";
 import { BACKEND_URL } from "../../constants/url";
 import { getNavlinks } from "../../api";
 import { Avatar } from "@mui/material";
+import Login from "../Login/Login";
+import logo from "../../Images/mainlogo.svg";
 import Hamburger from "hamburger-react";
 import MonetizationOnIcon from "@mui/icons-material/MonetizationOn";
 import DashboardIcon from "@mui/icons-material/Dashboard";
 import LogoutIcon from "@mui/icons-material/Logout";
+import "./Header.css";
 
 export default function Header({ next, hide }) {
   const [modalShow, setModalShow] = React.useState(false);
@@ -50,17 +51,16 @@ export default function Header({ next, hide }) {
     (async () => setCategory([...(await getNavlinks()).data.categories]))();
   }, [authData]);
 
-
   useEffect(() => {
     if (loginModal) {
       setModalShow(true);
-      setOpen(false)
+      setOpen(false);
     }
   }, [loginModal]);
 
-  useEffect(()=>{
-    setOpen(false)
-  },[modalShow])
+  useEffect(() => {
+    setOpen(false);
+  }, [modalShow]);
 
   useEffect(() => {
     if (next !== null && next > 0.2) setShowNext(true);
@@ -80,12 +80,15 @@ export default function Header({ next, hide }) {
   };
 
   useEffect(() => {
-    window.addEventListener("resize",()=>{
-      if(window.innerWidth<1200 && window.innerWidth>992) setCatLen(5)
-      else setCatLen(8)
-    }, false);
+    window.addEventListener(
+      "resize",
+      () => {
+        if (window.innerWidth < 1200 && window.innerWidth > 992) setCatLen(5);
+        else setCatLen(8);
+      },
+      false
+    );
   }, []);
-
 
   return (
     <>
@@ -105,7 +108,7 @@ export default function Header({ next, hide }) {
             <Hamburger toggled={isOpen} toggle={setOpen} />
           </Navbar.Toggle>
           <Navbar.Collapse id="responsive-navbar-nav">
-            {showNext && window.innerWidth >992 ? (
+            {showNext && window.innerWidth > 992 ? (
               <div
                 className="w-100 header-next"
                 onClick={() => {
@@ -135,11 +138,10 @@ export default function Header({ next, hide }) {
                       category.map((val, i) => {
                         if (i < catLen)
                           return (
-                            <Nav.Link
-                              href={`/category/${val.name}`}
-                              className="navlinks"
-                            >
-                              {val.name}
+                            <Nav.Link className="navlinks nav-cat-links">
+                              <Link to={`/category/${val.name}`}>
+                                {val.name}
+                              </Link>
                             </Nav.Link>
                           );
                       })}
@@ -156,21 +158,21 @@ export default function Header({ next, hide }) {
 
                   <div className="d-flex">
                     <Nav.Link
-                      href="#pricing"
+                      href="https://www.facebook.com/shameemlukmanpk/"
                       className="navlinks nav-social"
                       style={{ fontSize: "20px" }}
                     >
                       <FaFacebook />
                     </Nav.Link>
                     <Nav.Link
-                      href="#pricing"
+                      href="https://www.instagram.com/shameemluku/"
                       className="navlinks nav-social"
                       style={{ fontSize: "20px" }}
                     >
                       <RiInstagramLine />
                     </Nav.Link>
                     <Nav.Link
-                      href="#pricing"
+                      href="https://twitter.com/shameemluku"
                       className="navlinks nav-social"
                       style={{ fontSize: "20px" }}
                     >
@@ -184,7 +186,10 @@ export default function Header({ next, hide }) {
                       setModalShow(true);
                     }}
                   >
-                    <div className="d-flex"><IoMdLock className="login-lock d-none"/>Login</div>
+                    <div className="d-flex">
+                      <IoMdLock className="login-lock d-none" />
+                      Login
+                    </div>
                   </Nav.Link>
                 </>
               ) : (
@@ -213,20 +218,20 @@ export default function Header({ next, hide }) {
 
                   <div className="nav-profile-holder mt-3 d-none">
                     <p>
-                      <Link to="" className="nav-profile-links">
+                      <Link to="/creator" className="nav-profile-links">
                         <DashboardIcon className="me-2" />
                         Go to Console
                       </Link>
                       <br />
                     </p>
                     <p>
-                      <Link to="" className="nav-profile-links">
+                      <Link to="/sponsor" className="nav-profile-links">
                         <MonetizationOnIcon className="me-2" />
                         Become Sponsor
                       </Link>
                     </p>
                     <p>
-                      <Link to="" className="nav-profile-links">
+                      <Link to="" className="nav-profile-links" onClick={handleLogout}>
                         <LogoutIcon className="me-2" />
                         Logout
                       </Link>
@@ -240,15 +245,27 @@ export default function Header({ next, hide }) {
                     ></Dropdown.Toggle>
 
                     <Dropdown.Menu>
-                      {/* <Dropdown.Item href="#"><IoSettingsOutline className="me-2"/>Settings</Dropdown.Item> */}
                       <Dropdown.Item href="#">
-                        <Link to="/sponsor/" className="console-link">
-                          <div className="sponsor">Be a Sponsor</div>
+                        <Link
+                          to="/sponsor/"
+                          className="console-link nav-sponsor-link"
+                        >
+                          <BiMoney className="me-2 mb-1" />
+                          Be a Sponsor
                         </Link>
                       </Dropdown.Item>
                       <Dropdown.Item href="#">
                         <Link to="/creator/" className="console-link">
                           <div className="console-btn">Go to Console</div>
+                        </Link>
+                      </Dropdown.Item>
+                      <Dropdown.Item href="#">
+                        <Link
+                          to="/profile/"
+                          className="console-link nav-sponsor-link"
+                        >
+                          <IoSettingsOutline className="me-2" />
+                          Settings
                         </Link>
                       </Dropdown.Item>
                       <Dropdown.Item href="#" onClick={handleLogout}>

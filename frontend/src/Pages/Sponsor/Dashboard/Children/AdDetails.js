@@ -14,10 +14,11 @@ import DoDisturbAltIcon from '@mui/icons-material/DoDisturbAlt';
 import { endCampaign } from "../../../../actions/adActions";
 import { RiMoneyDollarCircleLine } from "react-icons/ri";
 
-function AdDetails({ data: adData, setCurrent }) {
+function AdDetails({ data: selectedAd, setCurrent }) {
   const [fullDetails, setFullDetails] = useState({});
   const navigate = useNavigate();
   const [loading,setLoading] = useState(false)
+  const [adData,setAdData] = useState(selectedAd)
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -25,8 +26,10 @@ function AdDetails({ data: adData, setCurrent }) {
       adData &&
         (async () => {
           try {
+            dispatch({type:"SHOW_PROGRESS"})
             setLoading(true)
             const { data } = await getAdRevenueDetails(adData?._id);
+            dispatch({type:"HIDE_PROGRESS"})
             if (data.status) {
               setLoading(false)
               setFullDetails({ ...data?.details });
@@ -35,7 +38,7 @@ function AdDetails({ data: adData, setCurrent }) {
             }
           } catch (err) {
             setLoading(false)
-            console.log(err);
+
           }
         })();
     }
@@ -43,7 +46,7 @@ function AdDetails({ data: adData, setCurrent }) {
 
 
   const handleEndCampaign = () =>{
-    dispatch(endCampaign(adData?._id))
+    dispatch(endCampaign(adData?._id,setAdData))
   }
 
   return (
@@ -114,7 +117,8 @@ function AdDetails({ data: adData, setCurrent }) {
 
 
 
-                <Col className="content-end">
+                { !adData?.isCancelled &&
+                  <Col className="content-end">
                   <Dropdown className="d-inline mx-2">
                     <Dropdown.Toggle
                       id="dropdown-autoclose-true"
@@ -131,6 +135,7 @@ function AdDetails({ data: adData, setCurrent }) {
                     </Dropdown.Menu>
                   </Dropdown>
                 </Col>
+                }
 
 
               </Row>
@@ -197,8 +202,8 @@ function AdDetails({ data: adData, setCurrent }) {
                     <IoMdAlarm /> Duration:
                   </p>
                   <p>
-                    {moment(adData?.startDate).format("MMMM d, YYYY")} -{" "}
-                    {moment(adData?.endDate).format("MMMM d, YYYY")}
+                    {moment(adData?.startDate).format('MMMM Do, YYYY')} -{" "}
+                    {moment(adData?.endDate).format('MMMM Do, YYYY')}
                   </p>
                 </Col>
               </Row>

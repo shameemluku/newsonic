@@ -1,5 +1,5 @@
 .bannerImg{
-    height: 200px
+    height: 180px
 }
 
 .mainContent{
@@ -7,7 +7,7 @@
     background-color: white;
     box-shadow: rgba(0, 0, 0, 0.1) 0px 1px 3px 0px, rgba(0, 0, 0, 0.06) 0px 1px 2px 0px;
     align-self: center;
-    margin-top: -70px;
+    margin-top: -80px;
     height: auto;
     padding: 40px;
 }
@@ -97,14 +97,17 @@
     margin-left: 20px;
 }
 
+.upload-btn{
+    background-color: rgba(0, 0, 0, 0.389);
+    color: azure;
+    padding-left: 10px;
+    padding-right: 10px;
+    border-radius: 20px;
+}
+
 
 /* ///////////////////////////// */
 
-
-/* .loading-section{
-    display: flex;
-    justify-content: center;
-} */
 
 
 @media only screen and (max-width: 992px) {

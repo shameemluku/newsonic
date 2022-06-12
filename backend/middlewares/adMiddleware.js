@@ -25,7 +25,6 @@ exports.checkUserType = asyncHandler(async (req, res, next) => {
       userId: signature,
       type: "SIGN_USER",
     };
-    console.log(req.identity.userId);
     next();
   }
-})
+});

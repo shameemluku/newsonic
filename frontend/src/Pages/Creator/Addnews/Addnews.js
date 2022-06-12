@@ -169,7 +169,6 @@ export default function Addnews() {
   }
 
   useEffect(()=>{
-    console.log(progress);
     if(progress===100){
       navigate('/creator/posts')
     }

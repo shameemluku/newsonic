@@ -7,10 +7,10 @@ import {
   UPDATE_USER,
   USER_SIGNUP_LOAD,
   USER_SIGNIN_LOAD,
-  USER_LOAD_END
+  USER_LOAD_END,
 } from "../constants/actionTypes";
 
-let authData = {}
+let authData = {};
 
 try {
   authData = localStorage.getItem("userInfo")
@@ -18,18 +18,17 @@ try {
         ...authData,
         user: decodeData(localStorage.getItem("userInfo")),
       }
-    : { 
-      user: null , 
-      signInLoading:false, 
-      signUpLoading:false  
-    }
-
+    : {
+        user: null,
+        signInLoading: false,
+        signUpLoading: false,
+      };
 } catch (error) {
-  authData = { 
-    ...authData, 
+  authData = {
+    ...authData,
     user: null,
-    signInLoading:false, 
-    signUpLoading:false 
+    signInLoading: false,
+    signUpLoading: false,
   };
   localStorage.removeItem("userInfo");
 }
@@ -38,65 +37,63 @@ export const authReducer = (user = authData, action) => {
   switch (action.type) {
     case USER_SIGNUP:
       localStorage.setItem("userInfo", encodeData(action.payload));
-      return { 
-        ...user, 
+      return {
+        ...user,
         user: action.payload,
-        signUpLoading:false
+        signUpLoading: false,
       };
 
     case USER_SIGNIN:
       localStorage.setItem("userInfo", encodeData(action.payload));
-      return { 
-        ...user, 
+      return {
+        ...user,
         user: action.payload,
-        signInLoading:false
+        signInLoading: false,
       };
 
     case USER_VERIFIED:
       localStorage.setItem("userInfo", encodeData(action.payload));
-      return { 
-        ...user, 
-        user: action.payload
+      return {
+        ...user,
+        user: action.payload,
       };
 
     case UPDATE_USER:
       localStorage.setItem("userInfo", encodeData(action.payload));
-      return { 
-        ...user, 
-        user: action.payload
+      return {
+        ...user,
+        user: action.payload,
       };
 
     case USER_SIGNUP_LOAD:
-      return { 
+      return {
         ...user,
-        signUpLoading:true
+        signUpLoading: true,
       };
     case USER_SIGNIN_LOAD:
-      return { 
+      return {
         ...user,
-        signInLoading:true
+        signInLoading: true,
       };
 
     case USER_LOAD_END:
-      return { 
+      return {
         ...user,
-        signInLoading:false,
-        signUpLoading:false
+        signInLoading: false,
+        signUpLoading: false,
       };
 
     case USER_SIGNOUT:
       localStorage.removeItem("userInfo");
-      return { 
-        ...user, 
-        user: null
+      return {
+        ...user,
+        user: null,
       };
 
     default:
       return user;
   }
 };
-
-
 
 export const showLoginModal = (modalState = false, { type, payload }) => {
   switch (type) {

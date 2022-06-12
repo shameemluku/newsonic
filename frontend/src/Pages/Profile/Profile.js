@@ -40,12 +40,12 @@ import EditIcon from "@mui/icons-material/Edit";
 import CancelIcon from "@mui/icons-material/Cancel";
 import DoDisturbAltIcon from '@mui/icons-material/DoDisturbAlt';
 import CheckCircleIcon from "@mui/icons-material/CheckCircle";
-import "./Profile.css";
 import { useSnackbar } from "notistack";
 import { verifyPassword, verifyPhone } from "../../validations/profileForm";
 import { MdEmail } from "react-icons/md";
 import { useNavigate } from "react-router-dom";
 import emptyImg from "../../Images/empty.png";
+import "./Profile.css";
 
 function Profile() {
   const { authUser, showTopProgress } = useSelector((state) => state);
@@ -71,6 +71,7 @@ function Profile() {
   const { enqueueSnackbar } = useSnackbar();
 
   useEffect(() => {
+    document.title = "Profile - Newsonic"
     dispatch(verifyUser());
   }, []);
 

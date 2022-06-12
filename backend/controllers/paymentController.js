@@ -1,3 +1,4 @@
+const asyncHandler = require("express-async-handler");
 const Razorpay = require("razorpay");
 const crypto = require("crypto");
 const Transactions = require("../models/transactions");
@@ -5,59 +6,33 @@ const Revenues = require("../models/revenues");
 const Payouts = require("../models/payouts");
 const ObjectId = require("mongodb").ObjectID;
 
-const getRazorKey = async (req, res) => {
+// @desc    Get Razorpay key
+// @rout    GET /api/payment/get-razor-key
+const getRazorKey = asyncHandler(async (req, res) => {
   res.status(200).json({ key: process.env.RAZORPAY_KEY });
-};
+});
 
-const createOrder = async (req, res) => {
-  try {
-    const instance = new Razorpay({
-      key_id: process.env.RAZORPAY_KEY,
-      key_secret: process.env.RAZORPAY_SECRET,
-    });
+// @desc    Create order
+// @rout    POST /api/payment/create-order
+const createOrder = asyncHandler(async (req, res) => {
+  const instance = new Razorpay({
+    key_id: process.env.RAZORPAY_KEY,
+    key_secret: process.env.RAZORPAY_SECRET,
+  });
 
-    console.log(req.body.amount);
+  const options = {
+    amount: parseInt(Math.round(req.body.amount)),
+    currency: "INR",
+  };
 
-    const options = {
-      amount: parseInt(Math.round(req.body.amount)),
-      currency: "INR",
-    };
+  const order = await instance.orders.create(options);
+  if (!order) return res.status(500).send("Some error occured");
+  res.status(200).json({ ...order, key: process.env.RAZORPAY_KEY });
+});
 
-    const order = await instance.orders.create(options);
-    if (!order) return res.status(500).send("Some error occured");
-    res.status(200).json({ ...order, key: process.env.RAZORPAY_KEY });
-  } catch (error) {
-    console.log(error);
-    res.status(500).send(error);
-  }
-};
-
-// const payOrder = async (req, res) => {
-//   try {
-//     const { amount, razorpayPaymentId, razorpayOrderId, razorpaySignature } =
-//       req.body;
-
-//     // const newOrder = Order({
-//     //   isPaid: true,
-//     //   amount: amount,
-//     //   razorpay: {
-//     //     orderId: razorpayOrderId,
-//     //     paymentId: razorpayPaymentId,
-//     //     signature: razorpaySignature,
-//     //   },
-//     // });
-//     // await newOrder.save();
-
-//     res.send({
-//       msg: "Payment was successfull",
-//     });
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).send(error);
-//   }
-// };
-
-const verifyPayment = async (req, res) => {
+// @desc    Verify Rayzor payment
+// @rout    POST /api/payment/verify-payment
+const verifyPayment = asyncHandler(async (req, res) => {
   const {
     razorpay_payment_id,
     razorpay_order_id,
@@ -71,11 +46,10 @@ const verifyPayment = async (req, res) => {
   hmac = hmac.digest("hex");
 
   if (hmac == razorpay_signature) {
-
     const newTransaction = Transactions({
       payId: razorpay_payment_id,
       date: new Date(),
-      amount: amount/100,
+      amount: amount / 100,
       type: "BILLPAY",
       method: "RAZOR",
       sponsorId,
@@ -94,46 +68,53 @@ const verifyPayment = async (req, res) => {
       tranId: newTransaction._id,
     });
   } else {
-    console.log("Not Successss");
+    res.status(400).json({ status: false, message: "Payment Failed" });
   }
-};
+});
 
-const fetchPayouts = async (req, res) => {
-  const {skip,limit,filter} = req.query
-    let match={};
-    let test;
+// @desc    Fetch payouts by admin
+// @rout    GET /api/payment/fetch-payouts
+const fetchPayouts = asyncHandler(async (req, res) => {
+  const { skip, limit, filter } = req.query;
+  let match = {};
+  let test;
 
-    if(filter==='ALL') match = {}
-    if(filter==='PAID') match = { isPaid:true }
-    if(filter==='PENDING') match = { isPaid:false }
+  if (filter === "ALL") match = {};
+  if (filter === "PAID") match = { isPaid: true };
+  if (filter === "PENDING") match = { isPaid: false };
 
-    let payouts = await Payouts.aggregate([
-        {
-          $match: match,
-        },
-        {
-            $sort: { _id: -1 },
-        },
-        { $skip: parseInt(skip) },
-        { $limit: parseInt(limit) },
-    ])
+  let payouts = await Payouts.aggregate([
+    {
+      $match: match,
+    },
+    {
+      $sort: { _id: -1 },
+    },
+    { $skip: parseInt(skip) },
+    { $limit: parseInt(limit) },
+  ]);
 
-    
-    if(await Payouts.countDocuments() === parseInt(skip) && parseInt(skip)!==0) return  res.status(200).json({
-        payouts, 
-        message:"No more to load"
-    })
+  if (
+    (await Payouts.countDocuments()) === parseInt(skip) &&
+    parseInt(skip) !== 0
+  )
+    return res.status(200).json({
+      payouts,
+      message: "No more to load",
+    });
 
-    res.status(200).json({payouts})
-}
+  res.status(200).json({ payouts });
+});
 
-const approvePayout = async (req,res) => {
-  const {payoutId} = req.params;
-  const {payment_id,channelId,amount} = req.body;
+// @desc    Approve payout by admin
+// @rout    PATCH /api/payment/approve-payout/
+const approvePayout = asyncHandler(async (req, res) => {
+  const { payoutId } = req.params;
+  const { payment_id, channelId, amount } = req.body;
 
-  let payout = await Payouts.findById(payoutId)
+  let payout = await Payouts.findById(payoutId);
   payout.isPaid = true;
-  await payout.save()
+  await payout.save();
 
   const newTransaction = Transactions({
     payId: payment_id,
@@ -150,23 +131,20 @@ const approvePayout = async (req,res) => {
     { $set: { isWithdrawn: true } }
   );
 
+  res
+    .status(200)
+    .json({ status: true, message: "Payout approved successfully" });
+});
 
-  res.status(200).json({status:true, message:"Payout approved successfully"})
-
-}
-
-const fetchTransactions = async (req, res) => {
+// @desc    Fetch transactions
+// @rout    GET /api/payment/fetch-transactions
+const fetchTransactions = asyncHandler(async (req, res) => {
   const { skip, limit, type } = req.query;
-  console.log(req.query);
-  const { decodeId:id } = req.body;
+  const { decodeId: id } = req.body;
   let match = {
-    type:'BILLPAY',
-    sponsorId:ObjectId(id) 
+    type: "BILLPAY",
+    sponsorId: ObjectId(id),
   };
-
-  // if (filter === "ALL") match = {};
-  // if (filter === "BLOCKED") match = { isBlocked: true };
-  // if (filter === "CREATOR") match = { isCreator: true };
 
   let transactions = await Transactions.aggregate([
     {
@@ -187,22 +165,25 @@ const fetchTransactions = async (req, res) => {
     { $limit: parseInt(limit) },
   ]);
 
-  if ((await Transactions.countDocuments(match)) === parseInt(skip) && parseInt(skip)!==0){
+  if (
+    (await Transactions.countDocuments(match)) === parseInt(skip) &&
+    parseInt(skip) !== 0
+  ) {
     return res.status(200).json({
       transactions,
-      isEnd:true,
+      isEnd: true,
       message: "No more to load",
     });
   }
-    
 
   res.status(200).json({ transactions });
-};
+});
 
-const getPaypalId = (req,res) => {
-  res.status(200).json({status:true, paypalId:process.env.PAYPAI_ID})
-}
-
+// @desc    Get paypal ID
+// @rout    GET /api/admin/get-paypal-id
+const getPaypalId = asyncHandler((req, res) => {
+  res.status(200).json({ status: true, paypalId: process.env.PAYPAI_ID });
+});
 
 module.exports = {
   getRazorKey,
@@ -211,5 +192,5 @@ module.exports = {
   fetchPayouts,
   getPaypalId,
   approvePayout,
-  fetchTransactions
+  fetchTransactions,
 };

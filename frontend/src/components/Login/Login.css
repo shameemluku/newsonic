@@ -1,11 +1,11 @@
 .login-image img{
-    border-radius: 30px 120px 120px 30px;
-    height:550px; 
+    border-radius: 30px 120px 120px 30px !important;
+    height:550px !important; 
 }
 
 .modal-content{
-    border: none;
-    border-radius: 30px;
+    border: none !important;
+    border-radius: 30px !important;
 }
 /* 
 .modal-backdrop{
@@ -22,7 +22,7 @@
 }
 
 .login-input{
-    background-color: #DDDDDD;
+    background-color: #ddddddbd !important;
     border: none;
     height: 50px;
     border-radius: 15px;

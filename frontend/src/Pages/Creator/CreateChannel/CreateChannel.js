@@ -17,6 +17,7 @@ import { isNameValiable } from "../../../api";
 import { useDispatch, useSelector } from "react-redux";
 import { createChannel } from "../../../actions/channelActions";
 import { validate } from "../../../validations/createChannel";
+import doodle from "../../../Images/doodle.jpg";
 
 export default function CreateChannel() {
   const { enqueueSnackbar } = useSnackbar();
@@ -122,7 +123,11 @@ export default function CreateChannel() {
     <>
       <style>{"body {background-color:#F5F7FB;}"}</style>
       <div className="d-flex flex-column">
-        <div className="bannerImg bg-dark"></div>
+        <div className="bannerImg"
+        style={{
+          backgroundImage:`url(${doodle})`
+        }}
+        ></div>
         <div className="mainContent mb-5">
           {!channelCreate.loading && (
             <div className="profile-holder d-flex justify-content-end">

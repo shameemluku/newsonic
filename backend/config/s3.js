@@ -1,5 +1,5 @@
-require("dotenv").config();
 const AWS = require("aws-sdk");
+require("dotenv").config();
 
 let bucketName = process.env.AWS_BUCKET_NAME;
 let bucketRegion = process.env.AWS_BUCKET_REGION;
@@ -21,20 +21,31 @@ async function uploadFile(file, name) {
     Key: name,
   };
 
-  // return s3.upload(uploadParams).promise()
-
   return new Promise(async (res, rej) => {
-    let data = await s3.upload(uploadParams).promise();
-    res(data.key);
+    try {
+      let data = await s3.upload(uploadParams).promise();
+      res(data.key);
+    } catch (error) {
+      rej(error)
+    }
+    
   });
 }
 
 async function uploadBaseFile(file, name) {
   return new Promise(async (res, rej) => {
-    file.Bucket = bucketName;
-    let data = await s3.upload(file).promise();
-    res(data.key);
+
+    try {
+      file.Bucket = bucketName;
+      let data = await s3.upload(file).promise();
+      res(data.key);
+    } catch (error) {
+      rej(error)
+    }
+
   });
+
+  
 }
 
 function getFileStream(fileKey) {
@@ -46,7 +57,7 @@ function getFileStream(fileKey) {
 
     return s3.getObject(downloadParams).createReadStream();
   } catch (err) {
-    console.log(err);
+    return error
   }
 }
 

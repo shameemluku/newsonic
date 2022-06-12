@@ -40,9 +40,6 @@ export default function AdminDashboard() {
     )()
   },[])
 
-  useEffect(()=>{
-    console.log(dashData);
-  },[dashData])
 
   return (
     <>

@@ -1,13 +1,13 @@
 const express = require("express");
+const app = express();
 const bodyParser = require("body-parser");
 const cookieParser = require("cookie-parser");
 const mongoose = require("mongoose");
 const cors = require("cors");
-const app = express();
 const path = require("path");
 const fileUpload = require("express-fileupload");
-const { getFileStream } = require("./config/s3");
 const asyncHandler = require("express-async-handler");
+const { getFileStream } = require("./config/s3");
 require("dotenv").config();
 
 //Routes
@@ -18,7 +18,6 @@ const channelRoutes = require("./routes/channel");
 const adRoutes = require("./routes/ad");
 const paymentRoutes = require("./routes/payment");
 const adminRoutes = require("./routes/admin");
-const { response } = require("express");
 
 app.use(bodyParser.json({ limit: "30mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }));
@@ -35,9 +34,11 @@ app.use("/api/ad", adRoutes);
 app.use("/api/payment", paymentRoutes);
 app.use("/api/admin", adminRoutes);
 
-// Files Route
+// GET S3 OBJECT
 
-app.use("/api/uploads/:key", asyncHandler((req, res) => {
+app.use(
+  "/api/uploads/:key",
+  asyncHandler((req, res) => {
     if (req.params.key === "undefined")
       return res.status(404).json({ message: "Resourse not found" });
     getFileStream(req.params.key)

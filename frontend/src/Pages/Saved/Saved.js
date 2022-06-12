@@ -19,10 +19,10 @@ function Saved() {
   useEffect(()=>{
     (async()=>{
         const {data} = await getSavedPosts()
-        console.log(data);
         {data.status && setSavedPosts([...data.posts])}
     })()
     posts.length === 0 && dispatch(getPosts());
+    document.title = `Saved - Newsonic`
   },[])
 
 

@@ -1,5 +1,6 @@
 import {
   REQUEST_POST_DETAILS,
+  POST_DETAILS_FAILED,
   CLEAR_POST_DETAILS,
   SET_POST_DETAILS,
   FULL_POST_DETAILS,
@@ -60,9 +61,16 @@ export const selectedPost = (
     case FULL_POST_DETAILS:
       return {
         ...posts,
-        details: action.payload[0],
+        details: action?.payload[0],
         loading: false,
       };
+
+    case POST_DETAILS_FAILED:
+      return {
+        ...posts,
+        loading: false,
+      };
+
     case CLEAR_POST_DETAILS:
       return {
         ...posts,
@@ -125,12 +133,11 @@ export const selectedPost = (
   }
 };
 
-
 export const selectedDraft = (draft = null, action) => {
   switch (action.type) {
     case SET_SELECTED_DRAFT:
       return {
-        ...action.payload
+        ...action.payload,
       };
     case CLEAR_SELECTED_DRAFT:
       return null;

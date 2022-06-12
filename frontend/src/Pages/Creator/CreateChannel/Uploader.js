@@ -53,7 +53,6 @@ class AlertDialogSlide extends PureComponent {
 
   onSelectFile = e => {
     if (e.target.files && e.target.files.length > 0) {
-      console.log(this.props.clearError());
       const reader = new FileReader();
       reader.addEventListener("load", () =>{
         
@@ -136,7 +135,7 @@ class AlertDialogSlide extends PureComponent {
               <span
                 className={`creator-profile flex-column ${this.props.isError && 'error'}`} 
                 style={{backgroundImage:`url(${croppedImageUrl?croppedImageUrl:defaultPic})`}}>
-              <div className="hide" onClick={()=>fileInput.current.click()}><IoCameraOutline className="me-1"/>Upload pic</div>
+              <div className="hide upload-btn" onClick={()=>fileInput.current.click()}><IoCameraOutline className="me-1"/>Upload pic</div>
             </span>
         </div>
 

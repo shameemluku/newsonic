@@ -1,22 +1,31 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import logo from "../../Images/mainlogo.svg";
 import avathar from "../../Images/default.svg";
 import "./Admin.css";
 import { Button, TextField } from "@mui/material";
 import { useDispatch } from "react-redux";
 import { signIn } from "../../actions/adminActions";
+import { VariantType, useSnackbar } from "notistack";
 
 function Login() {
 
-  const dispatch = useDispatch()
+  const dispatch = useDispatch();
+  const { enqueueSnackbar } = useSnackbar();
+  const [response, setResponse] = useState({ status: false, message: "" });
   const [loginData, setLoginData] = useState({
     email: "",
     password: "",
   });
 
   const handleLogin = () => {
-    dispatch(signIn(loginData))
+    dispatch(signIn(loginData,setResponse));
   };
+
+  useEffect(() => {
+    if (response.status) {
+      enqueueSnackbar(response.message, { variant: "error" });
+    }
+  }, [response]);
 
   return (
     <div className="wrapper">
@@ -47,10 +56,12 @@ function Login() {
             autoComplete="email"
             variant="outlined"
             value={loginData.email}
-            onChange={(e)=>setLoginData((prev)=>({
-              ...prev,
-              email:e.target.value
-            }))}
+            onChange={(e) =>
+              setLoginData((prev) => ({
+                ...prev,
+                email: e.target.value,
+              }))
+            }
           />
           <TextField
             className="w-100 mt-3"
@@ -59,10 +70,12 @@ function Login() {
             type={"password"}
             variant="outlined"
             value={loginData.password}
-            onChange={(e)=>setLoginData((prev)=>({
-              ...prev,
-              password:e.target.value
-            }))}
+            onChange={(e) =>
+              setLoginData((prev) => ({
+                ...prev,
+                password: e.target.value,
+              }))
+            }
           />
           <Button
             className="admin-login-btn w-100 mt-3"

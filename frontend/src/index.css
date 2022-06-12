@@ -1,105 +1,134 @@
-@import url('https://fonts.googleapis.com/css2?family=Red+Hat+Display:ital,wght@0,400;0,500;1,500&display=swap');
+@import url("Pages/Admin/Admin.css");
+@import url("Pages/Admin/Childrens/Children.css");
+@import url("Pages/Admin/Components/Components.css");
+@import url("Pages/Admin/Components/Components.css");
+@import url("Pages/Admin/Components/Components.css");
+@import url("Pages/Category/CategoryPage.css");
+@import url("Pages/Creator/Addnews/Addnews.css");
+@import url("Pages/Creator/ChannelSettings/ChannelSettings.css");
+@import url("Pages/Creator/CreateChannel/CreateChannel.css");
+@import url("Pages/Creator/Dashboard/Dashboard.css");
+@import url("Pages/Creator/LandingPage/LandingPage.css");
+@import url("Pages/Creator/PostDetails/PostDetails.css");
+@import url("Pages/Creator/Posts/Posts.css");
+@import url("Pages/Creator/Transactions/Transactions.css");
+@import url("Pages/Homepage/Home.css");
+@import url("Pages/Homepage/Business/Business.css");
+@import url("Pages/Homepage/Educational/Educational.css");
+@import url("Pages/Homepage/Latest/Latest.css");
+@import url("Pages/Homepage/Slider/Slider.css");
+@import url("Pages/Homepage/Technology/Technology.css");
+@import url("Pages/Homepage/Tile/Tile.css");
+@import url("Pages/Homepage/Topten/Topten.css");
+@import url("Pages/Profile/Profile.css");
+@import url("Pages/Saved/Saved.css");
+@import url("Pages/Sponsor/CreateAd/CreateAd.css");
+@import url("Pages/Sponsor/Dashboard/Dashboard.css");
+@import url("Pages/Sponsor/Home/SponsorHome.css");
+@import url("Pages/ViewNews/ViewNews.css");
+@import url("components/Header/Header.css");
+@import url("components/Admin/Admin.css");
+@import url("components/Login/Login.css");
+@import url("components/Footer/FooterStyles.css");
+@import url("https://fonts.googleapis.com/css2?family=Red+Hat+Display:ital,wght@0,400;0,500;1,500&display=swap");
 
 body {
   margin: 0;
-  /* font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
-    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
-    sans-serif; */
-  font-family: 'Red Hat Display', sans-serif;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
+  font-family: "Red Hat Display", sans-serif !important;
+  -webkit-font-smoothing: antialiased !important;
+  -moz-osx-font-smoothing: grayscale !important;
 }
 
 code {
-  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
-    monospace;
+  font-family: source-code-pro, Menlo, Monaco, Consolas, "Courier New",
+    monospace !important;
 }
 
-.pointer{
+.pointer {
   cursor: pointer;
 }
 
-.content-center{
+.content-center {
   display: flex;
   justify-content: center;
 }
 
-.content-end{
+.content-end {
   display: flex;
   justify-content: end;
 }
 
-.f-10{
+.f-10 {
   font-size: 10px !important;
 }
 
-.f-12{
+.f-12 {
   font-size: 12px !important;
 }
 
-.f-15{
+.f-15 {
   font-size: 15px !important;
 }
 
-.f-17{
+.f-17 {
   font-size: 17px !important;
 }
 
-.f-20{
+.f-20 {
   font-size: 20px !important;
 }
 
-.fw-500{
+.fw-500 {
   font-weight: 500 !important;
 }
 
-.f-gray{
+.f-gray {
   color: gray !important;
 }
-.f-dark-gray{
+.f-dark-gray {
   color: #2a3427 !important;
 }
-.f-green{
+.f-green {
   color: green !important;
 }
-.f-red{
+.f-red {
   color: rgb(217, 0, 0) !important;
 }
-.w-10{
+.w-10 {
   width: 10% !important;
 }
 
-.w-20{
+.w-20 {
   width: 20% !important;
 }
 
-.w-40{
+.w-40 {
   width: 30% !important;
 }
 
-.w-40{
-  width: 30% !important;
+.w-40 {
+  width: 40% !important;
 }
-.w-50{
+.w-50 {
   width: 50% !important;
 }
 
-.w-60{
+.w-60 {
   width: 60% !important;
 }
 
-.w-70{
+.w-70 {
   width: 70% !important;
 }
-.w-80{
+.w-80 {
   width: 80% !important;
 }
 
-.w-90{
+.w-90 {
   width: 90% !important;
 }
 
-.sponsor-txt{
+.sponsor-txt {
   background: #191919;
   color: white;
   padding-right: 10px;
@@ -111,23 +140,19 @@ code {
   text-transform: uppercase;
 }
 
-.creator-progress{
+.creator-progress {
   position: fixed;
   z-index: 10;
   width: 100%;
 }
 
-.top-progress{
+.top-progress {
   position: fixed;
-  top:0;
+  top: 0;
   z-index: 2000;
   width: 100%;
 }
 
-.css-ueukts-MuiButtonBase-root-MuiToggleButton-root.Mui-selected {
-  color: rgb(18 118 12 / 87%) !important;
-  background-color: rgb(92 221 159 / 8%) !important;
-} 
 
 .pages {
   position: absolute;
@@ -135,6 +160,22 @@ code {
   top: 50%;
   transform: translate(-50%, -50%);
   font-size: 5rem;
+}
+
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #888;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #555;
 }
 
 @media only screen and (max-width: 768px) {
