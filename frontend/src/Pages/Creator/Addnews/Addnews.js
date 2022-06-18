@@ -279,13 +279,14 @@ export default function Addnews() {
                       </div>
                     );
                   })}
-                  <Uploader
+                  {images.length<3 && <Uploader
                     addImage={addImage}
                     error={imgError}
                     clearError={() => {
                       setImgError(false);
                     }}
-                  />
+                    showToast={enqueueSnackbar}
+                  />}
                 </div>
                 <div className="mt-3 news-progress">
                   {progress && (

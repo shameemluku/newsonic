@@ -1,4 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
+import { Link } from "react-router-dom";
+
 import { Container } from "react-bootstrap";
 import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
@@ -6,17 +9,17 @@ import Step from "@mui/material/Step";
 import StepLabel from "@mui/material/StepLabel";
 import Button from "@mui/material/Button";
 import Typography from "@mui/material/Typography";
-import Header from "../../../components/Header/Header";
-import "./CreateAd.css";
-import { Link } from "react-router-dom";
 import { Breadcrumbs } from "@mui/material";
-import { useDispatch, useSelector } from "react-redux";
+
+import Header from "../../../components/Header/Header";
 import Step1 from "./Step1";
 import Step2 from "./Step2";
 import Step3 from "./Step3";
+import Step4 from "./Step4";
+
 import { createAd } from "../../../actions/adActions";
 import { isAdDetailsValid } from "../../../validations/createAdForm";
-import Step4 from "./Step4";
+import "./CreateAd.css";
 
 function CreateAd() {
   const [activeStep, setActiveStep] = useState(0);
@@ -36,15 +39,15 @@ function CreateAd() {
     estAmount: 500,
   });
 
-  const [fieldErrors,setFieldErrors] = useState({
+  const [fieldErrors, setFieldErrors] = useState({
     title: null,
     url: null,
     startDate: null,
     endDate: null,
     imageFrm: null,
     imageSqr: null,
-    views:null
-  })
+    views: null,
+  });
 
   const dispatch = useDispatch();
 
@@ -62,27 +65,24 @@ function CreateAd() {
   };
 
   const handleNext = () => {
-    if (activeStep === 1 && isAdDetailsValid(adDetails,setFieldErrors)) {
+    if (activeStep === 1 && isAdDetailsValid(adDetails, setFieldErrors)) {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
-    }else if(activeStep === 2){
-
-      dispatch(createAd(adDetails,setProgress,setResponse));
+    } else if (activeStep === 2) {
+      dispatch(createAd(adDetails, setProgress, setResponse));
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
-
-    } else if(activeStep === 0) {
+    } else if (activeStep === 0) {
       setActiveStep((prevActiveStep) => prevActiveStep + 1);
     }
   };
-  
 
   const handleBack = () => {
-    if(activeStep===1){
+    if (activeStep === 1) {
       setAdDetails({
         ...adDetails,
-        format:null
-      })
+        format: null,
+      });
       setActiveStep((prevActiveStep) => prevActiveStep - 1);
-    }else{
+    } else {
       setActiveStep((prevActiveStep) => prevActiveStep - 1);
     }
   };
@@ -91,14 +91,13 @@ function CreateAd() {
     setActiveStep(0);
   };
 
-  useEffect(()=>{
-    document.title = `Create Ad - Newsonic`
-  },[])
-
+  useEffect(() => {
+    document.title = `Create Ad - Newsonic`;
+  }, []);
 
   return (
     <>
-      <Header hide={true}/>
+      <Header hide={true} />
       <Container className="pb-5">
         <div className="spons-main-content">
           <Breadcrumbs aria-label="breadcrumb">
@@ -131,7 +130,12 @@ function CreateAd() {
 
             {activeStep === steps.length ? (
               <React.Fragment>
-                <Step4 updateData={updateDetails} adDetails={adDetails} progress={progress} response={response}/>
+                <Step4
+                  updateData={updateDetails}
+                  adDetails={adDetails}
+                  progress={progress}
+                  response={response}
+                />
               </React.Fragment>
             ) : (
               <React.Fragment>
@@ -156,10 +160,6 @@ function CreateAd() {
                   {activeStep === 2 && (
                     <Step3 updateData={updateDetails} adDetails={adDetails} />
                   )}
-
-              
-
-
 
                   <Box sx={{ display: "flex", flexDirection: "row", pt: 2 }}>
                     {activeStep !== 0 && (

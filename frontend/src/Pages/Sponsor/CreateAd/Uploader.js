@@ -53,6 +53,14 @@ class AlertDialogSlide extends PureComponent {
 
   onSelectFile = (e) => {
     if (e.target.files && e.target.files.length > 0) {
+      if (!/^image\//.test(e.target.files[0].type)) {
+        this.props.showToast(
+          `File ${e.target.files[0].name} is not an image.`,
+          { variant: "error" }
+        );
+        return false;
+      }
+
       const reader = new FileReader();
       reader.addEventListener("load", () => {
         this.setState({ src: reader.result });
@@ -129,14 +137,19 @@ class AlertDialogSlide extends PureComponent {
     return (
       <Col md={6} className="content-center">
         <span
-          className={`ad-format1 flex-column mb-2 ${this.props.error && 'error-image-box'}`}
+          className={`ad-format1 flex-column mb-2 ${
+            this.props.error && "error-image-box"
+          }`}
           style={{
             backgroundImage: `url(${
               this.props.cropImage ? this.props.cropImage : defaultPic
             })`,
           }}
         >
-          <div className="hide upload-btn" onClick={() => fileInput.current.click()}>
+          <div
+            className="hide upload-btn"
+            onClick={() => fileInput.current.click()}
+          >
             <IoCameraOutline className="me-1" />
             Upload pic
           </div>
@@ -157,9 +170,8 @@ class AlertDialogSlide extends PureComponent {
               ref={fileInput}
               style={{ display: "none" }}
               onChange={this.onSelectFile}
-              multiple
+              accept="image/*"
             />
-            
 
             {src && (
               <ReactCrop
@@ -172,7 +184,13 @@ class AlertDialogSlide extends PureComponent {
             )}
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleClose} color="primary">
+            <Button
+              onClick={() => {
+                this.clearState();
+                fileInput.current.value = "";
+              }}
+              color="primary"
+            >
               close
             </Button>
 
@@ -191,7 +209,7 @@ class AlertDialogSlide extends PureComponent {
                   this.handleClose();
                   fileInput.current.value = "";
                   this.props.addImage(blob, this.props.imgState);
-                  this.props.clearError()
+                  this.props.clearError();
                 }}
               >
                 Save Photo

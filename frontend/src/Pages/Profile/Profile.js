@@ -206,6 +206,7 @@ function Profile() {
                     user={user}
                     changeImageState={changeImageState}
                     handleRemove={handleRemove}
+                    showToast={showToast}
                   />
                 </div>
               </div>

@@ -1,15 +1,28 @@
-import { Card, CardContent, CardHeader, Link, Slider, TextField } from "@mui/material";
-import { Box } from "@mui/system";
 import React, { useEffect, useState } from "react";
+import {
+  Card,
+  CardContent,
+  CardHeader,
+  Link,
+  Slider,
+  TextField,
+} from "@mui/material";
+import { Box } from "@mui/system";
+import LinearScaleIcon from "@mui/icons-material/LinearScale";
+import KeyboardIcon from "@mui/icons-material/Keyboard";
 import { Col, Container, Row } from "react-bootstrap";
+import { useSnackbar } from "notistack";
 import { RangeDatePicker } from "react-google-flight-datepicker";
-import "react-google-flight-datepicker/dist/main.css";
-import { AiOutlineEye , AiOutlineInfoCircle } from "react-icons/ai";
+import { AiOutlineEye, AiOutlineInfoCircle } from "react-icons/ai";
 import { IoMdAlarm } from "react-icons/io";
 import { findDiff } from "../../../validations/createAdForm";
 import Uploader from "./Uploader";
 
+import "react-google-flight-datepicker/dist/main.css";
+
 function Step2({ updateData, ratio, adDetails, fieldErrors, setFieldErrors }) {
+  const { enqueueSnackbar } = useSnackbar();
+
   const [value, setValue] = useState([null, null]);
   const [startDate, setStart] = useState(adDetails.startDate);
   const [endDate, setEnd] = useState(adDetails.endDate);
@@ -57,7 +70,6 @@ function Step2({ updateData, ratio, adDetails, fieldErrors, setFieldErrors }) {
     },
   ];
 
-
   function addImage(img, imgState) {
     let reader = new FileReader();
     reader.readAsDataURL(img);
@@ -94,18 +106,18 @@ function Step2({ updateData, ratio, adDetails, fieldErrors, setFieldErrors }) {
   }, [adDetails.estView]);
 
   const clearFrmError = () => {
-    setFieldErrors((prevState)=>({
+    setFieldErrors((prevState) => ({
       ...prevState,
-      imageFrm:null
-    }))
-  }
+      imageFrm: null,
+    }));
+  };
 
   const clearSqrError = () => {
-    setFieldErrors((prevState)=>({
+    setFieldErrors((prevState) => ({
       ...prevState,
-      imageSqr:null
-    }))
-  }
+      imageSqr: null,
+    }));
+  };
 
   return (
     <div className="mt-4">
@@ -178,7 +190,15 @@ function Step2({ updateData, ratio, adDetails, fieldErrors, setFieldErrors }) {
                     setCustomType(!isCustomType);
                   }}
                 >
-                  {!isCustomType ? "Type Custom" : "Show Slider"}
+                  {!isCustomType ? (
+                    <span className="switch-target-btn">
+                    <KeyboardIcon /> Type
+                  </span>
+                  ) : (
+                    <span className="switch-target-btn">
+                      <LinearScaleIcon /> Show slider
+                    </span>
+                  )}
                 </span>
               </p>
 
@@ -232,6 +252,7 @@ function Step2({ updateData, ratio, adDetails, fieldErrors, setFieldErrors }) {
                   cropImage={adDetails.imageFrm}
                   error={fieldErrors?.imageFrm}
                   clearError={clearFrmError}
+                  showToast={enqueueSnackbar}
                 />
                 <Uploader
                   ratio={[1, 1]}
@@ -240,35 +261,52 @@ function Step2({ updateData, ratio, adDetails, fieldErrors, setFieldErrors }) {
                   cropImage={adDetails.imageSqr}
                   error={fieldErrors?.imageSqr}
                   clearError={clearSqrError}
+                  showToast={enqueueSnackbar}
                 />
               </Row>
               <Row>
-                <Col lg={6}><span className="errorText mt-1">{fieldErrors.imageFrm}</span></Col>
-                <Col lg={6}><span className="errorText mt-1">{fieldErrors.imageSqr}</span></Col>
+                <Col lg={6}>
+                  <span className="errorText mt-1">{fieldErrors.imageFrm}</span>
+                </Col>
+                <Col lg={6}>
+                  <span className="errorText mt-1">{fieldErrors.imageSqr}</span>
+                </Col>
               </Row>
-              
             </CardContent>
           </Card>
         </Col>
 
         <Col md={4} className="step2-right-col">
           <Card className="step2-card-right">
-            <div className="content-center p-3 card-left-head"><AiOutlineInfoCircle className="mt-1 me-2"/>Additional Details</div>
+            <div className="content-center p-3 card-left-head">
+              <AiOutlineInfoCircle className="mt-1 me-2" />
+              Additional Details
+            </div>
             <CardContent>
               <Container>
-                <div className="create-ad-titles"><IoMdAlarm /> Duration:</div>
-                <div className="cat-days fw-500">{
-                  isNaN(findDiff(adDetails.startDate,adDetails.endDate))?
-                  "0":
-                  findDiff(adDetails.startDate,adDetails.endDate)
-                } Days</div>
+                <div className="create-ad-titles">
+                  <IoMdAlarm /> Duration:
+                </div>
+                <div className="cat-days fw-500">
+                  {isNaN(findDiff(adDetails.startDate, adDetails.endDate))
+                    ? "0"
+                    : findDiff(adDetails.startDate, adDetails.endDate)}{" "}
+                  Days
+                </div>
 
-                <div className="create-ad-titles"><AiOutlineEye /> Estimated Views:</div>
+                <div className="create-ad-titles">
+                  <AiOutlineEye /> Estimated Views:
+                </div>
                 <div className="cat-days fw-500">{adDetails.estView}</div>
 
                 <div className="create-ad-titles">Estimated amount</div>
                 <span className="cat-amount">₹ {adDetails.estAmount}</span>
-                <span className="ms-3" style={{color:"gray",fontSize:"12px"}}>(CPC + CPI)</span>
+                <span
+                  className="ms-3"
+                  style={{ color: "gray", fontSize: "12px" }}
+                >
+                  (CPC + CPI)
+                </span>
               </Container>
             </CardContent>
           </Card>

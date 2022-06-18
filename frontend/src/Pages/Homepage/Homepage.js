@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { VariantType, useSnackbar } from "notistack";
 import { Container, Row, Col } from "react-bootstrap";
 import { useDispatch, useSelector } from "react-redux";
+import { Helmet } from "react-helmet";
 import "./Home.css";
 
 //actions
@@ -32,49 +33,52 @@ export default function Homepage({ response }) {
       dispatch({ type: "SHOW_MODAL", payload: true });
       enqueueSnackbar("Please Login first", { variant: "error" });
     }
-    document.title = `Newsonic`
   }, []);
 
   return (
     <>
-        <Header />
-        <Tile />
+      <Helmet>
+        <title>Newsonic</title>
+        <meta name="description" content="Newsonic provides latest news from India and around the world" />
+      </Helmet>
+      <Header />
+      <Tile />
+      <Container>
+        <Row>
+          <Col xs={12} lg={6} className="p-0">
+            <Latest />
+          </Col>
+          <Col xs={12} lg={6} className="ps-md-0">
+            <Topten />
+          </Col>
+        </Row>
+      </Container>
+
+      <section className="three-section-wrapper py-3">
         <Container>
           <Row>
-            <Col xs={12} lg={6} className="p-0">
-              <Latest />
+            <Col xl={3}>
+              <Educational data={catPosts?.education} />
             </Col>
-            <Col xs={12} lg={6} className="ps-md-0">
-              <Topten />
+
+            <Col xl={6}>
+              <Technology data={catPosts?.technology} />
+            </Col>
+
+            <Col xl={3}>
+              <Business
+                data={catPosts?.business}
+                head={"BUSINESS NEWS"}
+                limit={5}
+              />
             </Col>
           </Row>
         </Container>
+      </section>
 
-        <section className="three-section-wrapper py-3">
-          <Container>
-            <Row>
-              <Col xl={3}>
-                <Educational data={catPosts?.education} />
-              </Col>
-
-              <Col xl={6}>
-                <Technology data={catPosts?.technology} />
-              </Col>
-
-              <Col xl={3}>
-                <Business
-                  data={catPosts?.business}
-                  head={"BUSINESS NEWS"}
-                  limit={5}
-                />
-              </Col>
-            </Row>
-          </Container>
-        </section>
-
-        <section className="pt-3">
-          <Infinite></Infinite>
-        </section>
+      <section className="pt-3">
+        <Infinite></Infinite>
+      </section>
     </>
   );
 }

@@ -137,6 +137,7 @@ export default function CreateChannel() {
                 clearError={() => {
                   setErrors((prev) => ({ ...prev, propic: "" }));
                 }}
+                showToast={enqueueSnackbar}
               />
             </div>
           )}

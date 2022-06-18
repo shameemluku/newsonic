@@ -29,7 +29,7 @@ function AdList({ adsList, handleDetails }) {
   const [filterStatus, setFilterStatus] = useState("ALL");
   const [ads, setAds] = useState([]);
   const { sponsorDetails } = useSelector((state) => state);
-  const navigate = useNavigate()
+  const navigate = useNavigate();
 
   const handleChange = (event, newStatus) => {
     if (adsList) {
@@ -95,43 +95,41 @@ function AdList({ adsList, handleDetails }) {
       <div className="dashboard-ad-cards">
         <div className="w-100 mt-3">
           <Row>
-            {
-              !sponsorDetails.loading ? (
-               
-                <>
-                  {ads.length !== 0 ? (
-                    <>
-                      {ads.map((val) => {
-                        return (
-                          <Col lg={12} className="mb-3">
-                            <Card className="ad-cards" sx={{ minWidth: 275 }}>
-                              <CardContent className="ad-cards-content">
-                                <Row>
-                                  <Col lg={3}>
-                                    <img
-                                      className="home-ad-thumbail"
-                                      src={`${BACKEND_URL}/uploads/${val?.imageFrm}`}
-                                      width="90%"
-                                      height={"150px"}
-                                    />
-                                  </Col>
-                                  <Col lg={5}>
-                                    <p className="titles">Title:</p>
-                                    <p className="fw-500">{val?.title}</p>
+            {!sponsorDetails.loading ? (
+              <>
+                {ads.length !== 0 ? (
+                  <>
+                    {ads.map((val) => {
+                      return (
+                        <Col lg={12} className="mb-3">
+                          <Card className="ad-cards" sx={{ minWidth: 275 }}>
+                            <CardContent className="ad-cards-content">
+                              <Row>
+                                <Col lg={3}>
+                                  <img
+                                    className="home-ad-thumbail"
+                                    src={`${BACKEND_URL}/uploads/${val?.imageFrm}`}
+                                    width="90%"
+                                    height={"150px"}
+                                  />
+                                </Col>
+                                <Col lg={5}>
+                                  <p className="titles">Title:</p>
+                                  <p className="fw-500">{val?.title}</p>
 
-                                    <p className="titles">
-                                      <BiLinkAlt /> Url:
-                                    </p>
-                                    <p className="fw-500">{val?.url}</p>
+                                  <p className="titles">
+                                    <BiLinkAlt /> Url:
+                                  </p>
+                                  <p className="fw-500">{val?.url}</p>
 
-                                    <p className="titles">
-                                      <MdCropFree /> Format: {val?.format}
-                                    </p>
-                                  </Col>
-                                  <Col lg={4}>
-                                    {
-                                      <span
-                                        className={`sponsor-status-span 
+                                  <p className="titles">
+                                    <MdCropFree /> Format: {val?.format}
+                                  </p>
+                                </Col>
+                                <Col lg={4}>
+                                  {
+                                    <span
+                                      className={`sponsor-status-span 
                                   ${
                                     val?.status === "Active" &&
                                     "ad-status-active"
@@ -149,118 +147,119 @@ function AdList({ adsList, handleDetails }) {
                                       val?.status === "Cancelled") &&
                                     "ad-status-ended"
                                   }`}
-                                      >
-                                        Status:&nbsp;&nbsp;
-                                        {val?.status}
-                                      </span>
-                                    }
-
-                                    <p className="titles mt-3">
-                                      <IoMdAlarm /> Duration
-                                    </p>
-                                    <p className="fw-500">
-                                      {moment(val?.startDate).format(
-                                        "MMMM d, YYYY"
-                                      )}{" "}
-                                      -{" "}
-                                      {moment(val?.endDate).format(
-                                        "MMMM d, YYYY"
-                                      )}
-                                    </p>
-                                    <p>
-                                      <AiOutlineEye /> Views :{" "}
-                                      <span className="fw-500">
-                                        {val?.viewsCount}
-                                      </span>
-                                    </p>
-                                  </Col>
-                                </Row>
-                                <Row>
-                                  <Col className="content-end">
-                                    <Button
-                                      className="ad-details-btn"
-                                      onClick={() => {
-                                        handleDetails(val);
-                                      }}
                                     >
-                                      Details
-                                    </Button>
-                                  </Col>
-                                </Row>
-                              </CardContent>
-                            </Card>
-                          </Col>
-                        );
-                      })}
-                    </>
-                  ) : (
-                    <>
-                      <div className="content-center">
-                        <img
-                          height={"350px"}
-                          src={empty}
-                          draggable={false}
-                        ></img>
-                      </div>
-                      <div className="content-center mt-3">
-                        <Button className="f-green"
-                        onClick={()=>navigate('/sponsor/create')}
-                        >
-                          <AddIcon className="me-2" />
-                          START A NEW CAMPAIGN
-                        </Button>
-                      </div>
-                    </>
-                  )}
-                </>
-              ) : (
-                <>
-                  <Col lg={12} className="mb-3">
-                    {[...Array(3)].map(()=>{
+                                      Status:&nbsp;&nbsp;
+                                      {val?.status}
+                                    </span>
+                                  }
 
-                      return(
-                      <Card className="ad-cards pb-3 my-2" sx={{ minWidth: 275 }}>
-                      <CardContent className="ad-cards-content">
-                        <Row>
-                          <Col lg={3}>
-                          <Skeleton variant="rectangular" width={"100%"} height={"150px"} />
-                          </Col>
-                          <Col lg={5}>
-                            <p><Skeleton width={"80%"} /></p>
-
-        
-                            <p><Skeleton width={"80%"} /></p>
-
-                            <p className="titles">
-                               <Skeleton width={"30%"} />
-                            </p>
-                          </Col>
-                          <Col lg={4}>
-                       
-        
-
-
-                            <p><Skeleton width={"80%"} /></p>
-                            <p>
-                              <Skeleton width={"40%"} />
-                            </p>
-                          </Col>
-                        </Row>
-                        <Row>
-                          <Col className="content-end">
-                            <Button
-                            
-                            >
-                            </Button>
-                          </Col>
-                        </Row>
-                      </CardContent>
-                    </Card>)
+                                  <p className="titles mt-3">
+                                    <IoMdAlarm /> Duration
+                                  </p>
+                                  <p className="fw-500">
+                                    {moment(val?.startDate).format(
+                                      "MMMM Do, YYYY"
+                                    )}{" "}
+                                    -{" "}
+                                    {moment(val?.endDate).format(
+                                      "MMMM Do, YYYY"
+                                    )}
+                                  </p>
+                                  <p>
+                                    <AiOutlineEye /> Views :{" "}
+                                    <span className="fw-500">
+                                      {val?.viewsCount}
+                                    </span>
+                                  </p>
+                                </Col>
+                              </Row>
+                              <Row>
+                                <Col className="content-end">
+                                  <Button
+                                    className="ad-details-btn"
+                                    onClick={() => {
+                                      handleDetails(val);
+                                    }}
+                                  >
+                                    Details
+                                  </Button>
+                                </Col>
+                              </Row>
+                            </CardContent>
+                          </Card>
+                        </Col>
+                      );
                     })}
-                  </Col>
-                </>
-              )
-            }
+                  </>
+                ) : (
+                  <>
+                    <div className="content-center">
+                      <img height={"350px"} src={empty} draggable={false}></img>
+                    </div>
+                    <div className="content-center mt-3">
+                      <Button
+                        className="f-green"
+                        onClick={() => navigate("/sponsor/create")}
+                      >
+                        <AddIcon className="me-2" />
+                        START A NEW CAMPAIGN
+                      </Button>
+                    </div>
+                  </>
+                )}
+              </>
+            ) : (
+              <>
+                <Col lg={12} className="mb-3">
+                  {[...Array(3)].map(() => {
+                    return (
+                      <Card
+                        className="ad-cards pb-3 my-2"
+                        sx={{ minWidth: 275 }}
+                      >
+                        <CardContent className="ad-cards-content">
+                          <Row>
+                            <Col lg={3}>
+                              <Skeleton
+                                variant="rectangular"
+                                width={"100%"}
+                                height={"150px"}
+                              />
+                            </Col>
+                            <Col lg={5}>
+                              <p>
+                                <Skeleton width={"80%"} />
+                              </p>
+
+                              <p>
+                                <Skeleton width={"80%"} />
+                              </p>
+
+                              <p className="titles">
+                                <Skeleton width={"30%"} />
+                              </p>
+                            </Col>
+                            <Col lg={4}>
+                              <p>
+                                <Skeleton width={"80%"} />
+                              </p>
+                              <p>
+                                <Skeleton width={"40%"} />
+                              </p>
+                            </Col>
+                          </Row>
+                          <Row>
+                            <Col className="content-end">
+                              <Button></Button>
+                            </Col>
+                          </Row>
+                        </CardContent>
+                      </Card>
+                    );
+                  })}
+                </Col>
+              </>
+            )}
           </Row>
         </div>
       </div>

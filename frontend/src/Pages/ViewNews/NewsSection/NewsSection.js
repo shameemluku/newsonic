@@ -1,19 +1,24 @@
 import React, { useCallback, useEffect, useState } from "react";
 import { BACKEND_URL } from "../../../constants/url";
+import { useDispatch, useSelector } from "react-redux";
+import { Col, Row } from "react-bootstrap";
+import moment from "moment";
 import Skeleton from "@mui/material/Skeleton";
 import CardHeader from "@mui/material/CardHeader";
 import Avatar from "@mui/material/Avatar";
-import { Col, Row } from "react-bootstrap";
 import ImageViewer from "react-simple-image-viewer";
 import ThumbUpOutlinedIcon from "@mui/icons-material/ThumbUpOutlined";
 import ThumbUpIcon from "@mui/icons-material/ThumbUp";
 import MessageIcon from "@mui/icons-material/Message";
-import VisibilityIcon from '@mui/icons-material/Visibility';
+import ShareIcon from "@mui/icons-material/Share";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import { BsBookmark, BsBookmarkFill } from "react-icons/bs";
-import moment from "moment";
-import { useDispatch, useSelector } from "react-redux";
-import { likePost, savePost, translateText } from "../../../actions/postActions";
 import { ToggleButton, ToggleButtonGroup } from "@mui/material";
+import {
+  likePost,
+  savePost,
+  translateText,
+} from "../../../actions/postActions";
 
 export default function NewsSection({ data }) {
   const [isLoaded, setLoaded] = useState(false);
@@ -28,13 +33,12 @@ export default function NewsSection({ data }) {
   const dispatch = useDispatch();
   const { authUser: authData } = useSelector((state) => state);
   const [defaultValues, setDefault] = useState({
-    newsHead:"",
-    newsBody:[]
+    newsHead: "",
+    newsBody: [],
   });
 
   useEffect(() => {
-    
-    if(data?.newsBody && data?.newsHead){
+    if (data?.newsBody && data?.newsHead) {
       findPara();
       setHead();
     }
@@ -42,14 +46,13 @@ export default function NewsSection({ data }) {
     createImageDiv();
   }, [data]);
 
-
   const setHead = () => {
-    setNewsHead(data?.newsHead)
-    setDefault((prev)=>({
+    setNewsHead(data?.newsHead);
+    setDefault((prev) => ({
       ...prev,
-      newsHead:data?.newsHead
-    }))
-  }
+      newsHead: data?.newsHead,
+    }));
+  };
 
   const findPara = () => {
     let result = data?.newsBody.split("\n");
@@ -57,10 +60,10 @@ export default function NewsSection({ data }) {
       if (val !== "") return val;
     });
     setParaArray([...finalParaArray]);
-    setDefault((prev)=>({
+    setDefault((prev) => ({
       ...prev,
-      newsBody:finalParaArray
-    }))
+      newsBody: finalParaArray,
+    }));
     setImagePos(
       paraArray.length > 3 && data.images.length > 1
         ? parseInt(paraArray.length / 2)
@@ -90,22 +93,26 @@ export default function NewsSection({ data }) {
       <div>
         {data?.images && (
           <Row>
-            {data?.images[1] && <Col sm={6}>
-              <img
-                className="w-100 pointer"
-                src={`${BACKEND_URL}/uploads/${data?.images[1]}`}
-                alt=""
-                onClick={() => openImageViewer(1)}
-              ></img>
-            </Col>}
-            {data?.images[2] && <Col sm={6}>
-              <img
-                className="w-100 pointer"
-                src={`${BACKEND_URL}/uploads/${data?.images[2]}`}
-                alt=""
-                onClick={() => openImageViewer(2)}
-              ></img>
-            </Col>}
+            {data?.images[1] && (
+              <Col sm={6}>
+                <img
+                  className="w-100 pointer"
+                  src={`${BACKEND_URL}/uploads/${data?.images[1]}`}
+                  alt=""
+                  onClick={() => openImageViewer(1)}
+                ></img>
+              </Col>
+            )}
+            {data?.images[2] && (
+              <Col sm={6}>
+                <img
+                  className="w-100 pointer"
+                  src={`${BACKEND_URL}/uploads/${data?.images[2]}`}
+                  alt=""
+                  onClick={() => openImageViewer(2)}
+                ></img>
+              </Col>
+            )}
           </Row>
         )}
       </div>
@@ -136,40 +143,42 @@ export default function NewsSection({ data }) {
     );
   };
 
-  const [language, setLanguage] = useState('en');
+  const handleShare = () => {
+    let content = `*${data?.newsHead}* %0a%0a${data?.newsBody.slice(0,100)}... %0a%0aRead more: ${window.location.href}`
+    window.open(`whatsapp://send?text=${content}`, "_blank");
+  };
+
+  const [language, setLanguage] = useState("en");
 
   const handleChange = (event, newLanguage) => {
     setLanguage(newLanguage);
   };
 
-  useEffect(()=>{
-    
-    if(data?.newsBody && data?.newsHead){
-      if(language!=='en' && language!==null){
-        changeLanguage(language)
-      }else{
+  useEffect(() => {
+    if (data?.newsBody && data?.newsHead) {
+      if (language !== "en" && language !== null) {
+        changeLanguage(language);
+      } else {
         findPara();
         setHead();
       }
     }
-  },[language])
+  }, [language]);
 
   const changeLanguage = async (language) => {
+    dispatch({ type: "SHOW_PROGRESS" });
+    let promises = [];
+    let heading = await translateText(defaultValues?.newsHead, language);
+    setNewsHead(heading);
+    defaultValues?.newsBody.map(async (val) => {
+      promises.push(translateText(val, language));
+    });
 
-    dispatch({type:'SHOW_PROGRESS'})
-    let promises = []
-    let heading = await translateText(defaultValues?.newsHead,language)
-    setNewsHead(heading)
-    defaultValues?.newsBody.map(async (val)=>{
-      promises.push(translateText(val,language)); 
-    })
-
-    Promise.all(promises).then((data)=>{
-      setParaArray([...data])
-    })
-    dispatch({type:'HIDE_PROGRESS'})
-
-  }
+    Promise.all(promises).then((data) => {
+      setParaArray([...data]);
+    });
+    dispatch({ type: "HIDE_PROGRESS" });
+  };
 
   return (
     <>
@@ -240,7 +249,6 @@ export default function NewsSection({ data }) {
           ></img>
         )}
 
-
         {!isLoaded && (
           <Skeleton variant="rectangular" width={"100%"} height={"500px"} />
         )}
@@ -274,7 +282,10 @@ export default function NewsSection({ data }) {
           )}
 
           <div className="mt-1">
-            <b>{data?.likes}</b>&nbsp;<span className={`${authData?.user !== null && 'mob-hide'}`}>likes</span>
+            <b>{data?.likes}</b>&nbsp;
+            <span className={`${authData?.user !== null && "mob-hide"}`}>
+              likes
+            </span>
           </div>
 
           <div
@@ -284,24 +295,35 @@ export default function NewsSection({ data }) {
             }}
           >
             <MessageIcon />
-            &nbsp;<b>{data?.comments?.length}</b> <span className="ms-1 mob-hide">Comments</span>
+            &nbsp;<b>{data?.comments?.length}</b>{" "}
+            <span className="ms-1 mob-hide">Comments</span>
           </div>
         </div>
 
         <div className="left-section d-flex">
+          <ToggleButtonGroup
+            size="small"
+            value={language}
+            exclusive
+            onChange={handleChange}
+          >
+            <ToggleButton className="px-3 lang-btn" name="lang" value="en">
+              E
+            </ToggleButton>
+            <ToggleButton className="px-3 lang-btn" name="lang" value="ml">
+              മ
+            </ToggleButton>
+            <ToggleButton className="px-3 lang-btn" name="lang" value="hi">
+              हा
+            </ToggleButton>
+          </ToggleButtonGroup>
 
-        <ToggleButtonGroup
-          size="small"
-          value={language}
-          exclusive
-          onChange={handleChange}
-        >
-          <ToggleButton className="px-3 lang-btn" name='lang' value="en">E</ToggleButton>
-          <ToggleButton className="px-3 lang-btn" name='lang' value="ml">മ</ToggleButton>
-          <ToggleButton className="px-3 lang-btn" name='lang' value="hi">हा</ToggleButton>
-        </ToggleButtonGroup>
+          <span className="news-views ms-3">
+            <VisibilityIcon />
+            &nbsp;&nbsp;{data?.views}
+          </span>
 
-          <span className="news-views ms-3"><VisibilityIcon/>&nbsp;&nbsp;{data?.views}</span>
+          <ShareIcon className="ms-3 pointer" onClick={handleShare} />
 
           {authData?.user !== null && (
             <div
@@ -321,7 +343,7 @@ export default function NewsSection({ data }) {
       </div>
 
       <div className="view-details">
-        {data?.newsBody ? (
+        {paraArray.length !== 0 ? (
           <>
             {paraArray.map((val, i) => {
               if (i === imagePos) {
@@ -331,7 +353,8 @@ export default function NewsSection({ data }) {
                     {<pre>{"\n\n" + val + "\n\n"}</pre>}
                   </>
                 );
-              }else if(i===0) return <pre className="firstPre">{val + "\n\n"}</pre>
+              } else if (i === 0)
+                return <pre className="firstPre">{val + "\n\n"}</pre>;
               return <pre>{val + "\n\n"}</pre>;
             })}
 

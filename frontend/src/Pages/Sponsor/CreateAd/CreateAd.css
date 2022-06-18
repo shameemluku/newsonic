@@ -2,11 +2,11 @@
     margin-top: 100px;
 }
 
-.css-1u4zpwo-MuiSvgIcon-root-MuiStepIcon-root.Mui-active{
+.css-1u4zpwo-MuiSvgIcon-root-MuiStepIcon-root.Mui-active, .css-4ff9q7.Mui-active{
     color:  rgb(9, 169, 73) !important;
 }
 
-.css-1u4zpwo-MuiSvgIcon-root-MuiStepIcon-root.Mui-completed {
+.css-1u4zpwo-MuiSvgIcon-root-MuiStepIcon-root.Mui-completed , .css-4ff9q7.Mui-completed{
     color:  rgb(9, 169, 73) !important;
 }
 
@@ -91,7 +91,9 @@
     border-radius: 30px !important;
 }
 
-
+.switch-target-btn{
+    color: #0ba726 !important;
+}
 
 
 /* STEP 2 */
@@ -166,7 +168,7 @@
     border-color: rgb(57, 165, 57) !important;
 }
 
-.css-1aznpnh-MuiSlider-root {
+.css-1aznpnh-MuiSlider-root, .css-9cct2k{
     color: #0ba726 !important;
 }
 

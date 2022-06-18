@@ -256,8 +256,8 @@ function AdDetails({ adData, setSelectedAd }) {
                     <IoMdAlarm /> Duration:
                   </p>
                   <p>
-                    {moment(adData?.startDate).format("MMMM d, YYYY")} -{" "}
-                    {moment(adData?.endDate).format("MMMM d, YYYY")}
+                    {moment(adData?.startDate).format('MMMM Do, YYYY')} -{" "}
+                    {moment(adData?.endDate).format('MMMM Do, YYYY')}
                   </p>
                 </Col>
               </Row>

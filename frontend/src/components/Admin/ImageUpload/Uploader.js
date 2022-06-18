@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -16,8 +16,8 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 const styles = {
   dialogPaper: {
     minHeight: "80vh",
-    maxHeight: "80vh"
-  }
+    maxHeight: "80vh",
+  },
 };
 
 class AlertDialogSlide extends PureComponent {
@@ -27,17 +27,17 @@ class AlertDialogSlide extends PureComponent {
     crop: {
       unit: "%",
       width: 90,
-      aspect: 16 / 9
-    }
+      aspect: 16 / 9,
+    },
   };
 
   clearState = () => {
     this.setState({
-      open:false,
-      src:null,
-      croppedImageUrl:null
-    })
-  }
+      open: false,
+      src: null,
+      croppedImageUrl: null,
+    });
+  };
 
   handleClickOpen = () => {
     this.setState({ open: true });
@@ -47,22 +47,31 @@ class AlertDialogSlide extends PureComponent {
     this.setState({ open: false });
   };
 
-  onSelectFile = e => {
+  onSelectFile = (e) => {
     if (e.target.files && e.target.files.length > 0) {
+      if (!/^image\//.test(e.target.files[0].type)) {
+        this.props.showToast(
+          `File ${e.target.files[0].name} is not an image.`,
+          { variant: "error" }
+        );
+        return false;
+      }
+
       const reader = new FileReader();
-      reader.addEventListener("load", () =>
-        this.setState({ src: reader.result })
-      );
+      reader.addEventListener("load", () => {
+        this.setState({ src: reader.result });
+        this.setState({ open: true });
+      });
       reader.readAsDataURL(e.target.files[0]);
     }
   };
 
   // If you setState the crop in here you should return false.
-  onImageLoaded = image => {
+  onImageLoaded = (image) => {
     this.imageRef = image;
   };
 
-  onCropComplete = crop => {
+  onCropComplete = (crop) => {
     this.makeClientCrop(crop);
   };
 
@@ -87,8 +96,8 @@ class AlertDialogSlide extends PureComponent {
     const canvas = document.createElement("canvas");
     const scaleX = image.naturalWidth / image.width;
     const scaleY = image.naturalHeight / image.height;
-    canvas.width = Math.ceil(crop.width*scaleX);
-    canvas.height = Math.ceil(crop.height*scaleY);
+    canvas.width = Math.ceil(crop.width * scaleX);
+    canvas.height = Math.ceil(crop.height * scaleY);
     const ctx = canvas.getContext("2d");
 
     ctx.drawImage(
@@ -99,22 +108,26 @@ class AlertDialogSlide extends PureComponent {
       crop.height * scaleY,
       0,
       0,
-      crop.width*scaleX,
-      crop.height*scaleY
+      crop.width * scaleX,
+      crop.height * scaleY
     );
 
     return new Promise((resolve, reject) => {
-      canvas.toBlob(blob => {
-        if (!blob) {
-          //reject(new Error('Canvas is empty'));
-          console.error("Canvas is empty");
-          return;
-        }
-        blob.name = fileName;
-        window.URL.revokeObjectURL(this.fileUrl);
-        this.fileUrl = window.URL.createObjectURL(blob);
-        resolve(this.fileUrl);
-      }, "image/jpeg",1);
+      canvas.toBlob(
+        (blob) => {
+          if (!blob) {
+            //reject(new Error('Canvas is empty'));
+            console.error("Canvas is empty");
+            return;
+          }
+          blob.name = fileName;
+          window.URL.revokeObjectURL(this.fileUrl);
+          this.fileUrl = window.URL.createObjectURL(blob);
+          resolve(this.fileUrl);
+        },
+        "image/jpeg",
+        1
+      );
     });
   }
 
@@ -123,10 +136,15 @@ class AlertDialogSlide extends PureComponent {
     const { crop, croppedImageUrl, src } = this.state;
     return (
       <div>
-        
-        <div className='d-flex'>
-            <div className={this.props.error?"image-add-tbn error":"image-add-tbn"} 
-              onClick={this.handleClickOpen}>+</div>
+        <div className="d-flex">
+          <div
+            className={
+              this.props.error ? "image-add-tbn error" : "image-add-tbn"
+            }
+            onClick={() => fileInput.current.click()}
+          >
+            +
+          </div>
         </div>
 
         <Dialog
@@ -142,10 +160,10 @@ class AlertDialogSlide extends PureComponent {
               ref={fileInput}
               style={{ display: "none" }}
               onChange={this.onSelectFile}
-              multiple
+              accept="image/*"
             />
 
-            {src && ( 
+            {src && (
               <ReactCrop
                 src={src}
                 crop={crop}
@@ -155,17 +173,19 @@ class AlertDialogSlide extends PureComponent {
               />
             )}
 
-            {src && 
-            
-            <div className="d-flex justify-content-end">
-            <Button onClick={() => fileInput.current.click()}>
-              {src === null ? "Upload Photo" : "Change Photo"}
-            </Button>
-            </div> 
-            
-            }
+            {src && (
+              <div className="d-flex justify-content-end">
+                <Button onClick={() => fileInput.current.click()}>
+                  {src === null ? "Upload Photo" : "Change Photo"}
+                </Button>
+              </div>
+            )}
 
-            {src && <div style={{color:"red",fontWeight:"500"}}>Cropped Image: </div> }
+            {src && (
+              <div style={{ color: "red", fontWeight: "500" }}>
+                Cropped Image:{" "}
+              </div>
+            )}
 
             {croppedImageUrl && (
               <img
@@ -177,21 +197,30 @@ class AlertDialogSlide extends PureComponent {
             )}
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleClose} color="primary">
+            <Button
+              onClick={() => {
+                this.clearState();
+                fileInput.current.value = "";
+              }}
+              color="primary"
+            >
               close
             </Button>
-            {src===null && <Button onClick={() => fileInput.current.click()}>
-              Upload Photo
-            </Button>}
+            {src === null && (
+              <Button onClick={() => fileInput.current.click()}>
+                Upload Photo
+              </Button>
+            )}
             {src !== null ? (
-              <Button onClick={async () => {
-                let blob = await fetch(croppedImageUrl).then(r => r.blob());
-                this.props.clearError()
-                this.clearState()
-                fileInput.current.value = "";
-                this.props.addImage(blob)
-
-              }}>
+              <Button
+                onClick={async () => {
+                  let blob = await fetch(croppedImageUrl).then((r) => r.blob());
+                  this.props.clearError();
+                  this.clearState();
+                  fileInput.current.value = "";
+                  this.props.addImage(blob);
+                }}
+              >
                 Save Photo
               </Button>
             ) : null}

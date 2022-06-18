@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import Header from "../../components/Header/Header";
 import { Container, Row, Col } from "react-bootstrap";
-import "./ViewNews.css";
 import NewsSection from "./NewsSection/NewsSection";
 import Business from "../Homepage/Business/Business";
 import LatestCard from "../Homepage/Latest/LatestCard/LatestCard";
@@ -15,6 +14,8 @@ import { BACKEND_URL } from "../../constants/url";
 import FooterComp from "../../components/Footer/Footer";
 import ScrollContainer from "react-indiana-drag-scroll";
 import { CLEAR_POST_DETAILS } from "../../constants/actionTypes";
+import { Helmet } from "react-helmet";
+import "./ViewNews.css";
 
 export default function ViewNews() {
   const {
@@ -35,11 +36,6 @@ export default function ViewNews() {
     if (posts.length === 0) {
       dispatch(getPosts());
     }
-    document.title = `${
-      selectedPost?.details?.newsHead
-        ? selectedPost?.details?.newsHead.slice(0, 20)
-        : "Post"
-    } - Newsonic`;
   }, [authData, navigate]);
 
   useEffect(() => {
@@ -57,6 +53,12 @@ export default function ViewNews() {
         setRelated(data.posts);
       }
     })();
+
+    document.title = `${
+      selectedPost?.details?.newsHead
+        ? selectedPost?.details?.newsHead.slice(0, 20)
+        : "Post"
+    } - Newsonic`;
   }, [selectedPost]);
 
   useEffect(() => {
@@ -109,6 +111,23 @@ export default function ViewNews() {
 
   return (
     <>
+      <Helmet>
+        <title></title>
+        <meta
+          name="description"
+          content={`${
+            selectedPost?.details?.newsHead &&
+            selectedPost?.details?.newsHead.slice(0, 50)
+          }`}
+        />
+        <meta
+          property="og:image"
+          content={`${
+            selectedPost?.details?.images &&
+            `${BACKEND_URL}/uploads/${selectedPost?.details?.images[0]}`
+          }`}
+        />
+      </Helmet>
       <Header next={scroll}></Header>
       <div id="progressBarContainer">
         <div id="progressBar" style={{ transform: `scale(${scroll}, 1)` }} />

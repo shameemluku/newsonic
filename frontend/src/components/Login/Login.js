@@ -5,6 +5,7 @@ import { MdErrorOutline } from "react-icons/md";
 import { GrClose } from "react-icons/gr";
 import { VariantType, useSnackbar } from "notistack";
 import { GoogleLogin } from "react-google-login";
+import { gapi } from 'gapi-script';
 import { useDispatch, useSelector } from "react-redux";
 import { signUp, signIn } from "../../actions/userActions";
 import { useNavigate } from "react-router-dom";
@@ -22,8 +23,11 @@ import newspaper2 from "../../Images/newspaper2.svg";
 import google from "../../Images/google.svg";
 
 function Login(props) {
+
+  const images = [newspaper, newspaper1, newspaper2];
   const [toggleLogin, setToggle] = useState(true);
   const [loginFields, setLoginField] = useState({ email: "", password: "" });
+  const [image, setImage] = useState(images[Math.floor(Math.random() * images.length)]);
   const [registerFields, setRegisterField] = useState({
     name: "",
     email: "",
@@ -48,7 +52,6 @@ function Login(props) {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [response, setResponse] = useState({ status: false, message: "" });
-  const images = [newspaper, newspaper1, newspaper2];
 
   function handleLogin() {
     let isValid = true;
@@ -106,10 +109,12 @@ function Login(props) {
       };
 
       dispatch(signUp(params));
-    } catch (error) {}
+    } catch (error) {
+      console.log(error);
+    }
   };
 
-  const googleFailure = () => {
+  const googleFailure = (response) => {
     enqueueSnackbar("Google Sign in error!", { variant: "error" });
   };
 
@@ -117,6 +122,20 @@ function Login(props) {
     if (response.status)
       enqueueSnackbar(response.message, { variant: "error" });
   }, [response]);
+
+
+  useEffect(() => {
+    function start() {
+      gapi.client.init({
+        clientId: process.env.REACT_APP_GOOGLE_ID,
+        scope: 'email',
+      });
+    }
+
+    gapi.load('client:auth2', start);
+  }, []);
+
+
 
   return (
     <>
@@ -139,7 +158,7 @@ function Login(props) {
               <Row>
                 <Col className="p-0 login-image">
                   <img
-                    src={images[Math.floor(Math.random() * images.length)]}
+                    src={image}
                     alt=""
                     draggable="false"
                   ></img>
@@ -247,6 +266,7 @@ function Login(props) {
                         )}
                         onSuccess={googleSuccess}
                         onFailure={googleFailure}
+                        scope='profile email'
                       />
                     ) : (
                       <p className="user-sign-loading content-center mt-4">

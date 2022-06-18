@@ -1,6 +1,6 @@
 import React, { PureComponent } from "react";
-import Button from '@mui/material/Button';
-import Dialog from '@mui/material/Dialog';
+import Button from "@mui/material/Button";
+import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
@@ -8,8 +8,8 @@ import Slide from "@mui/material/Slide";
 import ReactCrop from "react-image-crop";
 import "react-image-crop/dist/ReactCrop.css";
 import { withStyles } from "@mui/material/styles";
-import {IoCameraOutline} from "react-icons/io5";
-import {AiOutlineDelete} from "react-icons/ai";
+import { IoCameraOutline } from "react-icons/io5";
+import { AiOutlineDelete } from "react-icons/ai";
 import defaultPic from "../../Images/default.svg";
 import { BACKEND_URL } from "../../constants/url";
 import { changeDp, removeDp } from "../../actions/userActions";
@@ -22,29 +22,29 @@ const Transition = React.forwardRef(function Transition(props, ref) {
 const styles = {
   dialogPaper: {
     minHeight: "80vh",
-    maxHeight: "80vh"
-  }
+    maxHeight: "80vh",
+  },
 };
 
 class AlertDialogSlide extends PureComponent {
   state = {
     open: false,
-    loading:false,
+    loading: false,
     src: null,
     crop: {
       unit: "%",
       width: 30,
-      aspect: 1 / 1
-    }
+      aspect: 1 / 1,
+    },
   };
 
   clearState = () => {
     this.setState({
-      open:false,
-      src:null,
-      croppedImageUrl:null
-    })
-  }
+      open: false,
+      src: null,
+      croppedImageUrl: null,
+    });
+  };
 
   handleClickOpen = () => {
     this.setState({ open: true });
@@ -56,31 +56,37 @@ class AlertDialogSlide extends PureComponent {
 
   showLoading = () => {
     this.setState({ loading: true });
-  }
+  };
 
   hideLoading = () => {
     this.setState({ loading: false });
-  }
+  };
 
-  onSelectFile = e => {
+  onSelectFile = (e) => {
     if (e.target.files && e.target.files.length > 0) {
-      const reader = new FileReader();
-      reader.addEventListener("load", () =>{
-        
-        this.setState({ src: reader.result })
-        this.setState({ open: true });
+      if (!/^image\//.test(e.target.files[0].type)) {
+        this.props.showToast(
+          `File ${e.target.files[0].name} is not an image.`,
+          "error"
+        );
+        return false;
       }
-      );
+
+      const reader = new FileReader();
+      reader.addEventListener("load", () => {
+        this.setState({ src: reader.result });
+        this.setState({ open: true });
+      });
       reader.readAsDataURL(e.target.files[0]);
     }
   };
 
   // If you setState the crop in here you should return false.
-  onImageLoaded = image => {
+  onImageLoaded = (image) => {
     this.imageRef = image;
   };
 
-  onCropComplete = crop => {
+  onCropComplete = (crop) => {
     this.makeClientCrop(crop);
   };
 
@@ -122,7 +128,7 @@ class AlertDialogSlide extends PureComponent {
     );
 
     return new Promise((resolve, reject) => {
-      canvas.toBlob(blob => {
+      canvas.toBlob((blob) => {
         if (!blob) {
           //reject(new Error('Canvas is empty'));
           console.error("Canvas is empty");
@@ -142,28 +148,45 @@ class AlertDialogSlide extends PureComponent {
     const { user, handleRemove } = this.props;
     return (
       <div>
-        
-        <div className='d-flex user-profile-pic-parent'>
-          { !loading 
-           ? <><span className="user-profile-pic flex-column" 
+        <div className="d-flex user-profile-pic-parent">
+          {!loading ? (
+            <>
+              <span
+                className="user-profile-pic flex-column"
                 style={{
-                  backgroundImage:`url(${user?.image? BACKEND_URL+'/uploads/'+user?.image : defaultPic })`
-                }}>
+                  backgroundImage: `url(${
+                    user?.image
+                      ? BACKEND_URL + "/uploads/" + user?.image
+                      : defaultPic
+                  })`,
+                }}
+              ></span>
+              <div
+                className="hide pro-upload-btn pointer"
+                onClick={() => fileInput.current.click()}
+              >
+                <IoCameraOutline className="me-1" />
+                Upload pic
+              </div>
+              <div
+                className="hide remove-btn pointer"
+                onClick={async () => {
+                  let status = await removeDp();
+                  if (status) handleRemove();
+                }}
+              >
+                <AiOutlineDelete className="me-1" />
+                Remove
+              </div>
+            </>
+          ) : (
+            <span
+              className="user-profile-pic blured flex-column"
+              style={{ backgroundImage: `url(${croppedImageUrl})` }}
+            >
+              <CircularProgress color="success" />
             </span>
-            <div className="hide pro-upload-btn pointer" onClick={()=>fileInput.current.click()}>
-              <IoCameraOutline className="me-1"/>Upload pic</div>
-            <div className="hide remove-btn pointer" 
-              onClick={async ()=>{
-                let status = await removeDp()
-                if(status) handleRemove()
-              }}>
-                <AiOutlineDelete className="me-1"/>Remove</div></>
-           : <span className="user-profile-pic blured flex-column" 
-                style={{backgroundImage:`url(${croppedImageUrl})`}}>
-                  <CircularProgress color="success" />
-            </span>
-          }
-
+          )}
         </div>
 
         {/* onClick={this.handleClickOpen} */}
@@ -181,10 +204,10 @@ class AlertDialogSlide extends PureComponent {
               ref={fileInput}
               style={{ display: "none" }}
               onChange={this.onSelectFile}
-              multiple
+              accept="image/*"
             />
 
-            {src && ( 
+            {src && (
               <ReactCrop
                 src={src}
                 crop={crop}
@@ -193,46 +216,48 @@ class AlertDialogSlide extends PureComponent {
                 onChange={this.onCropChange}
               />
             )}
-
-            
-
           </DialogContent>
           <DialogActions>
-            <Button onClick={this.handleClose} color="primary">
+            <Button
+              onClick={() => {
+                this.clearState();
+                fileInput.current.value = "";
+              }}
+              color="primary"
+            >
               close
             </Button>
 
-            {src && 
-            
-            <div className="d-flex justify-content-end">
-            <Button onClick={() => fileInput.current.click()}>
-              {src === null ? "Upload Photo" : "Change Photo"}
-            </Button>
-            </div> 
-            
-            }
+            {src && (
+              <div className="d-flex justify-content-end">
+                <Button onClick={() => fileInput.current.click()}>
+                  {src === null ? "Upload Photo" : "Change Photo"}
+                </Button>
+              </div>
+            )}
 
-            
             {src !== null ? (
-              <Button onClick={async () => {
-                const {showLoading,hideLoading} = this
-                const { changeImageState } = this.props
+              <Button
+                onClick={async () => {
+                  const { showLoading, hideLoading } = this;
+                  const { changeImageState } = this.props;
 
-                let blob = await fetch(croppedImageUrl).then(r => r.blob());
-                this.handleClose()
-                fileInput.current.value = "";
-                let reader = new FileReader();
-                reader.readAsDataURL(blob);
-                reader.onloadend = async function () {
-                  let base64String = reader.result;
-                  showLoading()
-                  let {status, message, key } = await changeDp(base64String)
-                  hideLoading();
-                  if(status) {
-                    changeImageState(key)
-                  }
-                };
-              }}>
+                  let blob = await fetch(croppedImageUrl).then((r) => r.blob());
+                  this.handleClose();
+                  fileInput.current.value = "";
+                  let reader = new FileReader();
+                  reader.readAsDataURL(blob);
+                  reader.onloadend = async function () {
+                    let base64String = reader.result;
+                    showLoading();
+                    let { status, message, key } = await changeDp(base64String);
+                    hideLoading();
+                    if (status) {
+                      changeImageState(key);
+                    }
+                  };
+                }}
+              >
                 Save Photo
               </Button>
             ) : null}
