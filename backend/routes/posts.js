@@ -54,6 +54,6 @@ router.patch('/update-post-data', isUserValid, isCreator, updatePostText)
 router.patch('/update-post-category', isUserValid, isCreator, updatePostCategory)
 router.patch('/update-post-iscomment', isUserValid, isCreator, updatePostIsComment)
 router.patch('/update-post-ismonetize', isUserValid, isCreator, updatePostIsMonetize)
-router.get('/translate/:content', translatePost)
+router.get('/translate', translatePost)
 
 module.exports = router;

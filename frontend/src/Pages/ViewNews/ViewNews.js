@@ -112,7 +112,6 @@ export default function ViewNews() {
   return (
     <>
       <Helmet>
-        <title></title>
         <meta
           name="description"
           content={`${

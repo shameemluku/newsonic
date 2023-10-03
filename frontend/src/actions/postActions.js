@@ -247,7 +247,11 @@ export const deleteDraft =
 
 export const translateText = (text, lang) => {
   return new Promise(async (res, rej) => {
-    let { data } = await api.translate(text, lang);
-    res(data?.translation);
+    try{
+      let { data } = await api.translate(text, lang);
+      res(data?.translation)
+    }catch(err){
+      console.log(err);
+    }
   });
 };

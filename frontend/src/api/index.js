@@ -89,7 +89,7 @@ export const getTransactions = (skip,limit) => API.get(`payment/fetch-transactio
 
 // Get User IP
 export const getUserIp = () => API.get('/users/get-ip')
-export const translate = (text,language) => API.get(`posts/translate/${text}?lang=${language}`)
+export const translate = (text,language) => API.get(`posts/translate?content=${text}&lang=${language}`)
 
 
  API.interceptors.response.use(response => {

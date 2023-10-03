@@ -27,6 +27,7 @@ export default function Homepage({ response }) {
   const { loginModal, catPosts } = useSelector((state) => state);
 
   useEffect(() => {
+    document.title = `Newsonic`
     dispatch(getPosts());
     dispatch(verifyUser());
     if (response) {

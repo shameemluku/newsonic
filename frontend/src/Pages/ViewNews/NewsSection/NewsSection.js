@@ -42,7 +42,7 @@ export default function NewsSection({ data }) {
       findPara();
       setHead();
     }
-    data?.images && images.length === 0 && createImageArray();
+    data?.images && createImageArray();
     createImageDiv();
   }, [data]);
 
@@ -72,6 +72,7 @@ export default function NewsSection({ data }) {
   };
 
   const createImageArray = () => {
+    images.length=0;
     data?.images.map((val) => {
       images.push(`${BACKEND_URL}/uploads/${val}`);
       setImages([...images]);
@@ -84,14 +85,18 @@ export default function NewsSection({ data }) {
   }, []);
 
   const closeImageViewer = () => {
-    setCurrentImage(0);
     setIsViewerOpen(false);
   };
+
+  useEffect(()=>{
+    console.log(images);
+  },[images])
+
 
   const createImageDiv = () => {
     setimageDiv(
       <div>
-        {data?.images && (
+        {data?.images && data.images.length>0 && (
           <Row>
             {data?.images[1] && (
               <Col sm={6}>

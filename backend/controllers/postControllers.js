@@ -524,8 +524,7 @@ const translatePost = asyncHandler(async (req, res) => {
       credentials: JSON.parse(process.env.GOOGLE_CREDENTIALS),
     });
 
-    const { content } = req.params;
-    const { lang: target } = req.query;
+    const { lang: target, content } = req.query;
 
     if (content === null) return res.status(400).json({});
 
